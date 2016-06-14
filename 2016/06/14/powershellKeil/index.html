@@ -1,0 +1,336 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>使用powershell提高keil效率 | weyne&#39;s note</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="weyne">
+    
+    <meta name="description" content="使用下述脚本的方法
+打开命令行，输入powershell(或者WIN+R，输入powershell)，这个时候就打开了powershell，可以看到命令行窗口显示powershell的版本信息。
+使用cd 命令切换到工程目录。
+复制下面的脚本，粘贴到powershell，回车两次。
+
+使用power">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="weyne&#39;s note" title="weyne&#39;s note"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="weyne&#39;s note">weyne&#39;s note</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					
+						<li><a href="/">主页</a></li>
+					
+						<li><a href="/archives">所有文章</a></li>
+					
+						<li><a href="/tags">标签</a></li>
+					
+						<li><a href="/categories">分类</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:weynechen.github.io">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/06/14/powershellKeil/" title="使用powershell提高keil效率" itemprop="url">使用powershell提高keil效率</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="weynechen.github.io" title="weyne">weyne</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2016-06-14T08:49:00.000Z" itemprop="datePublished">2016-06-14</time>
+    Updated:<time datetime="2016-06-14T09:05:30.658Z" itemprop="dateModified">2016-06-14</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#使用下述脚本的方法"><span class="toc-number">1.</span> <span class="toc-text">使用下述脚本的方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用powershell批量添加Keil和IAR的头文件路径"><span class="toc-number">2.</span> <span class="toc-text">使用powershell批量添加Keil和IAR的头文件路径</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用powershell批量修改文本为utf8"><span class="toc-number">3.</span> <span class="toc-text">使用powershell批量修改文本为utf8</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用powershell生成-pro文件"><span class="toc-number">4.</span> <span class="toc-text">使用powershell生成.pro文件</span></a></li></ol>
+		</div>
+		
+		<h2 id="使用下述脚本的方法"><a href="#使用下述脚本的方法" class="headerlink" title="使用下述脚本的方法"></a>使用下述脚本的方法</h2><ol>
+<li>打开命令行，输入powershell(或者WIN+R，输入powershell)，这个时候就打开了powershell，可以看到命令行窗口显示powershell的版本信息。</li>
+<li>使用cd 命令切换到工程目录。</li>
+<li>复制下面的脚本，粘贴到powershell，回车两次。</li>
+</ol>
+<h2 id="使用powershell批量添加Keil和IAR的头文件路径"><a href="#使用powershell批量添加Keil和IAR的头文件路径" class="headerlink" title="使用powershell批量添加Keil和IAR的头文件路径"></a>使用powershell批量添加Keil和IAR的头文件路径</h2><p>在Keil和IAR的工程中，为了使文件结构清晰，通常会设置很多的子文件夹，然后将头文件和源文件放在不同的子文件夹中，这样就需要手动添加这些头文件夹的路径。当工程结构非常复杂时，文件夹的数量就非常多，特别是从别人那里拷贝过来的工程目录，添加头文件路径就变得非常的繁琐。所以我们需要一个自动化的方法。该方法会搜索工程目录的文件夹和子文件夹，将其中包含了.h文件的路径找出来，并转换成keil和IAR要求的格式。这个难不倒程序员，只是简单的文件查找，再用点正则就行，QT也好，python也好都很容易实现。但是考虑到keil和IAR的工程师不一定装python，打包也不方便，QT的程序也太大，所以选择了相对熟悉的powershell脚本。简单好用，Windows自带，不需要再额外安装或者下载什么。Simple is better than complex。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$incPath</span> = dir -filter <span class="string">"*.h"</span> -Recurse</span><br><span class="line"><span class="variable">$txtList</span>=<span class="string">""</span>,<span class="string">""</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$fpath</span> <span class="keyword">in</span> <span class="variable">$incPath</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="variable">$txtList</span>+=<span class="variable">$fpath</span>.DirectoryName</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$txtTemp</span>=<span class="variable">$txtList</span>[<span class="number">0</span>]</span><br><span class="line"><span class="variable">$txtTemp</span></span><br><span class="line"><span class="comment">#$KeilOut="",""</span></span><br><span class="line"><span class="variable">$KeilOut</span>=<span class="string">"Keil include directories`n`n"</span></span><br><span class="line"><span class="variable">$workDir</span>=<span class="built_in">get-location</span></span><br><span class="line"><span class="variable">$workDir</span> =<span class="variable">$workDir</span> <span class="nomarkup">-replace</span> <span class="string">"\\"</span>,<span class="string">"\\"</span></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$txt</span> <span class="keyword">in</span> <span class="variable">$txtList</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="variable">$txt</span> <span class="nomarkup">-ne</span> <span class="variable">$txtTemp</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="variable">$txtTemp</span>=<span class="variable">$txt</span></span><br><span class="line">        <span class="variable">$txtTemp</span> +=<span class="string">";"</span></span><br><span class="line">        <span class="variable">$KeilOut</span> += <span class="variable">$txtTemp</span> <span class="nomarkup">-replace</span> <span class="variable">$workDir</span> , <span class="string">"."</span></span><br><span class="line">        <span class="variable">$txtTemp</span>=<span class="variable">$txt</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="variable">$IAROut</span>=<span class="string">""</span>,<span class="string">""</span></span><br><span class="line"><span class="variable">$IAROut</span> += <span class="string">"`nIAR include directories`n"</span></span><br><span class="line"><span class="variable">$txtTemp</span>=<span class="variable">$txtList</span>[<span class="number">0</span>]</span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$txt</span> <span class="keyword">in</span> <span class="variable">$txtList</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="variable">$txt</span> <span class="nomarkup">-ne</span> <span class="variable">$txtTemp</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="variable">$txtTemp</span>=<span class="variable">$txt</span>    </span><br><span class="line">        <span class="variable">$IAROut</span> += <span class="variable">$txtTemp</span> <span class="nomarkup">-replace</span> <span class="variable">$workDir</span> , <span class="string">"`$PROJ_DIR$"</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable">$KeilOut</span>&gt;incDir.txt</span><br><span class="line"><span class="variable">$IAROut</span>&gt;&gt;incDir.txt</span><br></pre></td></tr></table></figure>
+<p>这段代码会在目录下生成一个名字为incDir.txt的文本文件，里面就有keil和IAR格式的头文件。</p>
+<h2 id="使用powershell批量修改文本为utf8"><a href="#使用powershell批量修改文本为utf8" class="headerlink" title="使用powershell批量修改文本为utf8"></a>使用powershell批量修改文本为utf8</h2><p>很多时候，我们的keil或者IAR源文件是ANSI格式的，这样在源文件中使用中文注释会很不方便，所以需要将所有的源文件转成utf8.<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$incPath</span> = dir -filter <span class="string">"*.c"</span> -Recurse</span><br><span class="line"><span class="variable">$temp</span> = <span class="string">" "</span></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$fpath</span> <span class="keyword">in</span> <span class="variable">$incPath</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="variable">$headList</span>=<span class="variable">$fpath</span>.DirectoryName + <span class="string">"\"</span> + <span class="variable">$fpath</span>.name</span><br><span class="line">    <span class="variable">$temp</span> = cat <span class="variable">$headList</span></span><br><span class="line">    <span class="variable">$temp</span> | <span class="built_in">Out-File</span> -Encoding utf8 <span class="variable">$headList</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>经实践发现,如果文本本身是ASCII或者utf8，使用这一个脚本没有问题，但是若是文本本身是utf8无BOM格式，则会乱码。所以powershell可能无法完成，需要使用python或者其他方法了。</p>
+<h2 id="使用powershell生成-pro文件"><a href="#使用powershell生成-pro文件" class="headerlink" title="使用powershell生成.pro文件"></a>使用powershell生成.pro文件</h2><p>keil是很好的调试工具，但是作为编辑器却很差，不管是自动补全，代码美化或是其他的一些现在编辑器的基本功能它都没有。所以我想使用Qt Creator来编辑整个keil的工程，keil只进行编译和调试。<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$incPath</span> = dir -filter <span class="string">"*.h"</span> -Recurse</span><br><span class="line"><span class="variable">$headList</span>=<span class="string">""</span>,<span class="string">""</span></span><br><span class="line"><span class="variable">$pathList</span> = <span class="string">""</span>,<span class="string">""</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$fpath</span> <span class="keyword">in</span> <span class="variable">$incPath</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="variable">$headList</span>+=<span class="variable">$fpath</span>.DirectoryName + <span class="string">"/"</span> + <span class="variable">$fpath</span>.name</span><br><span class="line">    <span class="variable">$headList</span> = <span class="variable">$headList</span> <span class="nomarkup">-replace</span> <span class="string">"\\"</span>,<span class="string">"/"</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$fpath</span> <span class="keyword">in</span> <span class="variable">$incPath</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="variable">$pathList</span> += <span class="variable">$fpath</span>.DirectoryName</span><br><span class="line">    <span class="variable">$pathList</span> = <span class="variable">$pathList</span> <span class="nomarkup">-replace</span> <span class="string">"\\"</span>,<span class="string">"/"</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$txtTemp</span>=<span class="variable">$headList</span>[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line"><span class="variable">$QtProHeadFileOut</span>=<span class="string">"HEADERS  +="</span></span><br><span class="line"><span class="variable">$QtIncludePath</span> = <span class="string">"INCLUDEPATH +="</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$workDir</span>=<span class="built_in">get-location</span></span><br><span class="line"><span class="variable">$proName</span> = gi <span class="variable">$workDir</span></span><br><span class="line"><span class="variable">$workDir</span> =<span class="variable">$workDir</span> <span class="nomarkup">-replace</span> <span class="string">"\\"</span>,<span class="string">"/"</span></span><br><span class="line"><span class="variable">$workDir</span> += <span class="string">"/"</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$flag</span> = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$txt</span> <span class="keyword">in</span> <span class="variable">$pathList</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="variable">$txt</span> <span class="nomarkup">-ne</span> <span class="variable">$pathList</span>[<span class="number">0</span>])</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="variable">$txt</span> <span class="nomarkup">-ne</span> <span class="variable">$txtTemp</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="variable">$txtTemp</span>=<span class="variable">$txt</span>    </span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span>(<span class="variable">$flag</span> <span class="nomarkup">-eq</span> <span class="number">0</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="variable">$flag</span> = <span class="number">1</span></span><br><span class="line">                <span class="variable">$txt</span> = <span class="variable">$txt</span> <span class="nomarkup">-replace</span> <span class="variable">$workDir</span> , <span class="string">" "</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="variable">$txt</span> = <span class="variable">$txt</span> <span class="nomarkup">-replace</span> <span class="variable">$workDir</span> , <span class="string">"               "</span></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="variable">$t</span> = <span class="variable">$pathList</span>[-<span class="number">1</span>] <span class="nomarkup">-replace</span> <span class="variable">$workDir</span> , <span class="string">"               "</span></span><br><span class="line">            <span class="keyword">if</span>(<span class="variable">$txt</span> <span class="nomarkup">-ne</span> <span class="variable">$t</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="variable">$QtIncludePath</span> += <span class="variable">$txt</span> + <span class="string">"\`n"</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="variable">$QtIncludePath</span> += <span class="variable">$txt</span> + <span class="string">"`n`n"</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;    </span><br><span class="line">    &#125;    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$flag</span> = <span class="number">0</span></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$txt</span> <span class="keyword">in</span> <span class="variable">$headList</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="variable">$txt</span> <span class="nomarkup">-ne</span> <span class="variable">$headList</span>[<span class="number">0</span>])</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="variable">$flag</span> <span class="nomarkup">-eq</span> <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="variable">$flag</span> = <span class="number">1</span></span><br><span class="line">            <span class="variable">$QtProHeadFileOut</span> += <span class="variable">$txt</span> <span class="nomarkup">-replace</span> <span class="variable">$workDir</span> , <span class="string">" "</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="variable">$QtProHeadFileOut</span> += <span class="variable">$txt</span> <span class="nomarkup">-replace</span> <span class="variable">$workDir</span> , <span class="string">"            "</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(<span class="variable">$txt</span> <span class="nomarkup">-ne</span> <span class="variable">$headList</span>[-<span class="number">1</span>])</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="variable">$QtProHeadFileOut</span> += <span class="string">"\`n"</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="variable">$QtProHeadFileOut</span> +=<span class="string">"`n`n"</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="variable">$sourcePath</span> = dir -filter <span class="string">"*.c"</span> -Recurse</span><br><span class="line"><span class="variable">$sourceList</span>=<span class="string">""</span>,<span class="string">""</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$fpath</span> <span class="keyword">in</span> <span class="variable">$sourcePath</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="variable">$sourceList</span>+=<span class="variable">$fpath</span>.DirectoryName + <span class="string">"/"</span> + <span class="variable">$fpath</span>.name</span><br><span class="line">    <span class="variable">$sourceList</span> = <span class="variable">$sourceList</span> <span class="nomarkup">-replace</span> <span class="string">"\\"</span>,<span class="string">"/"</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$sourceTemp</span>=<span class="variable">$sourceList</span>[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line"><span class="variable">$QtProSourceFileOut</span>=<span class="string">"SOURCES  +="</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$flag</span> = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$txt</span> <span class="keyword">in</span> <span class="variable">$sourceList</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="variable">$txt</span> <span class="nomarkup">-ne</span> <span class="variable">$sourceTemp</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="variable">$flag</span> <span class="nomarkup">-eq</span> <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="variable">$flag</span> = <span class="number">1</span></span><br><span class="line">            <span class="variable">$QtProSourceFileOut</span> += <span class="variable">$txt</span> <span class="nomarkup">-replace</span> <span class="variable">$workDir</span> , <span class="string">" "</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="variable">$QtProSourceFileOut</span> += <span class="variable">$txt</span> <span class="nomarkup">-replace</span> <span class="variable">$workDir</span> , <span class="string">"            "</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(<span class="variable">$txt</span> <span class="nomarkup">-ne</span> <span class="variable">$sourceList</span>[-<span class="number">1</span>])</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="variable">$QtProSourceFileOut</span> += <span class="string">"\`n"</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="variable">$QtProSourceFileOut</span> +=<span class="string">"`n`n"</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$proString</span> =<span class="string">"TARGET = "</span> + <span class="variable">$proName</span>.name +<span class="string">"`nTEMPLATE = app`n`n"</span></span><br><span class="line"><span class="variable">$outfile</span> = <span class="variable">$proString</span> + <span class="variable">$QtProSourceFileOut</span> + <span class="variable">$QtProHeadFileOut</span> + <span class="variable">$QtIncludePath</span></span><br><span class="line"><span class="variable">$outfile</span> | <span class="built_in">Out-File</span> -Encoding ascii qt.pro</span><br></pre></td></tr></table></figure></p>
+<p>这段代码会在目录下直接生产一个qt.pro的文件，可以使用Qt Creator直接打开。Qt Creator会报错，但是不用管。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/编程工具/">编程工具</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="weynechen.github.io/2016/06/14/powershellKeil/" data-title="使用powershell提高keil效率 | weyne&#39;s note" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2016/06/14/GraphVizNote/"  title="GraphViz Note">
+ <strong>NEXT:</strong><br/> 
+ <span>GraphViz Note
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#使用下述脚本的方法"><span class="toc-number">1.</span> <span class="toc-text">使用下述脚本的方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用powershell批量添加Keil和IAR的头文件路径"><span class="toc-number">2.</span> <span class="toc-text">使用powershell批量添加Keil和IAR的头文件路径</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用powershell批量修改文本为utf8"><span class="toc-number">3.</span> <span class="toc-text">使用powershell批量修改文本为utf8</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用powershell生成-pro文件"><span class="toc-number">4.</span> <span class="toc-text">使用powershell生成.pro文件</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">Categories</p>
+		<ul>
+		
+			<li><a href="/categories/笔记/" title="笔记">笔记<sup>1</sup></a></li>
+		
+			<li><a href="/categories/编程工具/" title="编程工具">编程工具<sup>2</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/GraphViz/" title="GraphViz">GraphViz<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<div class="social-font clearfix">
+		
+		
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme fork Pacman © 2016 
+		
+		<a href="weynechen.github.io" target="_blank" title="weyne">weyne</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"null"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+  </body>
+</html>
