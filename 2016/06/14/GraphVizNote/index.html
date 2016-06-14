@@ -1,0 +1,357 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>GraphViz Note | weyne&#39;s note</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="weyne">
+    
+    <meta name="description" itemprop="description" content="GraphViz 及dot语言简单笔记">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="weyne&#39;s note" title="weyne&#39;s note"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="weyne&#39;s note">weyne&#39;s note</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					
+						<li><a href="/">主页</a></li>
+					
+						<li><a href="/archives">所有文章</a></li>
+					
+						<li><a href="/tags">标签</a></li>
+					
+						<li><a href="/categories">分类</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:weynechen.github.io">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/06/14/GraphVizNote/" title="GraphViz Note" itemprop="url">GraphViz Note</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="weynechen.github.io" title="weyne">weyne</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2016-06-14T05:38:33.000Z" itemprop="datePublished">2016-06-14</time>
+    Updated:<time datetime="2016-06-14T06:48:33.590Z" itemprop="dateModified">2016-06-14</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#分类"><span class="toc-number">1.</span> <span class="toc-text">分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#graph-无向图"><span class="toc-number">1.1.</span> <span class="toc-text">graph 无向图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#digraph-有向图"><span class="toc-number">1.2.</span> <span class="toc-text">digraph 有向图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#subgraph-子图"><span class="toc-number">1.3.</span> <span class="toc-text">subgraph 子图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#cluster"><span class="toc-number">1.4.</span> <span class="toc-text">cluster</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#属性"><span class="toc-number">2.</span> <span class="toc-text">属性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#graph"><span class="toc-number">2.1.</span> <span class="toc-text">graph</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#node"><span class="toc-number">2.2.</span> <span class="toc-text">node</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#edge"><span class="toc-number">2.3.</span> <span class="toc-text">edge</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#生成方法"><span class="toc-number">3.</span> <span class="toc-text">生成方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考资料"><span class="toc-number">4.</span> <span class="toc-text">参考资料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#其他用法"><span class="toc-number">5.</span> <span class="toc-text">其他用法</span></a></li></ol>
+		</div>
+		
+		<h2 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h2><h3 id="graph-无向图"><a href="#graph-无向图" class="headerlink" title="graph 无向图"></a>graph 无向图</h3><p>代码形式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">graph test2&#123;</span><br><span class="line">    A -- B;    A -- C;   B -- D;    C -- D</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="graph.png" alt="graph"></p>
+<h3 id="digraph-有向图"><a href="#digraph-有向图" class="headerlink" title="digraph 有向图"></a>digraph 有向图</h3><p>代码形式：<br> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"> digraph test1&#123;</span><br><span class="line">    A -&gt; B;    A -&gt; C;   B -&gt; D;    C -&gt; D</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="digraph.png" alt="digraph"></p>
+<p>按字面意思知道，有向图和普通无向图的区别在于一个有箭头表明指向，一个没有。所以在代码形式上，一个使用-&gt; ， 一个使用–，非常形象。</p>
+<h3 id="subgraph-子图"><a href="#subgraph-子图" class="headerlink" title="subgraph 子图"></a>subgraph 子图</h3><p>subgraph是嵌在graph或者digraph中的，有点像是c语言中的函数<br>下图是一个使用subgraph的例子</p>
+<p><img src="subgraph.png" alt="subgraph"></p>
+<h3 id="cluster"><a href="#cluster" class="headerlink" title="cluster"></a>cluster</h3><p>cluster是subgraph中名字前缀为cluster的图。使用cluster会在subgraph的外围加一个框</p>
+<h2 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h2><h3 id="graph"><a href="#graph" class="headerlink" title="graph"></a>graph</h3><p>graph指使用dot画出的整个图。他可以设置的属性如下表：</p>
+<p><img src="graph_attribute.png" alt="graph_attribute"></p>
+<h3 id="node"><a href="#node" class="headerlink" title="node"></a>node</h3><p>node是指流程图中的一个节点。</p>
+<p><img src="node.png" alt="node"></p>
+<p>有如下属性：<br><img src="node_attribute.png" alt="node_attribute"></p>
+<h3 id="edge"><a href="#edge" class="headerlink" title="edge"></a>edge</h3><p>可以理解为图形的外框。比如矩形框，椭圆框，箭头等。它有如下属性：</p>
+<p><img src="edge_attribute.png" alt="edge_attribute"></p>
+<h2 id="生成方法"><a href="#生成方法" class="headerlink" title="生成方法"></a>生成方法</h2><p>安装GraphViz后，将目录下的bin添加到环境变量。然后在命令行中输入如下命令即可。</p>
+<p><em>dot -Tpng xx.dot -o xx.png</em></p>
+<ul>
+<li><em>-Tv</em> 表示生成一个v类型的图片，V的取值有：png,ps,pdf,svg等等。v的取值和插件有关系。查看自己是否安装了支持的格式，可使用 <em>dot -Tv</em> 然后查看warning message，看是否支持该中图片格式。</li>
+<li>xx.dot 源文件格式</li>
+<li>-o 输出文件</li>
+<li>xx.png 输出文件的名字</li>
+</ul>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="www.graphviz.org">www.graphviz.org</a> 官网</li>
+<li>Graphviz安装目录下 \share\graphviz\doc有不少文档</li>
+<li>dot语法手册 《Drawing graphs with dot》</li>
+</ul>
+<h2 id="其他用法"><a href="#其他用法" class="headerlink" title="其他用法"></a>其他用法</h2><ul>
+<li>结合脚本(sh,python,powershell等)可视化显示流程</li>
+<li>内嵌Graphviz</li>
+<li>doxygen</li>
+</ul>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/GraphViz/">GraphViz</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/编程工具/">编程工具</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="weynechen.github.io/2016/06/14/GraphVizNote/" data-title="GraphViz Note | weyne&#39;s note" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2016/06/14/SetupGithubBlog/"  title="使用hexo在github上搭建博客">
+ <strong>NEXT:</strong><br/> 
+ <span>使用hexo在github上搭建博客
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#分类"><span class="toc-number">1.</span> <span class="toc-text">分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#graph-无向图"><span class="toc-number">1.1.</span> <span class="toc-text">graph 无向图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#digraph-有向图"><span class="toc-number">1.2.</span> <span class="toc-text">digraph 有向图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#subgraph-子图"><span class="toc-number">1.3.</span> <span class="toc-text">subgraph 子图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#cluster"><span class="toc-number">1.4.</span> <span class="toc-text">cluster</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#属性"><span class="toc-number">2.</span> <span class="toc-text">属性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#graph"><span class="toc-number">2.1.</span> <span class="toc-text">graph</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#node"><span class="toc-number">2.2.</span> <span class="toc-text">node</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#edge"><span class="toc-number">2.3.</span> <span class="toc-text">edge</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#生成方法"><span class="toc-number">3.</span> <span class="toc-text">生成方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考资料"><span class="toc-number">4.</span> <span class="toc-text">参考资料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#其他用法"><span class="toc-number">5.</span> <span class="toc-text">其他用法</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">Categories</p>
+		<ul>
+		
+			<li><a href="/categories/笔记/" title="笔记">笔记<sup>1</sup></a></li>
+		
+			<li><a href="/categories/编程工具/" title="编程工具">编程工具<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/GraphViz/" title="GraphViz">GraphViz<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<div class="social-font clearfix">
+		
+		
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme fork Pacman © 2016 
+		
+		<a href="weynechen.github.io" target="_blank" title="weyne">weyne</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"null"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+  </body>
+</html>
