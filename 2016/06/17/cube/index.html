@@ -1,0 +1,434 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>cube | weyne&#39;s note</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="weyne">
+    
+    <meta name="description" content="初步使用的感受
+图形化向导显示STM32的引脚，时钟树，外设接口。这样在配置资源时，可以很清楚的知道有哪些可用，有哪些已经被占用。(如果ST能让配置完成的资源导出成sch就更完美了)
+
+
+
+图形化显示时钟树可以更清楚的知道每个外设的时钟配置
+
+
+优点
+配置完成后，生成规范的直接可使用的工程(比如ke">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="weyne&#39;s note" title="weyne&#39;s note"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="weyne&#39;s note">weyne&#39;s note</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					
+						<li><a href="/">主页</a></li>
+					
+						<li><a href="/archives">所有文章</a></li>
+					
+						<li><a href="/tags">标签</a></li>
+					
+						<li><a href="/categories">分类</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:weynechen.github.io">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/06/17/cube/" title="cube" itemprop="url">cube</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="weynechen.github.io" title="weyne">weyne</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2016-06-17T10:44:07.000Z" itemprop="datePublished">2016-06-17</time>
+    Updated:<time datetime="2016-06-17T10:46:10.119Z" itemprop="dateModified">2016-06-17</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#初步使用的感受"><span class="toc-number">1.</span> <span class="toc-text">初步使用的感受</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#优点"><span class="toc-number">1.1.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#缺点"><span class="toc-number">1.2.</span> <span class="toc-text">缺点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#切换到另外一个MCU"><span class="toc-number">2.</span> <span class="toc-text">切换到另外一个MCU</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TODO"><span class="toc-number">3.</span> <span class="toc-text">TODO</span></a></li></ol>
+		</div>
+		
+		<h2 id="初步使用的感受"><a href="#初步使用的感受" class="headerlink" title="初步使用的感受"></a>初步使用的感受</h2><ul>
+<li>图形化向导显示STM32的引脚，时钟树，外设接口。这样在配置资源时，可以很清楚的知道有哪些可用，有哪些已经被占用。(如果ST能让配置完成的资源导出成sch就更完美了)</li>
+</ul>
+<p><img src="cube.png" alt="cube"></p>
+<ul>
+<li>图形化显示时钟树可以更清楚的知道每个外设的时钟配置</li>
+</ul>
+<p><img src="clock_tree.png" alt="clock_tree"></p>
+<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ul>
+<li>配置完成后，生成规范的直接可使用的工程(比如keil工程)。<br>生成的代码很规范，符合st官方库的代码规范，因此可以直接使用doxygen生成帮助文档。</li>
+<li>支持直接配置FATFS,FREERTOS,USB中间层。</li>
+<li>CubeMX使用Java，因此跨平台性比较好(Mac和Linux都可以用，虽然并没什么卵用)</li>
+<li>生成的代码采用分层机制(硬件抽象层(HAL),中间层，应用层)，系统层面使用起来逻辑清晰，代码可重用性更高。</li>
+</ul>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ul>
+<li>隐藏了硬件操作细节，要是从cube入门，容易写出bug。</li>
+<li>占用资源变多，适用工程大，资源宽松的项目。</li>
+</ul>
+<h2 id="切换到另外一个MCU"><a href="#切换到另外一个MCU" class="headerlink" title="切换到另外一个MCU"></a>切换到另外一个MCU</h2><ol>
+<li>New Project</li>
+<li>选择MCU型号</li>
+<li>Import Project</li>
+<li>弹出的对话框选Try Import</li>
+</ol>
+<h2 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a>TODO</h2><ul>
+<li>[x] 重新生成代码后，是否可以不覆盖原代码</li>
+</ul>
+<p>代码中有特殊的标记段：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* USER CODE BEGIN WHILE */</span></span><br><span class="line"><span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line"> HAL_GPIO_TogglePin(GPIOA,GPIO_PIN_8);</span><br><span class="line"> HAL_Delay(<span class="number">1000</span>);</span><br><span class="line"><span class="comment">/* USER CODE END WHILE */</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* USER CODE BEGIN 3 */</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>比如上面的<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* USER CODE BEGIN WHILE */</span></span><br><span class="line"><span class="comment">/* USER CODE END WHILE */</span></span><br></pre></td></tr></table></figure></p>
+<p>包起来的部分。在使用cube重新生成工程时，不会覆盖掉中间的部分。如果放在<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* USER CODE END WHILE */</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* USER CODE BEGIN 3 */</span></span><br></pre></td></tr></table></figure></p>
+<p>中间就会被覆盖掉。</p>
+<p>综上，若想代码不覆盖掉，需要使用<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* USER CODE BEGIN xxx */</span></span><br><span class="line"><span class="comment">/* USER CODE END xxx */</span></span><br></pre></td></tr></table></figure></p>
+<p>包起来。</p>
+<ul>
+<li>[x] 阅读cube的帮助文档 <strong>UM1718</strong></li>
+</ul>
+<ol>
+<li><p>关于上面一点，帮助手册也有说明：<br>The C code generated by STM32CubeMX provides user sections as illustrated below. They<br>allow user C code to be inserted and preserved at next C code generation.<br>User sections shall neither be moved nor renamed. Only the user sections defined by<br>STM32CubeMX are preserved. User created sections will be ignored and lost at next C<br>code generation.<br>/<em> USER CODE BEGIN 0 </em>/<br>(..)<br>/<em> USER CODE END 0 </em>/<br>Note: STM32CubeMX may generate C code in some user sections. It will be up to the user to<br>clean the parts that may become obsolete in this section. For example, the while(1) loop in<br>the main function is placed inside a user section as illustrated below:<br>/<em> Infinite loop </em>/<br>/<em> USER CODE BEGIN WHILE </em>/<br>while (1)<br>{<br>/<em> USER CODE END WHILE </em>/<br>/<em> USER CODE BEGIN 3 </em>/<br>}<br>/<em> USER CODE END 3 </em>/</p>
+</li>
+<li><p>有提到一个自定义配置格式 <a href="http://freemarker.org/docs/index.html" target="_blank" rel="external">freemarker</a>可以关注一下,其他内容是讲软件怎么用，没有太多需要关注的。</p>
+</li>
+</ol>
+<ul>
+<li><p>[ ] 阅读 <em>UM1850</em>  <a href="http://www.st.com/content/ccc/resource/technical/document/user_manual/72/52/cc/53/05/e3/4c/98/DM00154093.pdf/files/DM00154093.pdf/jcr:content/translations/en.DM00154093.pdf" target="_blank" rel="external">Description of STM32F1xx HAL drivers</a>，了解生成的代码结构</p>
+<ol>
+<li><p>cube生成的代码严格按照 ANSI-C标准，使用CodeSonar静态分析工具检查过，全部文档化，并且兼容MISRA-c 2004(工业软件安全性的C语言编码规范).</p>
+</li>
+<li><p>前两章是整体介绍cube生成的HAL怎么用，需要详细阅读。后面是介绍各个HAL库，用到的时候再看。</p>
+</li>
+<li>HAL库的一些特性：<ol>
+<li>包含了常用外围设备的驱动</li>
+<li>三种编程模型：查询(polling)，中断(interrupt)，DMA</li>
+<li>RTOS兼容(可重入),<strong>自己的代码也最好保持可重入</strong></li>
+<li>回调函数机制</li>
+<li>所有的阻塞块(while等待)都有超时机制</li>
+</ol>
+</li>
+<li><p>新的数据结构</p>
+<ul>
+<li><p>Peripheral handle structure</p>
+  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">        <span class="comment">/**</span><br><span class="line">  * @brief  USART handle Structure definition  </span><br><span class="line">  */</span>  </span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span></span><br><span class="line">&#123;</span><br><span class="line">  USART_TypeDef                 *Instance;        <span class="comment">/*!&lt; USART registers base address        */</span></span><br><span class="line"></span><br><span class="line">  USART_InitTypeDef              Init;            <span class="comment">/*!&lt; Usart communication parameters      */</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">uint8_t</span>                       *pTxBuffPtr;      <span class="comment">/*!&lt; Pointer to Usart Tx transfer Buffer */</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">uint16_t</span>                       TxXferSize;      <span class="comment">/*!&lt; Usart Tx Transfer size              */</span></span><br><span class="line"></span><br><span class="line">  __IO <span class="keyword">uint16_t</span>                  TxXferCount;     <span class="comment">/*!&lt; Usart Tx Transfer Counter           */</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">uint8_t</span>                       *pRxBuffPtr;      <span class="comment">/*!&lt; Pointer to Usart Rx transfer Buffer */</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">uint16_t</span>                       RxXferSize;      <span class="comment">/*!&lt; Usart Rx Transfer size              */</span></span><br><span class="line"></span><br><span class="line">  __IO <span class="keyword">uint16_t</span>                  RxXferCount;     <span class="comment">/*!&lt; Usart Rx Transfer Counter           */</span>  </span><br><span class="line"></span><br><span class="line">  DMA_HandleTypeDef             *hdmatx;          <span class="comment">/*!&lt; Usart Tx DMA Handle parameters      */</span></span><br><span class="line"></span><br><span class="line">  DMA_HandleTypeDef             *hdmarx;          <span class="comment">/*!&lt; Usart Rx DMA Handle parameters      */</span></span><br><span class="line"></span><br><span class="line">  HAL_LockTypeDef                Lock;            <span class="comment">/*!&lt; Locking object                      */</span></span><br><span class="line"></span><br><span class="line">  __IO HAL_USART_StateTypeDef    State;           <span class="comment">/*!&lt; Usart communication state           */</span></span><br><span class="line"></span><br><span class="line">  __IO <span class="keyword">uint32_t</span>                  ErrorCode;       <span class="comment">/*!&lt; USART Error code                    */</span></span><br><span class="line"></span><br><span class="line">&#125;USART_HandleTypeDef;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>如上定义了USART常用功能的一些数据结构，初始化，buffer，计数器，DMA，通讯状态，锁等等。<strong>设计到系统层面的东西较多，暂时不懂</strong></p>
+</li>
+<li>回调函数<ul>
+<li>peripheral initialization/de-intialization</li>
+<li>进程完成回调，比如USART发送数据完成回调</li>
+<li>错误处理回调</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><p>[ ] 了解FreeRTOS</p>
+<ul>
+<li>cube的帮助手册中有提到，FreeRTOS + LwIP + FATFS + USB的构架。若是能使用cube协助生成工程，会很方便。<a href="http://www.freertos.org/" target="_blank" rel="external">FreeRTOS官网</a></li>
+</ul>
+</li>
+<li><p>[ ] 了解怎样配置USB   </p>
+<ul>
+<li><a href="http://www.st.com/content/ccc/resource/technical/document/user_manual/cf/38/e5/b5/dd/1d/4c/09/DM00108129.pdf/files/DM00108129.pdf/jcr:content/translations/en.DM00108129.pdf" target="_blank" rel="external">STM32Cube USB device library</a>这个文档介绍了怎样使用cube来配置USB device。</li>
+<li><p>6.15初步配置USB VCP，并测试发送数据成功。配置步骤如下：</p>
+<ol>
+<li>cube中usb设置保持默认</li>
+<li>修改startup文件，将堆的值改为 <em>0x00001500</em></li>
+<li><p>在main中添加</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CDC_Transmit_FS(TxBuffer,<span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>打开串口就能看到发送的5个字节的数据了(电脑上得装<a href="http://www.st.com/content/st_com/en/products/development-tools/software-development-tools/stm32-software-development-tools/stm32-utilities/stsw-stm32102.html" target="_blank" rel="external">STSW-STM32102</a>)。</p>
+</li>
+<li>注意代码烧录完成后，重新插拔一次USB。</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/cube/">cube</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/STM32/">STM32</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="weynechen.github.io/2016/06/17/cube/" data-title="cube | weyne&#39;s note" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2016/06/16/VirtualBox/"  title="Virtual Box 的一些问题">
+ <strong>NEXT:</strong><br/> 
+ <span>Virtual Box 的一些问题
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#初步使用的感受"><span class="toc-number">1.</span> <span class="toc-text">初步使用的感受</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#优点"><span class="toc-number">1.1.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#缺点"><span class="toc-number">1.2.</span> <span class="toc-text">缺点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#切换到另外一个MCU"><span class="toc-number">2.</span> <span class="toc-text">切换到另外一个MCU</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TODO"><span class="toc-number">3.</span> <span class="toc-text">TODO</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">Categories</p>
+		<ul>
+		
+			<li><a href="/categories/STM32/" title="STM32">STM32<sup>2</sup></a></li>
+		
+			<li><a href="/categories/笔记/" title="笔记">笔记<sup>1</sup></a></li>
+		
+			<li><a href="/categories/编程工具/" title="编程工具">编程工具<sup>3</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/GraphViz/" title="GraphViz">GraphViz<sup>1</sup></a></li>
+		
+			<li><a href="/tags/cube/" title="cube">cube<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<div class="social-font clearfix">
+		
+		
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme fork Pacman © 2016 
+		
+		<a href="weynechen.github.io" target="_blank" title="weyne">weyne</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"null"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+  </body>
+</html>
