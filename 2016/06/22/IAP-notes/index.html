@@ -4,12 +4,12 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>Virtual Box 的一些问题 | weyne&#39;s note</title>
+    <title>IAP notes | weyne&#39;s note</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="weyne">
     
-    <meta name="description" itemprop="description" content="Virtual box 分辨率不对，文件不能共享问题">
+    <meta name="description" content="IAP是什么IAP = In application programming，即在应用中编程，用于产品软件升级。要实现IAP，需要两个程序，一个称为bootloader程序，一个称为应用程序(APP)，开始升级时，bootloader程序负责将APP加载到flash中。bootloader程序的一般">
     
     
     
@@ -69,15 +69,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2016/06/16/VirtualBox/" title="Virtual Box 的一些问题" itemprop="url">Virtual Box 的一些问题</a>
+      <a href="/2016/06/22/IAP-notes/" title="IAP notes" itemprop="url">IAP notes</a>
   </h1>
   <p class="article-author">By
     
       <a href="weynechen.github.io" title="weyne">weyne</a>
     </p>
   <p class="article-time">
-    <time datetime="2016-06-16T03:18:16.000Z" itemprop="datePublished">2016-06-16</time>
-    Updated:<time datetime="2016-06-16T03:30:23.818Z" itemprop="dateModified">2016-06-16</time>
+    <time datetime="2016-06-22T07:30:56.000Z" itemprop="datePublished">2016-06-22</time>
+    Updated:<time datetime="2016-06-22T10:44:36.963Z" itemprop="dateModified">2016-06-22</time>
     
   </p>
 </header>
@@ -86,21 +86,21 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">Contents</strong>
-		
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#IAP是什么"><span class="toc-number">1.</span> <span class="toc-text">IAP是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#注意点"><span class="toc-number">2.</span> <span class="toc-text">注意点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#整个程序的流程"><span class="toc-number">3.</span> <span class="toc-text">整个程序的流程</span></a></li></ol>
 		</div>
 		
-		<p>在VirtualBox中安装完 windows 后，发现两个问题：</p>
-<ol>
-<li>windows无法铺满全屏，只能显示一个很丑的窗口。</li>
-<li>主机和虚拟机之间的文件共享无法使用。</li>
+		<h2 id="IAP是什么"><a href="#IAP是什么" class="headerlink" title="IAP是什么"></a>IAP是什么</h2><p>IAP = In application programming，即在应用中编程，用于产品软件升级。要实现IAP，需要两个程序，一个称为bootloader程序，一个称为应用程序(APP)，开始升级时，bootloader程序负责将APP加载到flash中。<br>bootloader程序的一般流程如下：</p>
+<p><img src="bootloader_flow.png" alt="bootloader_flow"></p>
+<h2 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h2><ol>
+<li>bootloader程序和APP程序需要放在不同的user flash区域，在keil中可直接通过设置选项设置。</li>
+<li>bootloader程序一般放在起始位置为0x8000000处，因为一般情况下程序是从这里开始启动的。</li>
+<li>和操作系统类似，需要注意中断向量表所指向的位置。<em>可参考《stm32f4开发指南》 757页</em>，也可参考以前写的<a href="http://www.cnblogs.com/WeyneChen/p/4846189.html" target="_blank" rel="external">STM32向量表详细分析</a>。</li>
+<li>从第三点可以看出，bootloader中最好不要使用中断，否则程序会比较复杂。</li>
 </ol>
-<p>找到虚拟机的文件共享选项提示说，我没有安装 <strong>增强包</strong>，但我记得我安装过了。因为我装的另一个虚拟机是有这些功能的。</p>
-<p>后来才发现：<strong>是每个虚拟机都必须装一次，是在虚拟机内部装</strong><br>安装步骤：</p>
-<ol>
-<li>在未全屏的情况下找到左上角VirtualBox的菜单选项。</li>
-<li>找到设备-&gt;安装增强功能。</li>
-</ol>
-<p>Done</p>
+<h2 id="整个程序的流程"><a href="#整个程序的流程" class="headerlink" title="整个程序的流程"></a>整个程序的流程</h2><p><img src="IAP_flow.svg" alt="IAP_flow"></p>
+<p>下面是GraphViz的源码，方便以后修改<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">digraph G &#123;</span><br><span class="line">    //node[fontname=&quot;Arial&quot;]</span><br><span class="line">    start [label=&quot;用户程序&quot;,shape=box]</span><br><span class="line">    is_update[shape=diamond,label=&quot;需要更新？&quot;]</span><br><span class="line">    start-&gt;is_update</span><br><span class="line">    is_update-&gt;start[label=&quot;N&quot;]</span><br><span class="line">    update_complete[label=&quot;将APP内容烧录\n到FLASH空闲区域&quot;]</span><br><span class="line">    is_update-&gt;update_complete[label=&quot;Y&quot;]</span><br><span class="line">    update_flag[label=&quot;update_flag\n置位&quot;]</span><br><span class="line">    update_complete-&gt;update_flag-&gt;&quot;重启系统&quot;</span><br><span class="line">    bootloader[label=&quot;进入bootloader程序&quot;]</span><br><span class="line">    &quot;重启系统&quot;-&gt;bootloader</span><br><span class="line">    check[shape=diamond,label=&quot;update_flag\n是否置位？&quot;]</span><br><span class="line">    bootloader-&gt;check</span><br><span class="line">    check-&gt;start[label=&quot;N&quot;]</span><br><span class="line">    flash_app[label=&quot;将APP内容烧\n录到APP区&quot;]</span><br><span class="line">    IsEncryption[shape=diamond,label=&quot;是否加密？&quot;]</span><br><span class="line">    crc[label=&quot;CRC校验\n是否成功&quot;,shape=diamond]</span><br><span class="line">    IsEncryption-&gt;Decyrption[label=&quot;Y&quot;]</span><br><span class="line">    check-&gt;crc</span><br><span class="line">    crc-&gt;IsEncryption[label=&quot;Y&quot;]</span><br><span class="line">    IsEncryption-&gt;flash_app[label=&quot;N&quot;]</span><br><span class="line">    report_fail[label=&quot;报告校验失败&quot;]</span><br><span class="line">    crc-&gt;report_fail[label=&quot;N&quot;]</span><br><span class="line">    Decyrption-&gt;flash_app</span><br><span class="line">    report_fail-&gt;start</span><br><span class="line">    reset_update_flag[label=&quot;复位update_flag&quot;]</span><br><span class="line">    flash_app-&gt;reset_update_flag</span><br><span class="line">    report_fail-&gt;reset_update_flag</span><br><span class="line">    reset_update_flag-&gt;start</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以看出，整个bootloader部分的程序会比较简单，只需做CRC和解密，然后读flash，写flash。</p>
+<p><font style="background-color: #eeee00">注意这种方法对本身占用flash比较大的APP不适用</font>。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -108,14 +108,14 @@
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/编程工具/">编程工具</a>
+  <a class="article-category-link" href="/categories/STM32/">STM32</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="weynechen.github.io/2016/06/16/VirtualBox/" data-title="Virtual Box 的一些问题 | weyne&#39;s note" data-tsina="null" class="share clearfix">
+  <div data-url="weynechen.github.io/2016/06/22/IAP-notes/" data-title="IAP notes | weyne&#39;s note" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -124,19 +124,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2016/06/17/cube/" title="学习使用STM32 cube及其HAL库">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  学习使用STM32 cube及其HAL库</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2016/06/15/stm32-name-rules/"  title="STM32 MCU name rules">
+<a href="/2016/06/21/crc-notes/"  title="CRC学习笔记">
  <strong>NEXT:</strong><br/> 
- <span>STM32 MCU name rules
+ <span>CRC学习笔记
 </span>
 </a>
 </div>
@@ -153,7 +145,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">Contents</strong>
-  
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#IAP是什么"><span class="toc-number">1.</span> <span class="toc-text">IAP是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#注意点"><span class="toc-number">2.</span> <span class="toc-text">注意点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#整个程序的流程"><span class="toc-number">3.</span> <span class="toc-text">整个程序的流程</span></a></li></ol>
   </div>
 
 <div id="asidepart">

@@ -45,7 +45,7 @@
 				<h1 class="site-name"><a href="/" title="weyne&#39;s note">weyne&#39;s note</a></h1>
 				<h2 class="blog-motto"></h2>
 			</div>
-			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
 			</a></div>
 			<nav class="animated">
 				<ul>
@@ -62,7 +62,7 @@
 					
 					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
 						<label>Search</label>
-						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
 						<input type="hidden" name="q" value="site:weynechen.github.io">
 					</form>
 					
@@ -86,7 +86,7 @@
     </p>
   <p class="article-time">
     <time datetime="2016-06-17T10:44:07.000Z" itemprop="datePublished">2016-06-17</time>
-    更新日期:<time datetime="2016-06-20T10:24:14.680Z" itemprop="dateModified">2016-06-20</time>
+    Updated:<time datetime="2016-06-22T10:41:11.629Z" itemprop="dateModified">2016-06-22</time>
     
   </p>
 </header>
@@ -94,7 +94,7 @@
 		
 		
 		<div id="toc" class="toc-article">
-			<strong class="toc-title">文章目录</strong>
+			<strong class="toc-title">Contents</strong>
 		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#初步使用的感受"><span class="toc-number">1.</span> <span class="toc-text">初步使用的感受</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#优点"><span class="toc-number">1.1.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#缺点"><span class="toc-number">1.2.</span> <span class="toc-text">缺点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#切换到另外一个MCU"><span class="toc-number">2.</span> <span class="toc-text">切换到另外一个MCU</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TODO"><span class="toc-number">3.</span> <span class="toc-text">TODO</span></a></li></ol>
 		</div>
 		
@@ -143,30 +143,39 @@
 <ul>
 <li>[ ] 阅读 <em>UM1850</em>  <a href="http://www.st.com/content/ccc/resource/technical/document/user_manual/72/52/cc/53/05/e3/4c/98/DM00154093.pdf/files/DM00154093.pdf/jcr:content/translations/en.DM00154093.pdf" target="_blank" rel="external">Description of STM32F1xx HAL drivers</a>，了解生成的代码结构</li>
 </ul>
-<pre><code>1. cube生成的代码严格按照 ANSI-C标准，使用CodeSonar静态分析工具检查过，全部文档化，并且兼容MISRA-c 2004(工业软件安全性的C语言编码规范).
-
-2. 前两章是整体介绍cube生成的HAL怎么用，需要详细阅读。后面是介绍各个HAL库，用到的时候再看。
-3. HAL库的一些特性：
-    1. 包含了常用外围设备的驱动
-    2. 三种编程模型：查询(polling)，中断(interrupt)，DMA
-    3. RTOS兼容(可重入),**自己的代码也最好保持可重入**
-    4. 回调函数机制
-    5. 所有的阻塞块(while等待)都有超时机制
-
-4. 新的数据结构
-
-    - Peripheral handle structure
-
-        <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">        <span class="comment">/**</span><br><span class="line">  * @brief  USART handle Structure definition  </span><br><span class="line">  */</span>  </span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span></span><br><span class="line">&#123;</span><br><span class="line">  USART_TypeDef                 *Instance;        <span class="comment">/*!&lt; USART registers base address        */</span></span><br><span class="line"></span><br><span class="line">  USART_InitTypeDef              Init;            <span class="comment">/*!&lt; Usart communication parameters      */</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">uint8_t</span>                       *pTxBuffPtr;      <span class="comment">/*!&lt; Pointer to Usart Tx transfer Buffer */</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">uint16_t</span>                       TxXferSize;      <span class="comment">/*!&lt; Usart Tx Transfer size              */</span></span><br><span class="line"></span><br><span class="line">  __IO <span class="keyword">uint16_t</span>                  TxXferCount;     <span class="comment">/*!&lt; Usart Tx Transfer Counter           */</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">uint8_t</span>                       *pRxBuffPtr;      <span class="comment">/*!&lt; Pointer to Usart Rx transfer Buffer */</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">uint16_t</span>                       RxXferSize;      <span class="comment">/*!&lt; Usart Rx Transfer size              */</span></span><br><span class="line"></span><br><span class="line">  __IO <span class="keyword">uint16_t</span>                  RxXferCount;     <span class="comment">/*!&lt; Usart Rx Transfer Counter           */</span>  </span><br><span class="line"></span><br><span class="line">  DMA_HandleTypeDef             *hdmatx;          <span class="comment">/*!&lt; Usart Tx DMA Handle parameters      */</span></span><br><span class="line"></span><br><span class="line">  DMA_HandleTypeDef             *hdmarx;          <span class="comment">/*!&lt; Usart Rx DMA Handle parameters      */</span></span><br><span class="line"></span><br><span class="line">  HAL_LockTypeDef                Lock;            <span class="comment">/*!&lt; Locking object                      */</span></span><br><span class="line"></span><br><span class="line">  __IO HAL_USART_StateTypeDef    State;           <span class="comment">/*!&lt; Usart communication state           */</span></span><br><span class="line"></span><br><span class="line">  __IO <span class="keyword">uint32_t</span>                  ErrorCode;       <span class="comment">/*!&lt; USART Error code                    */</span></span><br><span class="line"></span><br><span class="line">&#125;USART_HandleTypeDef;</span><br></pre></td></tr></table></figure>
-
-如上定义了USART常用功能的一些数据结构，初始化，buffer，计数器，DMA，通讯状态，锁等等。**设计到系统层面的东西较多，暂时不懂**
-
-5. 回调函数
-
-    - peripheral initialization/de-intialization
-    - 进程完成回调，比如USART发送数据完成回调
-    - 错误处理回调
-</code></pre><ul>
+<ol>
+<li><p>cube生成的代码严格按照 ANSI-C标准，使用CodeSonar静态分析工具检查过，全部文档化，并且兼容MISRA-c 2004(工业软件安全性的C语言编码规范).</p>
+</li>
+<li><p>前两章是整体介绍cube生成的HAL怎么用，需要详细阅读。后面是介绍各个HAL库，用到的时候再看。</p>
+</li>
+<li><p>HAL库的一些特性：</p>
+<ul>
+<li>包含了常用外围设备的驱动</li>
+<li>三种编程模型：查询(polling)，中断(interrupt)，DMA</li>
+<li>RTOS兼容(可重入),<strong>自己的代码也最好保持可重入</strong></li>
+<li>回调函数机制</li>
+<li>所有的阻塞块(while等待)都有超时机制</li>
+</ul>
+</li>
+<li><p>新的数据结构</p>
+<ul>
+<li><p>Peripheral handle structure</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">        <span class="comment">/**</span><br><span class="line">  * @brief  USART handle Structure definition  </span><br><span class="line">  */</span>  </span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span></span><br><span class="line">&#123;</span><br><span class="line">  USART_TypeDef                 *Instance;        <span class="comment">/*!&lt; USART registers base address        */</span></span><br><span class="line"></span><br><span class="line">  USART_InitTypeDef              Init;            <span class="comment">/*!&lt; Usart communication parameters      */</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">uint8_t</span>                       *pTxBuffPtr;      <span class="comment">/*!&lt; Pointer to Usart Tx transfer Buffer */</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">uint16_t</span>                       TxXferSize;      <span class="comment">/*!&lt; Usart Tx Transfer size              */</span></span><br><span class="line"></span><br><span class="line">  __IO <span class="keyword">uint16_t</span>                  TxXferCount;     <span class="comment">/*!&lt; Usart Tx Transfer Counter           */</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">uint8_t</span>                       *pRxBuffPtr;      <span class="comment">/*!&lt; Pointer to Usart Rx transfer Buffer */</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">uint16_t</span>                       RxXferSize;      <span class="comment">/*!&lt; Usart Rx Transfer size              */</span></span><br><span class="line"></span><br><span class="line">  __IO <span class="keyword">uint16_t</span>                  RxXferCount;     <span class="comment">/*!&lt; Usart Rx Transfer Counter           */</span>  </span><br><span class="line"></span><br><span class="line">  DMA_HandleTypeDef             *hdmatx;          <span class="comment">/*!&lt; Usart Tx DMA Handle parameters      */</span></span><br><span class="line"></span><br><span class="line">  DMA_HandleTypeDef             *hdmarx;          <span class="comment">/*!&lt; Usart Rx DMA Handle parameters      */</span></span><br><span class="line"></span><br><span class="line">  HAL_LockTypeDef                Lock;            <span class="comment">/*!&lt; Locking object                      */</span></span><br><span class="line"></span><br><span class="line">  __IO HAL_USART_StateTypeDef    State;           <span class="comment">/*!&lt; Usart communication state           */</span></span><br><span class="line"></span><br><span class="line">  __IO <span class="keyword">uint32_t</span>                  ErrorCode;       <span class="comment">/*!&lt; USART Error code                    */</span></span><br><span class="line"></span><br><span class="line">&#125;USART_HandleTypeDef;</span><br></pre></td></tr></table></figure>
+<p>如上定义了USART常用功能的一些数据结构，初始化，buffer，计数器，DMA，通讯状态，锁等等。<strong>设计到系统层面的东西较多，暂时不懂</strong></p>
+</li>
+</ul>
+<ol>
+<li><p>回调函数</p>
+<ul>
+<li>peripheral initialization/de-intialization</li>
+<li>进程完成回调，比如USART发送数据完成回调</li>
+<li>错误处理回调</li>
+</ul>
+</li>
+</ol>
+</li>
+</ol>
+<ul>
 <li><p>[ ] 了解FreeRTOS</p>
 <ul>
 <li>cube的帮助手册中有提到，FreeRTOS + LwIP + FATFS + USB的构架。若是能使用cube协助生成工程，会很方便。<a href="http://www.freertos.org/" target="_blank" rel="external">FreeRTOS官网</a></li>
@@ -247,23 +256,23 @@
 </section>
 
 </div>  
-      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
 
   <div id="toc" class="toc-aside">
-  <strong class="toc-title">文章目录</strong>
+  <strong class="toc-title">Contents</strong>
   <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#初步使用的感受"><span class="toc-number">1.</span> <span class="toc-text">初步使用的感受</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#优点"><span class="toc-number">1.1.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#缺点"><span class="toc-number">1.2.</span> <span class="toc-text">缺点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#切换到另外一个MCU"><span class="toc-number">2.</span> <span class="toc-text">切换到另外一个MCU</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TODO"><span class="toc-number">3.</span> <span class="toc-text">TODO</span></a></li></ol>
   </div>
 
 <div id="asidepart">
-<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
 <aside class="clearfix">
 
   
 <div class="categorieslist">
-	<p class="asidetitle">分类</p>
+	<p class="asidetitle">Categories</p>
 		<ul>
 		
-			<li><a href="/categories/STM32/" title="STM32">STM32<sup>2</sup></a></li>
+			<li><a href="/categories/STM32/" title="STM32">STM32<sup>3</sup></a></li>
 		
 			<li><a href="/categories/笔记/" title="笔记">笔记<sup>1</sup></a></li>
 		
@@ -279,7 +288,7 @@
 
   
 <div class="tagslist">
-	<p class="asidetitle">标签</p>
+	<p class="asidetitle">Tags</p>
 		<ul class="clearfix">
 		
 			<li><a href="/tags/GraphViz/" title="GraphViz">GraphViz<sup>1</sup></a></li>
