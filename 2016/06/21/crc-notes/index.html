@@ -4,12 +4,17 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>STM32 MCU name rules | weyne&#39;s note</title>
+    <title>CRC学习笔记 | weyne&#39;s note</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="weyne">
     
-    <meta name="description" itemprop="description" content="STM32 系列MCU的命名规则">
+    <meta name="description" content="CRC是什么crc = Cyclic Redundancy Check ，循环冗余校验码。根据数据包(无论数据包长短)产生的简短、固定位数的校验码，添加到数据包的后面。有时候和校验和混淆。
+CRC用来做什么常用来验证数据传输或存储的完整性。
+优点
+方便硬件计算。
+容易进行数学分析。
+善于检测传输通道">
     
     
     
@@ -69,15 +74,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2016/06/15/stm32-name-rules/" title="STM32 MCU name rules" itemprop="url">STM32 MCU name rules</a>
+      <a href="/2016/06/21/crc-notes/" title="CRC学习笔记" itemprop="url">CRC学习笔记</a>
   </h1>
   <p class="article-author">By
     
       <a href="weynechen.github.io" title="weyne">weyne</a>
     </p>
   <p class="article-time">
-    <time datetime="2016-06-14T16:00:00.000Z" itemprop="datePublished">2016-06-15</time>
-    更新日期:<time datetime="2016-06-16T07:36:15.168Z" itemprop="dateModified">2016-06-16</time>
+    <time datetime="2016-06-21T10:02:42.000Z" itemprop="datePublished">2016-06-21</time>
+    更新日期:<time datetime="2016-06-22T06:52:22.303Z" itemprop="dateModified">2016-06-22</time>
     
   </p>
 </header>
@@ -86,51 +91,24 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#CRC是什么"><span class="toc-number">1.</span> <span class="toc-text">CRC是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CRC用来做什么"><span class="toc-number">2.</span> <span class="toc-text">CRC用来做什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#优点"><span class="toc-number">3.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#计算方法"><span class="toc-number">4.</span> <span class="toc-text">计算方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#计算步骤"><span class="toc-number">5.</span> <span class="toc-text">计算步骤</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数学原理"><span class="toc-number">6.</span> <span class="toc-text">数学原理</span></a></li></ol>
 		</div>
 		
-		<p><strong>Pin counts</strong></p>
-<ul>
-<li>F = 20 pins</li>
-<li>G = 28 pins</li>
-<li>K = 32 pins</li>
-<li>T = 36 pins</li>
-<li>S = 44 pins</li>
-<li>C = 48 pins</li>
-<li>R = 64 pins (or 66 pins)</li>
-<li>M = 80 pins</li>
-<li>O = 90 pins</li>
-<li>V = 100 pins</li>
-<li>Q= 132 pins (e. g. STM32L162QDH6)</li>
-<li>Z=144</li>
-<li>I=176 (+25)</li>
-<li>B = 208 pins (e. g.: STM32F429BIT6)</li>
-<li>N = 216 pins</li>
-</ul>
-<p><strong>Flash memory sizes</strong></p>
-<ul>
-<li>4 = 16 Kbytes of Flash memory</li>
-<li>6 = 32 Kbytes of Flash memory</li>
-<li>8 = 64 Kbytes of Flash memory</li>
-<li>B = 128 Kbytes of Flash memory</li>
-<li>C = 256 Kbytes of Flash memory</li>
-<li>D = 384 Kbytes of Flash memory</li>
-<li>E = 512 Kbytes of Flash memory</li>
-<li>F = 768 Kbytes of Flash memory</li>
-<li>G = 1024 Kbytes of Flash memory</li>
-<li>I = 2048 Kbytes of Flash memory</li>
-</ul>
-<p><strong>Packages</strong></p>
-<ul>
-<li>B = SDIP</li>
-<li>H = BGA</li>
-<li>M = SO</li>
-<li>P = TSSOP</li>
-<li>T = LQFP</li>
-<li>U = VFQFPN</li>
-<li>Y = WLCSP</li>
-</ul>
-<p><img src="stm32_name_rule.png" alt="stm32_name_rule"></p>
+		<h2 id="CRC是什么"><a href="#CRC是什么" class="headerlink" title="CRC是什么"></a>CRC是什么</h2><p>crc = Cyclic Redundancy Check ，循环冗余校验码。根据数据包(无论数据包长短)产生的简短、固定位数的校验码，添加到数据包的后面。有时候和<font style="background-color:DarkSalmon">校验和</font>混淆。</p>
+<h2 id="CRC用来做什么"><a href="#CRC用来做什么" class="headerlink" title="CRC用来做什么"></a>CRC用来做什么</h2><p>常用来验证数据传输或存储的完整性。</p>
+<h2 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h2><ol>
+<li>方便硬件计算。</li>
+<li>容易进行数学分析。</li>
+<li>善于检测传输通道干扰引起的错误。</li>
+</ol>
+<h2 id="计算方法"><a href="#计算方法" class="headerlink" title="计算方法"></a>计算方法</h2><p>计算方法称为<a href="http://baike.baidu.com/link?url=2Ul4_ejy_Cic9N3Uo76bcloEJcDtwEfcYoyjAWB0wZom-_S8D4mOt4_MaOc3Kq-n8klNZW0PGOU-uswevX1Xt_" target="_blank" rel="external">模二除法(polynomial division,modolo two)</a>。可以先从<a href="http://www.cnblogs.com/yin-jingyu/archive/2011/10/26/2225381.html" target="_blank" rel="external">模二运算</a>了解起，最后可以发现，模二运算的核心就是<b style="color: red">异或运算</b>，这也是其硬件计算简单的原因。模二除法需要手工计算几次才能明白。</p>
+<h2 id="计算步骤"><a href="#计算步骤" class="headerlink" title="计算步骤"></a>计算步骤</h2><ol>
+<li>确定待校验的数据。 <em>假设是11100011</em>；</li>
+<li>确定CRC多项式。 <em>假设是G(X)=X^5+X^4+X+1，也就是110011</em>；</li>
+<li>将待校验的数据补充CRC多项式最高次幂相同的位数。<em>这里多项式最高次幂为5，所以待校验数据添加5个0，变为1110001100000</em>。</li>
+<li>使用模二除法，将待校验数据除CRC多项式。<em>这里得到商为10110110，余数为11010。这个余数就是我们要的值</em>。</li>
+</ol>
+<h2 id="数学原理"><a href="#数学原理" class="headerlink" title="数学原理"></a>数学原理</h2><p>CRC背后的数学原理有待研究，现在只是简单的使用,详细可参考<a href="https://zh.wikipedia.org/wiki/%E5%BE%AA%E7%92%B0%E5%86%97%E9%A4%98%E6%A0%A1%E9%A9%97" target="_blank" rel="external">wikipedia循环冗余检验</a>。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -138,14 +116,14 @@
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/STM32/">STM32</a>
+  <a class="article-category-link" href="/categories/算法/">算法</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="weynechen.github.io/2016/06/15/stm32-name-rules/" data-title="STM32 MCU name rules | weyne&#39;s note" data-tsina="null" class="share clearfix">
+  <div data-url="weynechen.github.io/2016/06/21/crc-notes/" data-title="CRC学习笔记 | weyne&#39;s note" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -154,19 +132,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2016/06/16/VirtualBox/" title="Virtual Box 的一些问题">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  Virtual Box 的一些问题</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2016/06/14/powershellKeil/"  title="使用powershell提高keil效率">
+<a href="/2016/06/20/usb-notes/"  title="USB开发大全读书笔记">
  <strong>NEXT:</strong><br/> 
- <span>使用powershell提高keil效率
+ <span>USB开发大全读书笔记
 </span>
 </a>
 </div>
@@ -183,7 +153,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#CRC是什么"><span class="toc-number">1.</span> <span class="toc-text">CRC是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CRC用来做什么"><span class="toc-number">2.</span> <span class="toc-text">CRC用来做什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#优点"><span class="toc-number">3.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#计算方法"><span class="toc-number">4.</span> <span class="toc-text">计算方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#计算步骤"><span class="toc-number">5.</span> <span class="toc-text">计算步骤</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数学原理"><span class="toc-number">6.</span> <span class="toc-text">数学原理</span></a></li></ol>
   </div>
 
 <div id="asidepart">
