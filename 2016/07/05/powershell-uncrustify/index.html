@@ -4,17 +4,13 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>CRC学习笔记 | weyne&#39;s note</title>
+    <title>使用powershell和uncrustify批量美化代码 | weyne&#39;s note</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="weyne">
     
-    <meta name="description" content="CRC是什么crc = Cyclic Redundancy Check ，循环冗余校验码。根据数据包(无论数据包长短)产生的简短、固定位数的校验码，添加到数据包的后面。有时候和校验和混淆。
-CRC用来做什么常用来验证数据传输或存储的完整性。
-优点
-方便硬件计算。
-容易进行数学分析。
-善于检测传输通道">
+    <meta name="description" content="uncrustify一个开源项目，可以按照配置文件美化代码。简单的用法如下：1uncrustify -c weyne.cfg --no-backup main.c
+-c是指定配置文件,weyne.cfg是配置文件名称。–no-backup是指不需要备份，main.c是源文件名和输出文件名。详细的用法">
     
     
     
@@ -74,15 +70,15 @@ CRC用来做什么常用来验证数据传输或存储的完整性。
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2016/06/21/crc-notes/" title="CRC学习笔记" itemprop="url">CRC学习笔记</a>
+      <a href="/2016/07/05/powershell-uncrustify/" title="使用powershell和uncrustify批量美化代码" itemprop="url">使用powershell和uncrustify批量美化代码</a>
   </h1>
   <p class="article-author">By
     
       <a href="weynechen.github.io" title="weyne">weyne</a>
     </p>
   <p class="article-time">
-    <time datetime="2016-06-21T10:02:42.000Z" itemprop="datePublished">2016-06-21</time>
-    更新日期:<time datetime="2016-06-27T05:52:37.593Z" itemprop="dateModified">2016-06-27</time>
+    <time datetime="2016-07-05T05:48:56.000Z" itemprop="datePublished">2016-07-05</time>
+    更新日期:<time datetime="2016-07-05T06:11:35.678Z" itemprop="dateModified">2016-07-05</time>
     
   </p>
 </header>
@@ -91,24 +87,12 @@ CRC用来做什么常用来验证数据传输或存储的完整性。
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#CRC是什么"><span class="toc-number">1.</span> <span class="toc-text">CRC是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CRC用来做什么"><span class="toc-number">2.</span> <span class="toc-text">CRC用来做什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#优点"><span class="toc-number">3.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#计算方法"><span class="toc-number">4.</span> <span class="toc-text">计算方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#计算步骤"><span class="toc-number">5.</span> <span class="toc-text">计算步骤</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数学原理"><span class="toc-number">6.</span> <span class="toc-text">数学原理</span></a></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#uncrustify"><span class="toc-number">1.</span> <span class="toc-text">uncrustify</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码"><span class="toc-number">2.</span> <span class="toc-text">代码</span></a></li></ol>
 		</div>
 		
-		<h2 id="CRC是什么"><a href="#CRC是什么" class="headerlink" title="CRC是什么"></a>CRC是什么</h2><p>crc = Cyclic Redundancy Check ，循环冗余校验码。根据数据包(无论数据包长短)产生的简短、固定位数的校验码，添加到数据包的后面。有时候和<font style="background-color:DarkSalmon">校验和</font>混淆。</p>
-<h2 id="CRC用来做什么"><a href="#CRC用来做什么" class="headerlink" title="CRC用来做什么"></a>CRC用来做什么</h2><p>常用来验证数据传输或存储的完整性。</p>
-<h2 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h2><ol>
-<li>方便硬件计算。</li>
-<li>容易进行数学分析。</li>
-<li>善于检测传输通道干扰引起的错误。</li>
-</ol>
-<h2 id="计算方法"><a href="#计算方法" class="headerlink" title="计算方法"></a>计算方法</h2><p>计算方法称为<a href="http://baike.baidu.com/link?url=2Ul4_ejy_Cic9N3Uo76bcloEJcDtwEfcYoyjAWB0wZom-_S8D4mOt4_MaOc3Kq-n8klNZW0PGOU-uswevX1Xt_" target="_blank" rel="external">模二除法(polynomial division,modolo two)</a>。可以先从<a href="http://www.cnblogs.com/yin-jingyu/archive/2011/10/26/2225381.html" target="_blank" rel="external">模二运算</a>了解起，最后可以发现，模二运算的核心就是<b style="color: red">异或运算</b>，这也是其硬件计算简单的原因。模二除法需要手工计算几次才能明白。<br>关于CRC详细算法的可以参考一篇文章：<a href="http://wenku.baidu.com/link?url=cm5vI0XwR0E6PmVS7X4DWFKkwYJpkQIKpRePrjUQtqNma_tEZcVhs6vVe8Zf1StqIbc4IMd4O_o0gB6soNyAsXRQLLH3YdC5rjtJ_fLnk87" target="_blank" rel="external">CRC算法原理及C语言实现</a>。</p>
-<h2 id="计算步骤"><a href="#计算步骤" class="headerlink" title="计算步骤"></a>计算步骤</h2><ol>
-<li>确定待校验的数据。 <em>假设是11100011</em>；</li>
-<li>确定CRC多项式。 <em>假设是G(X)=X^5+X^4+X+1，也就是110011</em>；</li>
-<li>将待校验的数据补充CRC多项式最高次幂相同的位数。<em>这里多项式最高次幂为5，所以待校验数据添加5个0，变为1110001100000</em>。</li>
-<li>使用模二除法，将待校验数据除CRC多项式。<em>这里得到商为10110110，余数为11010。这个余数就是我们要的值</em>。</li>
-</ol>
-<h2 id="数学原理"><a href="#数学原理" class="headerlink" title="数学原理"></a>数学原理</h2><p>CRC背后的数学原理有待研究，现在只是简单的使用,详细可参考<a href="https://zh.wikipedia.org/wiki/%E5%BE%AA%E7%92%B0%E5%86%97%E9%A4%98%E6%A0%A1%E9%A9%97" target="_blank" rel="external">wikipedia循环冗余检验</a>。</p>
+		<h2 id="uncrustify"><a href="#uncrustify" class="headerlink" title="uncrustify"></a>uncrustify</h2><p>一个开源项目，可以按照配置文件美化代码。简单的用法如下：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uncrustify -c weyne.cfg --no-backup main.c</span><br></pre></td></tr></table></figure></p>
+<p><strong>-c</strong>是指定配置文件,<strong>weyne.cfg</strong>是配置文件名称。<strong>–no-backup</strong>是指不需要备份，<strong>main.c</strong>是源文件名和输出文件名。详细的用法可以在powershell中直接输入<strong>uncrustify</strong>就能看到。</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$cfgPath</span> = <span class="string">"D:\uncrustify\weyne.cfg"</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$incPath</span> = dir -filter <span class="string">"*.c"</span> -Recurse</span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$fpath</span> <span class="keyword">in</span> <span class="variable">$incPath</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="variable">$fileList</span>=<span class="variable">$fpath</span>.DirectoryName + <span class="string">"\"</span> + <span class="variable">$fpath</span>.name</span><br><span class="line">    uncrustify -c <span class="variable">$cfgPath</span> --no-backup <span class="variable">$fileList</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$incPath</span> = dir -filter <span class="string">"*.h"</span> -Recurse</span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$fpath</span> <span class="keyword">in</span> <span class="variable">$incPath</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="variable">$fileList</span>=<span class="variable">$fpath</span>.DirectoryName + <span class="string">"\"</span> + <span class="variable">$fpath</span>.name</span><br><span class="line">    uncrustify -c <span class="variable">$cfgPath</span> --no-backup <span class="variable">$fileList</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -116,14 +100,14 @@ CRC用来做什么常用来验证数据传输或存储的完整性。
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/算法/">算法</a>
+  <a class="article-category-link" href="/categories/编程工具/">编程工具</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="weynechen.github.io/2016/06/21/crc-notes/" data-title="CRC学习笔记 | weyne&#39;s note" data-tsina="null" class="share clearfix">
+  <div data-url="weynechen.github.io/2016/07/05/powershell-uncrustify/" data-title="使用powershell和uncrustify批量美化代码 | weyne&#39;s note" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -132,19 +116,11 @@ CRC用来做什么常用来验证数据传输或存储的完整性。
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2016/06/22/IAP-notes/" title="IAP notes">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  IAP notes</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2016/06/20/usb-notes/"  title="USB开发大全读书笔记">
+<a href="/2016/06/22/IAP-notes/"  title="IAP notes">
  <strong>NEXT:</strong><br/> 
- <span>USB开发大全读书笔记
+ <span>IAP notes
 </span>
 </a>
 </div>
@@ -161,7 +137,7 @@ CRC用来做什么常用来验证数据传输或存储的完整性。
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#CRC是什么"><span class="toc-number">1.</span> <span class="toc-text">CRC是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CRC用来做什么"><span class="toc-number">2.</span> <span class="toc-text">CRC用来做什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#优点"><span class="toc-number">3.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#计算方法"><span class="toc-number">4.</span> <span class="toc-text">计算方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#计算步骤"><span class="toc-number">5.</span> <span class="toc-text">计算步骤</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数学原理"><span class="toc-number">6.</span> <span class="toc-text">数学原理</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#uncrustify"><span class="toc-number">1.</span> <span class="toc-text">uncrustify</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码"><span class="toc-number">2.</span> <span class="toc-text">代码</span></a></li></ol>
   </div>
 
 <div id="asidepart">
