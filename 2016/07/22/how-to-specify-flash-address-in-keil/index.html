@@ -4,12 +4,12 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>STM32 MCU name rules | weyne&#39;s note</title>
+    <title>keil(ARM)中指定常量在flash中地址的方法 | weyne&#39;s note</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="weyne">
     
-    <meta name="description" itemprop="description" content="STM32 系列MCU的命名规则">
+    <meta name="description" content="有时候我们需要把常量数组放到特定的flash位置。比如一个很大的数组，我并不希望每次都去烧录，那么我可以指定这个数组到flash的其他扇区(不和APP在同一个扇区)，烧录一次以后就不用再烧录了。比如加密的字符串，最开始设定一个起始字符串，boot程序使用该字符串与硬件ID进行特殊的算法，来确保程序不">
     
     
     
@@ -69,15 +69,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2016/06/15/stm32-name-rules/" title="STM32 MCU name rules" itemprop="url">STM32 MCU name rules</a>
+      <a href="/2016/07/22/how-to-specify-flash-address-in-keil/" title="keil(ARM)中指定常量在flash中地址的方法" itemprop="url">keil(ARM)中指定常量在flash中地址的方法</a>
   </h1>
   <p class="article-author">By
     
       <a href="weynechen.github.io" title="weyne">weyne</a>
     </p>
   <p class="article-time">
-    <time datetime="2016-06-14T16:00:00.000Z" itemprop="datePublished">2016-06-15</time>
-    Updated:<time datetime="2016-06-16T07:36:15.168Z" itemprop="dateModified">2016-06-16</time>
+    <time datetime="2016-07-22T08:52:00.000Z" itemprop="datePublished">2016-07-22</time>
+    Updated:<time datetime="2016-07-22T09:04:49.052Z" itemprop="dateModified">2016-07-22</time>
     
   </p>
 </header>
@@ -89,48 +89,8 @@
 		
 		</div>
 		
-		<p><strong>Pin counts</strong></p>
-<ul>
-<li>F = 20 pins</li>
-<li>G = 28 pins</li>
-<li>K = 32 pins</li>
-<li>T = 36 pins</li>
-<li>S = 44 pins</li>
-<li>C = 48 pins</li>
-<li>R = 64 pins (or 66 pins)</li>
-<li>M = 80 pins</li>
-<li>O = 90 pins</li>
-<li>V = 100 pins</li>
-<li>Q= 132 pins (e. g. STM32L162QDH6)</li>
-<li>Z=144</li>
-<li>I=176 (+25)</li>
-<li>B = 208 pins (e. g.: STM32F429BIT6)</li>
-<li>N = 216 pins</li>
-</ul>
-<p><strong>Flash memory sizes</strong></p>
-<ul>
-<li>4 = 16 Kbytes of Flash memory</li>
-<li>6 = 32 Kbytes of Flash memory</li>
-<li>8 = 64 Kbytes of Flash memory</li>
-<li>B = 128 Kbytes of Flash memory</li>
-<li>C = 256 Kbytes of Flash memory</li>
-<li>D = 384 Kbytes of Flash memory</li>
-<li>E = 512 Kbytes of Flash memory</li>
-<li>F = 768 Kbytes of Flash memory</li>
-<li>G = 1024 Kbytes of Flash memory</li>
-<li>I = 2048 Kbytes of Flash memory</li>
-</ul>
-<p><strong>Packages</strong></p>
-<ul>
-<li>B = SDIP</li>
-<li>H = BGA</li>
-<li>M = SO</li>
-<li>P = TSSOP</li>
-<li>T = LQFP</li>
-<li>U = VFQFPN</li>
-<li>Y = WLCSP</li>
-</ul>
-<p><img src="stm32_name_rule.png" alt="stm32_name_rule"></p>
+		<p>有时候我们需要把常量数组放到特定的flash位置。比如一个很大的数组，我并不希望每次都去烧录，那么我可以指定这个数组到flash的其他扇区(不和APP在同一个扇区)，烧录一次以后就不用再烧录了。比如加密的字符串，最开始设定一个起始字符串，boot程序使用该字符串与硬件ID进行特殊的算法，来确保程序不被破解或者被篡改。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> u32 __attribute__((at(<span class="number">0x08008000</span>))) KeyStore = <span class="number">0x5d2F5D81</span>;</span><br></pre></td></tr></table></figure></p>
+<p>上面就是指定keyStore存储到flash地址为0x08008000的方法。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -138,14 +98,14 @@
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/STM32/">STM32</a>
+  <a class="article-category-link" href="/categories/编程工具/">编程工具</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="weynechen.github.io/2016/06/15/stm32-name-rules/" data-title="STM32 MCU name rules | weyne&#39;s note" data-tsina="null" class="share clearfix">
+  <div data-url="weynechen.github.io/2016/07/22/how-to-specify-flash-address-in-keil/" data-title="keil(ARM)中指定常量在flash中地址的方法 | weyne&#39;s note" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -154,19 +114,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2016/06/16/VirtualBox/" title="Virtual Box 的一些问题">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  Virtual Box 的一些问题</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2016/06/14/powershellKeil/"  title="使用powershell提高keil效率">
+<a href="/2016/07/05/powershell-uncrustify/"  title="使用powershell和uncrustify批量美化代码">
  <strong>NEXT:</strong><br/> 
- <span>使用powershell提高keil效率
+ <span>使用powershell和uncrustify批量美化代码
 </span>
 </a>
 </div>
