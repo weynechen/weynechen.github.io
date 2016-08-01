@@ -4,13 +4,20 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>使用powershell和uncrustify批量美化代码 | weyne&#39;s note</title>
+    <title>在QT中延时，让串口数据分段发送 | weyne&#39;s note</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="weyne">
     
-    <meta name="description" content="uncrustify一个开源项目，可以按照配置文件美化代码。简单的用法如下：1uncrustify -c weyne.cfg --no-backup main.c
--c是指定配置文件,weyne.cfg是配置文件名称。–no-backup是指不需要备份，main.c是源文件名和输出文件名。详细的用法">
+    <meta name="description" content="在串口通信中，我采用了空闲中断接收的方式来进行通信协议处理。比如我发送一串字符 AA AA 01 02 00 03 55 55 。协议如下：
+
+AA AA 为协议头
+01 为协议 ID
+02 00 为 data
+03 为checksum
+55 55 为协议尾
+
+这一串数据发完后，如果没有其他数据发送">
     
     
     
@@ -70,15 +77,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2016/07/05/powershell-uncrustify/" title="使用powershell和uncrustify批量美化代码" itemprop="url">使用powershell和uncrustify批量美化代码</a>
+      <a href="/2016/08/01/qt-sleep/" title="在QT中延时，让串口数据分段发送" itemprop="url">在QT中延时，让串口数据分段发送</a>
   </h1>
   <p class="article-author">By
     
       <a href="weynechen.github.io" title="weyne">weyne</a>
     </p>
   <p class="article-time">
-    <time datetime="2016-07-05T05:48:56.000Z" itemprop="datePublished">2016-07-05</time>
-    Updated:<time datetime="2016-07-05T06:11:35.678Z" itemprop="dateModified">2016-07-05</time>
+    <time datetime="2016-08-01T05:55:26.000Z" itemprop="datePublished">2016-08-01</time>
+    Updated:<time datetime="2016-08-01T06:39:08.885Z" itemprop="dateModified">2016-08-01</time>
     
   </p>
 </header>
@@ -87,12 +94,29 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">Contents</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#uncrustify"><span class="toc-number">1.</span> <span class="toc-text">uncrustify</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码"><span class="toc-number">2.</span> <span class="toc-text">代码</span></a></li></ol>
+		
 		</div>
 		
-		<h2 id="uncrustify"><a href="#uncrustify" class="headerlink" title="uncrustify"></a>uncrustify</h2><p>一个开源项目，可以按照配置文件美化代码。简单的用法如下：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uncrustify -c weyne.cfg --no-backup main.c</span><br></pre></td></tr></table></figure></p>
-<p><strong>-c</strong>是指定配置文件,<strong>weyne.cfg</strong>是配置文件名称。<strong>–no-backup</strong>是指不需要备份，<strong>main.c</strong>是源文件名和输出文件名。详细的用法可以在powershell中直接输入<strong>uncrustify</strong>就能看到。</p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$cfgPath</span> = <span class="string">"D:\uncrustify\weyne.cfg"</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$incPath</span> = dir -filter <span class="string">"*.c"</span> -Recurse</span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$fpath</span> <span class="keyword">in</span> <span class="variable">$incPath</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="variable">$fileList</span>=<span class="variable">$fpath</span>.DirectoryName + <span class="string">"\"</span> + <span class="variable">$fpath</span>.name</span><br><span class="line">    uncrustify -c <span class="variable">$cfgPath</span> --no-backup <span class="variable">$fileList</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$incPath</span> = dir -filter <span class="string">"*.h"</span> -Recurse</span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$fpath</span> <span class="keyword">in</span> <span class="variable">$incPath</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="variable">$fileList</span>=<span class="variable">$fpath</span>.DirectoryName + <span class="string">"\"</span> + <span class="variable">$fpath</span>.name</span><br><span class="line">    uncrustify -c <span class="variable">$cfgPath</span> --no-backup <span class="variable">$fileList</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+		<p>在串口通信中，我采用了空闲中断接收的方式来进行通信协议处理。比如我发送一串字符 AA AA 01 02 00 03 55 55 。协议如下：</p>
+<ul>
+<li>AA AA 为协议头</li>
+<li>01 为协议 ID</li>
+<li>02 00 为 data</li>
+<li>03 为checksum</li>
+<li>55 55 为协议尾</li>
+</ul>
+<p>这一串数据发完后，如果没有其他数据发送，会触发STM32的空闲中断。系统检测到空闲中断就可以进行协议解析以及其他的一些处理。这样不需要采用队列或者其他的复杂数据结构，也能很好的处理通讯。但是这个协议也有两个问题。</p>
+<ol>
+<li><p>QT的串口发送是有buffer的，它会把一个事件循环之内的所有发送给串口的数据都放到一个缓冲区，然后再一起发送出去。这样只有最后一个数据包能触发STM32的空闲中断，也就只有最后一个数据包能得到解析</p>
+</li>
+<li><p>在不使用队列或者其他数据结构的情况下，所有的数据包的 ID，data,checksum共用一个内存缓冲。如下图虚线，若是在第一个数据包没有处理完成的情况下，第二个数据包过来，就有可能更改ID ,data,checksum中的内容，从而导致数据处理错误，这是这个协议的缺陷。<br><img src="flow.svg" alt="flow"></p>
+</li>
+</ol>
+<p>要避免这两个问题，就需要上位机控制发送数据包的间隔时间。百度半天，终于找到解决方法。</p>
+<p>方法一：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">QTime t;</span><br><span class="line">t.start();</span><br><span class="line"><span class="keyword">while</span>(t.elapsed()&lt;<span class="number">1000</span>)</span><br><span class="line">    QCoreApplication::processEvents();</span><br></pre></td></tr></table></figure></p>
+<p>方法二：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">QEventLoop eventloop;</span><br><span class="line">QTimer::singleShot(<span class="number">100</span>, &amp;eventloop, SLOT(quit()));</span><br><span class="line">eventloop.exec();</span><br></pre></td></tr></table></figure>
+<p>QT中也可以使用sleep函数，但是平台依赖性比较强。另外也可以采用单独开一个线程的方法，将串口发送放到一个单独的线程中，没测试，但估计效果差不多。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -100,14 +124,14 @@
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/编程工具/">编程工具</a>
+  <a class="article-category-link" href="/categories/QT/">QT</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="weynechen.github.io/2016/07/05/powershell-uncrustify/" data-title="使用powershell和uncrustify批量美化代码 | weyne&#39;s note" data-tsina="null" class="share clearfix">
+  <div data-url="weynechen.github.io/2016/08/01/qt-sleep/" data-title="在QT中延时，让串口数据分段发送 | weyne&#39;s note" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -116,19 +140,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2016/07/22/how-to-specify-flash-address-in-keil/" title="keil(ARM)中指定常量在flash中地址的方法">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  keil(ARM)中指定常量在flash中地址的方法</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2016/06/22/IAP-notes/"  title="IAP notes">
+<a href="/2016/07/22/how-to-specify-flash-address-in-keil/"  title="keil(ARM)中指定常量在flash中地址的方法">
  <strong>NEXT:</strong><br/> 
- <span>IAP notes
+ <span>keil(ARM)中指定常量在flash中地址的方法
 </span>
 </a>
 </div>
@@ -145,7 +161,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">Contents</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#uncrustify"><span class="toc-number">1.</span> <span class="toc-text">uncrustify</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码"><span class="toc-number">2.</span> <span class="toc-text">代码</span></a></li></ol>
+  
   </div>
 
 <div id="asidepart">
