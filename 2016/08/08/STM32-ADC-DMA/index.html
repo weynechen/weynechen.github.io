@@ -1,0 +1,334 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>STM32使用DMA采集ADC数据 | weyne&#39;s note</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="weyne">
+    
+    <meta name="description" content="之所以要记录下来，是因为这个里面有一个坑。和其他外设(USART,DCMI)DMA不同的是，需要多设置一步ADC_DMARequestAfterLastTransferCmd(ADC2,ENABLE);，这一个不开启的话，ADC只会转换一次的值，不会连续采集。
+1234567891011121314">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="weyne&#39;s note" title="weyne&#39;s note"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="weyne&#39;s note">weyne&#39;s note</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					
+						<li><a href="/">主页</a></li>
+					
+						<li><a href="/archives">所有文章</a></li>
+					
+						<li><a href="/tags">标签</a></li>
+					
+						<li><a href="/categories">分类</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:weynechen.github.io">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/08/08/STM32-ADC-DMA/" title="STM32使用DMA采集ADC数据" itemprop="url">STM32使用DMA采集ADC数据</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="weynechen.github.io" title="weyne">weyne</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2016-08-08T06:51:28.000Z" itemprop="datePublished">2016-08-08</time>
+    Updated:<time datetime="2016-08-08T06:55:22.860Z" itemprop="dateModified">2016-08-08</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		
+		</div>
+		
+		<p>之所以要记录下来，是因为这个里面有一个坑。和其他外设(USART,DCMI)DMA不同的是，需要多设置一步<br><strong>ADC_DMARequestAfterLastTransferCmd(ADC2,ENABLE);</strong>，这一个不开启的话，ADC只会转换一次的值，不会连续采集。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line">GPIO_InitTypeDef      GPIO_InitStructure;</span><br><span class="line">ADC_CommonInitTypeDef ADC_CommonInitStructure;</span><br><span class="line">ADC_InitTypeDef       ADC_InitStructure;</span><br><span class="line">DMA_InitTypeDef DMA_InitStructure;</span><br><span class="line"></span><br><span class="line">RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_DMA2, ENABLE);<span class="comment">//使能GPIOA时钟</span></span><br><span class="line">RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC2, ENABLE); <span class="comment">//使能ADC2时钟</span></span><br><span class="line"></span><br><span class="line">GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;</span><br><span class="line">GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;<span class="comment">//模拟输入</span></span><br><span class="line">GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL ;<span class="comment">//不带上下拉</span></span><br><span class="line">GPIO_Init(GPIOA, &amp;GPIO_InitStructure);<span class="comment">//初始化  </span></span><br><span class="line"></span><br><span class="line">RCC_APB2PeriphResetCmd(RCC_APB2Periph_ADC2,ENABLE);	  <span class="comment">//ADC2复位</span></span><br><span class="line">RCC_APB2PeriphResetCmd(RCC_APB2Periph_ADC2,DISABLE);	<span class="comment">//复位结束	 </span></span><br><span class="line"></span><br><span class="line">ADC_CommonInitStructure.ADC_Mode = ADC_Mode_Independent;<span class="comment">//独立模式</span></span><br><span class="line">ADC_CommonInitStructure.ADC_TwoSamplingDelay = ADC_TwoSamplingDelay_5Cycles;<span class="comment">//两个采样阶段之间的延迟5个时钟</span></span><br><span class="line">ADC_CommonInitStructure.ADC_DMAAccessMode = ADC_DMAAccessMode_1; <span class="comment">//DMA</span></span><br><span class="line">ADC_CommonInitStructure.ADC_Prescaler = ADC_Prescaler_Div4;<span class="comment">//预分频4分频。ADCCLK=PCLK2/4=90/4=22.5Mhz,ADC时钟最好不要超过36Mhz</span></span><br><span class="line">ADC_CommonInit(&amp;ADC_CommonInitStructure);<span class="comment">//初始化</span></span><br><span class="line"></span><br><span class="line">ADC_InitStructure.ADC_Resolution = ADC_Resolution_12b;<span class="comment">//12位模式</span></span><br><span class="line">ADC_InitStructure.ADC_ScanConvMode = ENABLE;</span><br><span class="line">ADC_InitStructure.ADC_ContinuousConvMode = ENABLE;<span class="comment">//连续转换</span></span><br><span class="line">ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;<span class="comment">//禁止触发检测，使用软件触发</span></span><br><span class="line">ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;<span class="comment">//右对齐</span></span><br><span class="line">ADC_InitStructure.ADC_NbrOfConversion = <span class="number">1</span>;<span class="comment">//1个转换在规则序列中 也就是只转换规则序列1</span></span><br><span class="line">ADC_Init(ADC2, &amp;ADC_InitStructure);<span class="comment">//ADC初始化</span></span><br><span class="line"></span><br><span class="line">ADC_RegularChannelConfig(ADC2 , ADC_Channel_5 , <span class="number">1</span>, ADC_SampleTime_480Cycles );	<span class="comment">//ADC2,ADC通道,480个周期,提高采样时间可以提高精确度			    </span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//设置DMA  </span></span><br><span class="line">DMA_DeInit(DMA2_Stream3);</span><br><span class="line"></span><br><span class="line">DMA_InitStructure.DMA_Channel = DMA_Channel_1;</span><br><span class="line"><span class="comment">//外设地址</span></span><br><span class="line">DMA_InitStructure.DMA_PeripheralBaseAddr = (<span class="keyword">uint32_t</span>)(&amp;ADC2-&gt;DR);</span><br><span class="line"><span class="comment">//内存地址</span></span><br><span class="line">DMA_InitStructure.DMA_Memory0BaseAddr = (<span class="keyword">uint32_t</span>)&amp;temperature;</span><br><span class="line"><span class="comment">//dma传输方向</span></span><br><span class="line">DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;</span><br><span class="line"><span class="comment">//设置DMA在传输时缓冲区的长度</span></span><br><span class="line">DMA_InitStructure.DMA_BufferSize = <span class="number">1</span>;</span><br><span class="line"><span class="comment">//设置DMA的外设递增模式，一个外设,不递增</span></span><br><span class="line">DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;</span><br><span class="line"><span class="comment">//设置DMA的内存递增模式</span></span><br><span class="line">DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Disable;</span><br><span class="line"><span class="comment">//外设数据字长</span></span><br><span class="line">DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;</span><br><span class="line"><span class="comment">//内存数据字长</span></span><br><span class="line">DMA_InitStructure.DMA_MemoryDataSize = DMA_PeripheralDataSize_HalfWord;</span><br><span class="line"><span class="comment">//设置DMA的传输模式，循环传输</span></span><br><span class="line">DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;</span><br><span class="line"><span class="comment">//设置DMA的优先级别</span></span><br><span class="line">DMA_InitStructure.DMA_Priority = DMA_Priority_Low;</span><br><span class="line"><span class="comment">//指定如果FIFO模式或直接模式将用于指定的流 ：</span></span><br><span class="line">DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;</span><br><span class="line"><span class="comment">//指定了FIFO阈值水平</span></span><br><span class="line">DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;</span><br><span class="line"><span class="comment">//指定的Burst转移配置内存传输</span></span><br><span class="line">DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;</span><br><span class="line"><span class="comment">//指定的Burst转移配置外围转移 */</span></span><br><span class="line">DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;</span><br><span class="line"><span class="comment">//配置DMA2_Stream5的通道</span></span><br><span class="line">DMA_Init(DMA2_Stream3, &amp;DMA_InitStructure);</span><br><span class="line"></span><br><span class="line"><span class="comment">//在不使用益处检测的情况下进行转换</span></span><br><span class="line">ADC_EOCOnEachRegularChannelCmd(ADC2,DISABLE);</span><br><span class="line">ADC_DMARequestAfterLastTransferCmd(ADC2,ENABLE);</span><br><span class="line">ADC_DMACmd(ADC2,ENABLE);</span><br><span class="line">DMA_Cmd(DMA2_Stream3,ENABLE);</span><br><span class="line">ADC_Cmd(ADC2, ENABLE);<span class="comment">//开启AD转换器</span></span><br><span class="line"></span><br><span class="line">ADC_SoftwareStartConv(ADC2);		<span class="comment">//使能指定的ADC2的软件转换启动功能</span></span><br></pre></td></tr></table></figure>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/STM32/">STM32</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="weynechen.github.io/2016/08/08/STM32-ADC-DMA/" data-title="STM32使用DMA采集ADC数据 | weyne&#39;s note" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2016/08/01/qt-sleep/"  title="在QT中延时，让串口数据分段发送">
+ <strong>NEXT:</strong><br/> 
+ <span>在QT中延时，让串口数据分段发送
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+  
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">Categories</p>
+		<ul>
+		
+			<li><a href="/categories/QT/" title="QT">QT<sup>1</sup></a></li>
+		
+			<li><a href="/categories/STM32/" title="STM32">STM32<sup>4</sup></a></li>
+		
+			<li><a href="/categories/笔记/" title="笔记">笔记<sup>1</sup></a></li>
+		
+			<li><a href="/categories/算法/" title="算法">算法<sup>1</sup></a></li>
+		
+			<li><a href="/categories/编程工具/" title="编程工具">编程工具<sup>5</sup></a></li>
+		
+			<li><a href="/categories/通讯接口/" title="通讯接口">通讯接口<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/GraphViz/" title="GraphViz">GraphViz<sup>1</sup></a></li>
+		
+			<li><a href="/tags/cube/" title="cube">cube<sup>1</sup></a></li>
+		
+			<li><a href="/tags/usb/" title="usb">usb<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<div class="social-font clearfix">
+		
+		
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme fork Pacman © 2016 
+		
+		<a href="weynechen.github.io" target="_blank" title="weyne">weyne</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"null"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+  </body>
+</html>

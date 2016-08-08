@@ -66,6 +66,21 @@
 
   <section class="post" itemscope itemprop="blogPost">
   
+    <a href="/2016/08/08/STM32-ADC-DMA/" title="STM32使用DMA采集ADC数据" itemprop="url">
+  
+    <h1 itemprop="name">STM32使用DMA采集ADC数据</h1>
+    
+     
+           <p itemprop="description" >之所以要记录下来，是因为这个里面有一个坑。和其他外设(USART,DCMI)DMA不同的是，需要多设置一步ADC_DMARequestAfterLastTransferCmd(ADC2,ENABLE);，这一个不开启的话，ADC只会转换一次的值，不会连续采集。
+123456789</p>
+        
+    
+    <time datetime="2016-08-08T06:51:28.000Z" itemprop="datePublished">2016-08-08</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
     <a href="/2016/08/01/qt-sleep/" title="在QT中延时，让串口数据分段发送" itemprop="url">
   
     <h1 itemprop="name">在QT中延时，让串口数据分段发送</h1>
@@ -215,23 +230,6 @@ usb2.0支持高速(HS，480Mbps)，全速(FS,12Mbps)，低速(LS,1.5Mbps)
   </a>
 </section>
 
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2016/06/14/powershellKeil/" title="使用powershell提高keil效率" itemprop="url">
-  
-    <h1 itemprop="name">使用powershell提高keil效率</h1>
-    
-     
-           <p itemprop="description" >使用下述脚本的方法
-打开命令行，输入powershell(或者WIN+R，输入powershell)，这个时候就打开了powershell，可以看到命令行窗口显示powershell的版本信息。
-使用cd 命令切换到工程目录。
-复制下面的脚本，粘贴到powershell，回车两次</p>
-        
-    
-    <time datetime="2016-06-14T08:49:00.000Z" itemprop="datePublished">2016-06-14</time>
-  </a>
-</section>
-
 
   <nav id="page-nav" class="clearfix">
     <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -251,7 +249,7 @@ usb2.0支持高速(HS，480Mbps)，全速(FS,12Mbps)，低速(LS,1.5Mbps)
 		
 			<li><a href="/categories/QT/" title="QT">QT<sup>1</sup></a></li>
 		
-			<li><a href="/categories/STM32/" title="STM32">STM32<sup>3</sup></a></li>
+			<li><a href="/categories/STM32/" title="STM32">STM32<sup>4</sup></a></li>
 		
 			<li><a href="/categories/笔记/" title="笔记">笔记<sup>1</sup></a></li>
 		
