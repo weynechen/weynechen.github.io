@@ -36,7 +36,7 @@
 				<h1 class="site-name"><a href="/" title="weyne&#39;s note">weyne&#39;s note</a></h1>
 				<h2 class="blog-motto"></h2>
 			</div>
-			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
 			</a></div>
 			<nav class="animated">
 				<ul>
@@ -53,7 +53,7 @@
 					
 					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
 						<label>Search</label>
-						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
 						<input type="hidden" name="q" value="site:weynechen.github.io">
 					</form>
 					
@@ -77,7 +77,7 @@
     </p>
   <p class="article-time">
     <time datetime="2016-08-26T03:17:44.000Z" itemprop="datePublished">2016-08-26</time>
-    Updated:<time datetime="2016-08-26T06:57:15.317Z" itemprop="dateModified">2016-08-26</time>
+    更新日期:<time datetime="2016-08-26T08:27:47.371Z" itemprop="dateModified">2016-08-26</time>
     
   </p>
 </header>
@@ -85,7 +85,7 @@
 		
 		
 		<div id="toc" class="toc-article">
-			<strong class="toc-title">Contents</strong>
+			<strong class="toc-title">文章目录</strong>
 		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#QVariant简介"><span class="toc-number">1.</span> <span class="toc-text">QVariant简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考例程"><span class="toc-number">2.</span> <span class="toc-text">参考例程</span></a></li></ol>
 		</div>
 		
@@ -99,7 +99,8 @@
 </blockquote>
 <p>有了QVaraint，就可以很方便的做很多事情了。比如使用QSettings存储用户信息。</p>
 <p>不过实际使用QSettings保存用户数据会遇到错误提示：</p>
-<p></p><p style="color:red"> Invalid type to save </p><br>从stackoverflow<a href="http://stackoverflow.com/questions/22840660/enum-class-in-qvariant-in-qsettings" target="_blank" rel="external">链接</a>中得知<br>QSettgings需要一个&lt;&lt; &gt;&gt;的类，但这是QSettings的问题。<p></p>
+<p></p><p style="color:red"> Invalid type to save </p><br>比如说想保存一个结构体：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> LayoutPolicy&#123;</span><br><span class="line">    <span class="keyword">int</span> plotWidth[<span class="number">3</span>];</span><br><span class="line">    <span class="keyword">int</span> sideWidth[<span class="number">3</span>];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure><p></p>
+<p>从stackoverflow<a href="http://stackoverflow.com/questions/22840660/enum-class-in-qvariant-in-qsettings" target="_blank" rel="external">链接</a>中得知<br>QSettgings需要一个&lt;&lt; &gt;&gt;的类，但这是QSettings的问题。这里只能转换思路，将结构体拆解成QList型，再注册并保存<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Q_DECLARE_METATYPE(QList&lt;<span class="keyword">int</span>&gt;)</span><br><span class="line">......</span><br><span class="line">qRegisterMetaTypeStreamOperators&lt;QList&lt;<span class="keyword">int</span>&gt; &gt;(<span class="string">"QList&lt;int&gt;"</span>);</span><br><span class="line">......</span><br><span class="line">QList&lt;<span class="keyword">int</span>&gt; s;</span><br><span class="line">QVariant v = settings.value(<span class="string">"spiliterPara"</span>,v);</span><br><span class="line">s = v.value&lt;QList&lt;<span class="keyword">int</span>&gt;&gt;();</span><br><span class="line">......</span><br><span class="line">QVariant v;</span><br><span class="line">v = QVariant::fromValue(s);</span><br><span class="line"></span><br><span class="line">settings.setValue(<span class="string">"spiliterPara"</span>,v);</span><br></pre></td></tr></table></figure></p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -140,20 +141,20 @@
 </section>
 
 </div>  
-      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
 
   <div id="toc" class="toc-aside">
-  <strong class="toc-title">Contents</strong>
+  <strong class="toc-title">文章目录</strong>
   <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#QVariant简介"><span class="toc-number">1.</span> <span class="toc-text">QVariant简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考例程"><span class="toc-number">2.</span> <span class="toc-text">参考例程</span></a></li></ol>
   </div>
 
 <div id="asidepart">
-<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
 <aside class="clearfix">
 
   
 <div class="categorieslist">
-	<p class="asidetitle">Categories</p>
+	<p class="asidetitle">分类</p>
 		<ul>
 		
 			<li><a href="/categories/QT/" title="QT">QT<sup>2</sup></a></li>
@@ -174,7 +175,7 @@
 
   
 <div class="tagslist">
-	<p class="asidetitle">Tags</p>
+	<p class="asidetitle">标签</p>
 		<ul class="clearfix">
 		
 			<li><a href="/tags/GraphViz/" title="GraphViz">GraphViz<sup>1</sup></a></li>
