@@ -4,13 +4,12 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>使用powershell和uncrustify批量美化代码 | weyne&#39;s note</title>
+    <title>How to support your own type in QVariant | weyne&#39;s note</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="weyne">
     
-    <meta name="description" content="uncrustify一个开源项目，可以按照配置文件美化代码。简单的用法如下：1uncrustify -c weyne.cfg --no-backup main.c
--c是指定配置文件,weyne.cfg是配置文件名称。–no-backup是指不需要备份，main.c是源文件名和输出文件名。详细的用法">
+    <meta name="description" content="QVariant简介数据在内存中都是二进制的存在，本身没有数据类型，类型是各种语言本身解析产生的。所以我们定义一个16bit数，可以使用8bit的指针转换成两个8bit。1234uint16_t data = 0x1111;uint8_t *p = (uint8_t *) &amp;amp;data;out">
     
     
     
@@ -70,15 +69,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2016/07/05/powershell-uncrustify/" title="使用powershell和uncrustify批量美化代码" itemprop="url">使用powershell和uncrustify批量美化代码</a>
+      <a href="/2016/08/26/QVariant/" title="How to support your own type in QVariant" itemprop="url">How to support your own type in QVariant</a>
   </h1>
   <p class="article-author">By
     
       <a href="weynechen.github.io" title="weyne">weyne</a>
     </p>
   <p class="article-time">
-    <time datetime="2016-07-05T05:48:56.000Z" itemprop="datePublished">2016-07-05</time>
-    Updated:<time datetime="2016-07-05T06:11:35.678Z" itemprop="dateModified">2016-07-05</time>
+    <time datetime="2016-08-26T03:17:44.000Z" itemprop="datePublished">2016-08-26</time>
+    Updated:<time datetime="2016-08-26T03:37:38.691Z" itemprop="dateModified">2016-08-26</time>
     
   </p>
 </header>
@@ -87,12 +86,17 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">Contents</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#uncrustify"><span class="toc-number">1.</span> <span class="toc-text">uncrustify</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码"><span class="toc-number">2.</span> <span class="toc-text">代码</span></a></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#QVariant简介"><span class="toc-number">1.</span> <span class="toc-text">QVariant简介</span></a></li></ol>
 		</div>
 		
-		<h2 id="uncrustify"><a href="#uncrustify" class="headerlink" title="uncrustify"></a>uncrustify</h2><p>一个开源项目，可以按照配置文件美化代码。简单的用法如下：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uncrustify -c weyne.cfg --no-backup main.c</span><br></pre></td></tr></table></figure></p>
-<p><strong>-c</strong>是指定配置文件,<strong>weyne.cfg</strong>是配置文件名称。<strong>–no-backup</strong>是指不需要备份，<strong>main.c</strong>是源文件名和输出文件名。详细的用法可以在powershell中直接输入<strong>uncrustify</strong>就能看到。</p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$cfgPath</span> = <span class="string">"D:\uncrustify\weyne.cfg"</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$incPath</span> = dir -filter <span class="string">"*.c"</span> -Recurse</span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$fpath</span> <span class="keyword">in</span> <span class="variable">$incPath</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="variable">$fileList</span>=<span class="variable">$fpath</span>.DirectoryName + <span class="string">"\"</span> + <span class="variable">$fpath</span>.name</span><br><span class="line">    uncrustify -c <span class="variable">$cfgPath</span> --no-backup <span class="variable">$fileList</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$incPath</span> = dir -filter <span class="string">"*.h"</span> -Recurse</span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$fpath</span> <span class="keyword">in</span> <span class="variable">$incPath</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="variable">$fileList</span>=<span class="variable">$fpath</span>.DirectoryName + <span class="string">"\"</span> + <span class="variable">$fpath</span>.name</span><br><span class="line">    uncrustify -c <span class="variable">$cfgPath</span> --no-backup <span class="variable">$fileList</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+		<h2 id="QVariant简介"><a href="#QVariant简介" class="headerlink" title="QVariant简介"></a>QVariant简介</h2><p>数据在内存中都是二进制的存在，本身没有数据类型，类型是各种语言本身解析产生的。所以我们定义一个16bit数，可以使用8bit的指针转换成两个8bit。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">uint16_t</span> data = <span class="number">0x1111</span>;</span><br><span class="line"><span class="keyword">uint8_t</span> *p = (<span class="keyword">uint8_t</span> *) &amp;data;</span><br><span class="line">out&gt;&gt;*(p)&gt;&gt;*(p+<span class="number">1</span>);</span><br><span class="line"><span class="comment">//0x11 0x11</span></span><br></pre></td></tr></table></figure></p>
+<p>C++是一种强类型语言，各种类型直接没法自由转换。QVariant 是QT中的万能数据类型，是为了扩展C++强类型而存在的，他可以支持已经注册的类型。那么，<strong>如何将自己定义的结构体注册成QVariant呢？</strong><br>参考例程如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> &amp;lt;QCoreApplication&amp;gt;</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> &amp;lt;QVariant&amp;gt;</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> &amp;lt;QString&amp;gt;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> MyStruct</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int</span> a;</span><br><span class="line">    <span class="keyword">double</span> b;</span><br><span class="line">    QString c;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> MyPowerStruct</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int</span> a;</span><br><span class="line">    <span class="keyword">double</span> b;</span><br><span class="line">    MyStruct c;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">Q_DECLARE_METATYPE(MyStruct)</span><br><span class="line">Q_DECLARE_METATYPE(MyPowerStruct)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="function">QCoreApplication <span class="title">app</span><span class="params">(argc, argv)</span></span>;</span><br><span class="line">    MyStruct v01 = &#123; <span class="number">1</span>, <span class="number">5.0</span>, QString(<span class="string">"Nokia Qt"</span>) &#125;;</span><br><span class="line">    QVariant var0;</span><br><span class="line">    var0.setValue(v01);</span><br><span class="line">    MyStruct v02 = var0.value();</span><br><span class="line">    MyPowerStruct v11 = &#123; <span class="number">10</span>, <span class="number">0.5</span>, &#123;<span class="number">1</span>, <span class="number">5.0</span>, QString(<span class="string">"Nokia Qt"</span>) &#125; &#125;;</span><br><span class="line">    QVariant var1;</span><br><span class="line">    var1.setValue(v11);</span><br><span class="line">    MyPowerStruct v12 = var1.value();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>能使用自定义数据结构的关键是 </p><p style="color:red">Q_DECLARE_METATYPE </p> 这个宏。<br>帮助文档中对这个宏的描述：<p></p>
+<blockquote>
+<p>This macro makes the type Type known to QMetaType as long as it provides a public default constructor, a public copy constructor and a public destructor. It is needed to use the type Type as a custom type in QVariant.<br>Ideally, this macro should be placed below the declaration of the class or struct. If that is not possible, it can be put in a private header file which has to be included every time that type is used in a QVariant.</p>
+</blockquote>
+<p>有了QVaraint，就可以很方便的做很多事情了。比如使用QSettings存储用户信息。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -100,14 +104,14 @@
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/编程工具/">编程工具</a>
+  <a class="article-category-link" href="/categories/QT/">QT</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="weynechen.github.io/2016/07/05/powershell-uncrustify/" data-title="使用powershell和uncrustify批量美化代码 | weyne&#39;s note" data-tsina="null" class="share clearfix">
+  <div data-url="weynechen.github.io/2016/08/26/QVariant/" data-title="How to support your own type in QVariant | weyne&#39;s note" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -116,19 +120,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2016/07/22/how-to-specify-flash-address-in-keil/" title="keil(ARM)中指定常量在flash中地址的方法">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  keil(ARM)中指定常量在flash中地址的方法</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2016/06/22/IAP-notes/"  title="IAP notes">
+<a href="/2016/08/08/STM32-ADC-DMA/"  title="STM32F4使用DMA采集ADC数据">
  <strong>NEXT:</strong><br/> 
- <span>IAP notes
+ <span>STM32F4使用DMA采集ADC数据
 </span>
 </a>
 </div>
@@ -145,7 +141,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">Contents</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#uncrustify"><span class="toc-number">1.</span> <span class="toc-text">uncrustify</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码"><span class="toc-number">2.</span> <span class="toc-text">代码</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#QVariant简介"><span class="toc-number">1.</span> <span class="toc-text">QVariant简介</span></a></li></ol>
   </div>
 
 <div id="asidepart">
