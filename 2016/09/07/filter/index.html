@@ -4,12 +4,12 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>keil(ARM)中指定常量在flash中地址的方法 | weyne&#39;s note</title>
+    <title>滑动均值滤波 | weyne&#39;s note</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="weyne">
     
-    <meta name="description" content="有时候我们需要把常量数组放到特定的flash位置。比如一个很大的数组，我并不希望每次都去烧录，那么我可以指定这个数组到flash的其他扇区(不和APP在同一个扇区)，烧录一次以后就不用再烧录了。比如加密的字符串，最开始设定一个起始字符串，boot程序使用该字符串与硬件ID进行特殊的算法，来确保程序不">
+    <meta name="description" content="一般算法每次都对整个的数据缓存区数据求平均，好理解。1234567891011121314151617181920212223242526//循环数组static u16 TempRecoder[TEMP_FILTER_LEN];  static u16 CirclePointer = 0;/***">
     
     
     
@@ -69,15 +69,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2016/07/22/how-to-specify-flash-address-in-keil/" title="keil(ARM)中指定常量在flash中地址的方法" itemprop="url">keil(ARM)中指定常量在flash中地址的方法</a>
+      <a href="/2016/09/07/filter/" title="滑动均值滤波" itemprop="url">滑动均值滤波</a>
   </h1>
   <p class="article-author">By
     
       <a href="weynechen.github.io" title="weyne">weyne</a>
     </p>
   <p class="article-time">
-    <time datetime="2016-07-22T08:52:00.000Z" itemprop="datePublished">2016-07-22</time>
-    Updated:<time datetime="2016-07-22T09:04:49.052Z" itemprop="dateModified">2016-07-22</time>
+    <time datetime="2016-09-07T01:21:12.000Z" itemprop="datePublished">2016-09-07</time>
+    Updated:<time datetime="2016-09-07T07:23:33.105Z" itemprop="dateModified">2016-09-07</time>
     
   </p>
 </header>
@@ -86,11 +86,15 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">Contents</strong>
-		
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一般算法"><span class="toc-number">1.</span> <span class="toc-text">一般算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#加速算法"><span class="toc-number">2.</span> <span class="toc-text">加速算法</span></a></li></ol>
 		</div>
 		
-		<p>有时候我们需要把常量数组放到特定的flash位置。比如一个很大的数组，我并不希望每次都去烧录，那么我可以指定这个数组到flash的其他扇区(不和APP在同一个扇区)，烧录一次以后就不用再烧录了。比如加密的字符串，最开始设定一个起始字符串，boot程序使用该字符串与硬件ID进行特殊的算法，来确保程序不被破解或者被篡改。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> u32 __attribute__((at(<span class="number">0x08008000</span>))) KeyStore = <span class="number">0x5d2F5D81</span>;</span><br></pre></td></tr></table></figure></p>
-<p>上面就是指定keyStore存储到flash地址为0x08008000的方法。</p>
+		<h2 id="一般算法"><a href="#一般算法" class="headerlink" title="一般算法"></a>一般算法</h2><p>每次都对整个的数据缓存区数据求平均，好理解。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//循环数组</span></span><br><span class="line"><span class="keyword">static</span> u16 TempRecoder[TEMP_FILTER_LEN];  </span><br><span class="line"><span class="keyword">static</span> u16 CirclePointer = <span class="number">0</span>;</span><br><span class="line"><span class="comment">/**</span><br><span class="line">* @brief  滑动均值滤波</span><br><span class="line">* @param  None</span><br><span class="line">* @retval 滤波后的温度值</span><br><span class="line">*/</span></span><br><span class="line"><span class="function">u16 <span class="title">TemperatureFilter</span><span class="params">(<span class="keyword">void</span>)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">  u32 temp_amount = <span class="number">0</span>;</span><br><span class="line">  u16 temp_avg;</span><br><span class="line">  u16 i;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//循环存入温度</span></span><br><span class="line">  <span class="keyword">if</span>(CirclePointer == TEMP_FILTER_LEN)</span><br><span class="line">      CirclePointer = <span class="number">0</span>;</span><br><span class="line">  TempRecoder[CirclePointer] = Temperature;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span>(i = <span class="number">0</span> ; i&lt;TEMP_FILTER_LEN ; i++)</span><br><span class="line">    temp_amount += TempRecoder[i];</span><br><span class="line"></span><br><span class="line">  CirclePointer++;</span><br><span class="line">  temp_avg = TempAmount / TEMP_FILTER_LEN;</span><br><span class="line">  <span class="keyword">return</span> temp_avg;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="加速算法"><a href="#加速算法" class="headerlink" title="加速算法"></a>加速算法</h2><p>不使用循环。将这些数据放到一个FIFO中，每次数据的总和的变化量，其实就是入FIFO数与出FIFO数的差值。所以滑动均值就是</p>
+<blockquote>
+<p>avg = (sum + δ) / amount</p>
+</blockquote>
+ <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">//循环数组</span></span><br><span class="line"><span class="keyword">static</span> u16 TempRecoder[TEMP_FILTER_LEN];  </span><br><span class="line"><span class="keyword">static</span> u16 CirclePointer = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">static</span> u32 TempAmount = TEMP_INITIAL_VALUE * TEMP_FILTER_LEN;</span><br><span class="line">  <span class="comment">/**</span><br><span class="line">  * @brief  滑动均值滤波</span><br><span class="line">  * @param  None</span><br><span class="line">  * @retval 滤波后的温度值</span><br><span class="line">  */</span></span><br><span class="line"><span class="function">u16 <span class="title">TemperatureFilter</span><span class="params">(<span class="keyword">void</span>)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	u16 out_temp = <span class="number">0</span>;</span><br><span class="line">	u16 temp_avg;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//循环存入温度</span></span><br><span class="line">	<span class="keyword">if</span>(CirclePointer == TEMP_FILTER_LEN)</span><br><span class="line">		CirclePointer = <span class="number">0</span>;</span><br><span class="line">	out_temp = TempRecoder[CirclePointer];</span><br><span class="line">	TempRecoder[CirclePointer] = Temperature;</span><br><span class="line">	TempAmount = TempAmount +  TempRecoder[CirclePointer]  - out_temp ;</span><br><span class="line"></span><br><span class="line">	CirclePointer++;</span><br><span class="line">	temp_avg = TempAmount / TEMP_FILTER_LEN;</span><br><span class="line">	<span class="keyword">return</span> temp_avg;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -98,14 +102,14 @@
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/编程工具/">编程工具</a>
+  <a class="article-category-link" href="/categories/算法/">算法</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="weynechen.github.io/2016/07/22/how-to-specify-flash-address-in-keil/" data-title="keil(ARM)中指定常量在flash中地址的方法 | weyne&#39;s note" data-tsina="null" class="share clearfix">
+  <div data-url="weynechen.github.io/2016/09/07/filter/" data-title="滑动均值滤波 | weyne&#39;s note" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -114,19 +118,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2016/08/01/qt-sleep/" title="在QT中延时，让串口数据分段发送">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  在QT中延时，让串口数据分段发送</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2016/07/05/powershell-uncrustify/"  title="使用powershell和uncrustify批量美化代码">
+<a href="/2016/08/26/QVariant/"  title="How to support your own type in QVariant">
  <strong>NEXT:</strong><br/> 
- <span>使用powershell和uncrustify批量美化代码
+ <span>How to support your own type in QVariant
 </span>
 </a>
 </div>
@@ -143,7 +139,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">Contents</strong>
-  
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一般算法"><span class="toc-number">1.</span> <span class="toc-text">一般算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#加速算法"><span class="toc-number">2.</span> <span class="toc-text">加速算法</span></a></li></ol>
   </div>
 
 <div id="asidepart">
