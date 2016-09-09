@@ -4,12 +4,17 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>滑动均值滤波 | weyne&#39;s note</title>
+    <title>stm32 usb FS device notes | weyne&#39;s note</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="weyne">
     
-    <meta name="description" content="一般算法每次都对整个的数据缓存区数据求平均，好理解。1234567891011121314151617181920212223242526//循环数组static u16 TempRecoder[TEMP_FILTER_LEN];  static u16 CirclePointer = 0;/***">
+    <meta name="description" content="功能框图
+手册要点
+可配置双向端点数量最大为8个，每个端点最大可使用512字节缓冲区
+和CAN总线共用一块分组缓冲区(0x40006000 - 0x400063FF)，所以两者不能同时使用
+主机数据传输过来，先到达内部16bit寄存器，然后交换到内存缓冲区。数据传输结束，触发中断。
+接收到主机的re">
     
     
     
@@ -69,15 +74,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2016/09/07/filter/" title="滑动均值滤波" itemprop="url">滑动均值滤波</a>
+      <a href="/2016/09/08/stm32-usb/" title="stm32 usb FS device notes" itemprop="url">stm32 usb FS device notes</a>
   </h1>
   <p class="article-author">By
     
       <a href="weynechen.github.io" title="weyne">weyne</a>
     </p>
   <p class="article-time">
-    <time datetime="2016-09-07T01:21:12.000Z" itemprop="datePublished">2016-09-07</time>
-    更新日期:<time datetime="2016-09-07T07:23:33.105Z" itemprop="dateModified">2016-09-07</time>
+    <time datetime="2016-09-08T06:51:18.000Z" itemprop="datePublished">2016-09-08</time>
+    更新日期:<time datetime="2016-09-09T10:28:25.023Z" itemprop="dateModified">2016-09-09</time>
     
   </p>
 </header>
@@ -86,15 +91,53 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一般算法"><span class="toc-number">1.</span> <span class="toc-text">一般算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#加速算法"><span class="toc-number">2.</span> <span class="toc-text">加速算法</span></a></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#功能框图"><span class="toc-number">1.</span> <span class="toc-text">功能框图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#手册要点"><span class="toc-number">2.</span> <span class="toc-text">手册要点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#核心库解读"><span class="toc-number">3.</span> <span class="toc-text">核心库解读</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cube程序流程"><span class="toc-number">4.</span> <span class="toc-text">cube程序流程</span></a></li></ol>
 		</div>
 		
-		<h2 id="一般算法"><a href="#一般算法" class="headerlink" title="一般算法"></a>一般算法</h2><p>每次都对整个的数据缓存区数据求平均，好理解。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//循环数组</span></span><br><span class="line"><span class="keyword">static</span> u16 TempRecoder[TEMP_FILTER_LEN];  </span><br><span class="line"><span class="keyword">static</span> u16 CirclePointer = <span class="number">0</span>;</span><br><span class="line"><span class="comment">/**</span><br><span class="line">* @brief  滑动均值滤波</span><br><span class="line">* @param  None</span><br><span class="line">* @retval 滤波后的温度值</span><br><span class="line">*/</span></span><br><span class="line"><span class="function">u16 <span class="title">TemperatureFilter</span><span class="params">(<span class="keyword">void</span>)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">  u32 temp_amount = <span class="number">0</span>;</span><br><span class="line">  u16 temp_avg;</span><br><span class="line">  u16 i;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//循环存入温度</span></span><br><span class="line">  <span class="keyword">if</span>(CirclePointer == TEMP_FILTER_LEN)</span><br><span class="line">      CirclePointer = <span class="number">0</span>;</span><br><span class="line">  TempRecoder[CirclePointer] = Temperature;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span>(i = <span class="number">0</span> ; i&lt;TEMP_FILTER_LEN ; i++)</span><br><span class="line">    temp_amount += TempRecoder[i];</span><br><span class="line"></span><br><span class="line">  CirclePointer++;</span><br><span class="line">  temp_avg = TempAmount / TEMP_FILTER_LEN;</span><br><span class="line">  <span class="keyword">return</span> temp_avg;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="加速算法"><a href="#加速算法" class="headerlink" title="加速算法"></a>加速算法</h2><p>不使用循环。将这些数据放到一个FIFO中，每次数据的总和的变化量，其实就是入FIFO数与出FIFO数的差值。所以滑动均值就是</p>
-<blockquote>
-<p>avg = (sum + δ) / amount</p>
-</blockquote>
- <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">//循环数组</span></span><br><span class="line"><span class="keyword">static</span> u16 TempRecoder[TEMP_FILTER_LEN];  </span><br><span class="line"><span class="keyword">static</span> u16 CirclePointer = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">static</span> u32 TempAmount = TEMP_INITIAL_VALUE * TEMP_FILTER_LEN;</span><br><span class="line">  <span class="comment">/**</span><br><span class="line">  * @brief  滑动均值滤波</span><br><span class="line">  * @param  None</span><br><span class="line">  * @retval 滤波后的温度值</span><br><span class="line">  */</span></span><br><span class="line"><span class="function">u16 <span class="title">TemperatureFilter</span><span class="params">(<span class="keyword">void</span>)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	u16 out_temp = <span class="number">0</span>;</span><br><span class="line">	u16 temp_avg;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//循环存入温度</span></span><br><span class="line">	<span class="keyword">if</span>(CirclePointer == TEMP_FILTER_LEN)</span><br><span class="line">		CirclePointer = <span class="number">0</span>;</span><br><span class="line">	out_temp = TempRecoder[CirclePointer];</span><br><span class="line">	TempRecoder[CirclePointer] = Temperature;</span><br><span class="line">	TempAmount = TempAmount +  TempRecoder[CirclePointer]  - out_temp ;</span><br><span class="line"></span><br><span class="line">	CirclePointer++;</span><br><span class="line">	temp_avg = TempAmount / TEMP_FILTER_LEN;</span><br><span class="line">	<span class="keyword">return</span> temp_avg;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+		<h2 id="功能框图"><a href="#功能框图" class="headerlink" title="功能框图"></a>功能框图</h2><p><img src="USBFunctionBlockDiagram.png" alt="function diagram"></p>
+<h2 id="手册要点"><a href="#手册要点" class="headerlink" title="手册要点"></a>手册要点</h2><ul>
+<li>可配置双向端点数量最大为8个，每个端点最大可使用512字节缓冲区</li>
+<li>和CAN总线共用一块分组缓冲区(0x40006000 - 0x400063FF)，所以两者不能同时使用</li>
+<li>主机数据传输过来，先到达内部16bit寄存器，然后交换到内存缓冲区。数据传输结束，触发中断。</li>
+<li>接收到主机的reset信号，端点0被使能，进入枚举阶段。复位中断产生时，应用程序必须在10ms之内使能端点0的传输</li>
+<li>缓冲区在APB1总线一半周期内用于微控制器访问（32bit），一半周期内用于USB接口（16bit）访问(如同双口RAM)，每个USB模块中的地址*2才能对应到控制器中的地址   </li>
+<li>端点初始化的第一步是把合适的值写入到ADDRn_Tx或者ADDRn_RX寄存器中，以便USB模块能找到缓冲区</li>
+<li>每一种传输方式有不同的处理方法</li>
+<li>挂起状态处理。通常情况下主机每毫秒发送一个SOF信号。如果STM32 USB模块检测到连续3个SOF信号丢失，就会进入到挂起状态，总线耗电流降到500uA</li>
+<li><p>USB模块寄存器有三类：</p>
+<ul>
+<li>通用类寄存器</li>
+<li>端点寄存器</li>
+<li><p>缓冲区描述表类寄存器。基地址由USB_BTABLE寄存器指定</p>
+<p>所以USB寄存器可看成由固定地址寄存器和分组缓冲区中一部分组成。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="核心库解读"><a href="#核心库解读" class="headerlink" title="核心库解读"></a>核心库解读</h2><p><img src="USBLibraryArchitecture.png" alt="architecture"></p>
+<ul>
+<li><p style="color : red ">所有的通信都是在中断中完成</p>这一点很重要。void HAL_PCD_IRQHandler(PCD_HandleTypeDef *hpcd)</li>
+<li>Device initialization :HAL_PCB_Init(PCB_HandleTypeDef *hpcd) . 此函数在usbd_config.c文件中被USBD_LL_Init函数调用</li>
+<li>Endpoint configuration : HAL_PCD_EP_Open 。此函数在usbd_config.c文件中被USBD_LL_OpenEP封装，并被各个USB Device Class及core调用</li>
+<li>USBD_HandleTypeDef 这个结构体包含了USB Device所有的数据结构，以及端点信息，状态信息，控制传输状态机等。</li>
+<li>HAL层数据传输函数 HAL_PCD_EP_Transimit  HAL_PCD_EP_Recieve …</li>
+<li>分组缓冲区首地址由BTABLE_ADDRESS决定，cube中这个值都是0，意味着table位于分组缓冲区的首地址，也意味着端点0的描述表首地址也在这。</li>
+<li>端点配置函数 HAL_PCDEx_PMAConfig。可以设置IN/OUT端点号，单缓冲还是双缓冲，IN/OUT数据缓冲区。</li>
+<li>假设cube中如此定义<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BTABLE_ADDRESS 0</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENDP0_RXADDR (0x18)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENDP0_TXADDR (0x58)</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>意味着 缓冲区描述表占24byte。单缓冲情况下每个端点的描述表需占用4个byte，所以这个描述表描述了3个双向单缓冲端点(详细可以参考《STM32中文参考手册 21.4.2》)。EP0的发送和接收缓冲区大小都为64byte</p>
+<p><img src="PackageBuffer.png" alt="buffer"></p>
+<h2 id="cube程序流程"><a href="#cube程序流程" class="headerlink" title="cube程序流程"></a>cube程序流程</h2><p>整个流程在 MX_USB_DEVICE_Init中完成</p>
+<ol>
+<li>HAL_PCD_Init</li>
+</ol>
+<ul>
+<li>分配端点，端点描述表，缓冲区</li>
+<li>注册类</li>
+<li>start usb</li>
+</ul>
+<p>若是要使用复合类，则需要分配端点和修改类描述</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -102,14 +145,14 @@
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/算法/">算法</a>
+  <a class="article-category-link" href="/categories/STM32/">STM32</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="weynechen.github.io/2016/09/07/filter/" data-title="滑动均值滤波 | weyne&#39;s note" data-tsina="null" class="share clearfix">
+  <div data-url="weynechen.github.io/2016/09/08/stm32-usb/" data-title="stm32 usb FS device notes | weyne&#39;s note" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -118,19 +161,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2016/09/08/stm32-usb/" title="stm32 usb FS device notes">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  stm32 usb FS device notes</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2016/08/26/QVariant/"  title="How to support your own type in QVariant">
+<a href="/2016/09/07/filter/"  title="滑动均值滤波">
  <strong>NEXT:</strong><br/> 
- <span>How to support your own type in QVariant
+ <span>滑动均值滤波
 </span>
 </a>
 </div>
@@ -147,7 +182,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一般算法"><span class="toc-number">1.</span> <span class="toc-text">一般算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#加速算法"><span class="toc-number">2.</span> <span class="toc-text">加速算法</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#功能框图"><span class="toc-number">1.</span> <span class="toc-text">功能框图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#手册要点"><span class="toc-number">2.</span> <span class="toc-text">手册要点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#核心库解读"><span class="toc-number">3.</span> <span class="toc-text">核心库解读</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cube程序流程"><span class="toc-number">4.</span> <span class="toc-text">cube程序流程</span></a></li></ol>
   </div>
 
 <div id="asidepart">

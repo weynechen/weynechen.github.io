@@ -34,7 +34,7 @@
 				<h1 class="site-name"><a href="/" title="weyne&#39;s note">weyne&#39;s note</a></h1>
 				<h2 class="blog-motto"></h2>
 			</div>
-			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
 			</a></div>
 			<nav class="animated">
 				<ul>
@@ -51,7 +51,7 @@
 					
 					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
 						<label>Search</label>
-						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
 						<input type="hidden" name="q" value="site:weynechen.github.io">
 					</form>
 					
@@ -63,6 +63,24 @@
     </header>
     <div id="container">
       <div id="main">
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2016/09/08/stm32-usb/" title="stm32 usb FS device notes" itemprop="url">
+  
+    <h1 itemprop="name">stm32 usb FS device notes</h1>
+    
+     
+           <p itemprop="description" >功能框图
+手册要点
+可配置双向端点数量最大为8个，每个端点最大可使用512字节缓冲区
+和CAN总线共用一块分组缓冲区(0x40006000 - 0x400063FF)，所以两者不能同时使用
+主机数据传输过来，先到达内部16bit寄存器，然后交换到内存缓冲区。数据传输结束，触发中断</p>
+        
+    
+    <time datetime="2016-09-08T06:51:18.000Z" itemprop="datePublished">2016-09-08</time>
+  </a>
+</section>
 
   <section class="post" itemscope itemprop="blogPost">
   
@@ -206,49 +224,26 @@ usb2.0支持高速(HS，480Mbps)，全速(FS,12Mbps)，低速(LS,1.5Mbps)
   </a>
 </section>
 
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2016/06/17/cube/" title="学习使用STM32 cube及其HAL库" itemprop="url">
-  
-    <h1 itemprop="name">学习使用STM32 cube及其HAL库</h1>
-    
-     
-           <p itemprop="description" >初步使用的感受
-图形化向导显示STM32的引脚，时钟树，外设接口。这样在配置资源时，可以很清楚的知道有哪些可用，有哪些已经被占用。(如果ST能让配置完成的资源导出成sch就更完美了)
-
-
-
-图形化显示时钟树可以更清楚的知道每个外设的时钟配置
-
-
-优点
-配置完成后，生成规范的直接可</p>
-        
-    
-    <time datetime="2016-06-17T10:44:07.000Z" itemprop="datePublished">2016-06-17</time>
-  </a>
-</section>
-
 
   <nav id="page-nav" class="clearfix">
     <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
   </nav>
 
 </div>
-      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
 
 <div id="asidepart">
-<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
 <aside class="clearfix">
 
   
 <div class="categorieslist">
-	<p class="asidetitle">Categories</p>
+	<p class="asidetitle">分类</p>
 		<ul>
 		
 			<li><a href="/categories/QT/" title="QT">QT<sup>2</sup></a></li>
 		
-			<li><a href="/categories/STM32/" title="STM32">STM32<sup>4</sup></a></li>
+			<li><a href="/categories/STM32/" title="STM32">STM32<sup>5</sup></a></li>
 		
 			<li><a href="/categories/笔记/" title="笔记">笔记<sup>1</sup></a></li>
 		
@@ -264,7 +259,7 @@ usb2.0支持高速(HS，480Mbps)，全速(FS,12Mbps)，低速(LS,1.5Mbps)
 
   
 <div class="tagslist">
-	<p class="asidetitle">Tags</p>
+	<p class="asidetitle">标签</p>
 		<ul class="clearfix">
 		
 			<li><a href="/tags/GraphViz/" title="GraphViz">GraphViz<sup>1</sup></a></li>
