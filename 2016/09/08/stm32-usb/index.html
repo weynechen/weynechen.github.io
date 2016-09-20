@@ -82,7 +82,7 @@
     </p>
   <p class="article-time">
     <time datetime="2016-09-08T06:51:18.000Z" itemprop="datePublished">2016-09-08</time>
-    更新日期:<time datetime="2016-09-09T10:28:25.023Z" itemprop="dateModified">2016-09-09</time>
+    更新日期:<time datetime="2016-09-20T11:22:00.729Z" itemprop="dateModified">2016-09-20</time>
     
   </p>
 </header>
@@ -91,7 +91,7 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#功能框图"><span class="toc-number">1.</span> <span class="toc-text">功能框图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#手册要点"><span class="toc-number">2.</span> <span class="toc-text">手册要点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#核心库解读"><span class="toc-number">3.</span> <span class="toc-text">核心库解读</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cube程序流程"><span class="toc-number">4.</span> <span class="toc-text">cube程序流程</span></a></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#功能框图"><span class="toc-number">1.</span> <span class="toc-text">功能框图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#手册要点"><span class="toc-number">2.</span> <span class="toc-text">手册要点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#核心库解读"><span class="toc-number">3.</span> <span class="toc-text">核心库解读</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cube程序流程"><span class="toc-number">4.</span> <span class="toc-text">cube程序流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#接收数据流程"><span class="toc-number">5.</span> <span class="toc-text">接收数据流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#长数据的接收"><span class="toc-number">6.</span> <span class="toc-text">长数据的接收</span></a></li></ol>
 		</div>
 		
 		<h2 id="功能框图"><a href="#功能框图" class="headerlink" title="功能框图"></a>功能框图</h2><p><img src="USBFunctionBlockDiagram.png" alt="function diagram"></p>
@@ -100,7 +100,7 @@
 <li>和CAN总线共用一块分组缓冲区(0x40006000 - 0x400063FF)，所以两者不能同时使用</li>
 <li>主机数据传输过来，先到达内部16bit寄存器，然后交换到内存缓冲区。数据传输结束，触发中断。</li>
 <li>接收到主机的reset信号，端点0被使能，进入枚举阶段。复位中断产生时，应用程序必须在10ms之内使能端点0的传输</li>
-<li>缓冲区在APB1总线一半周期内用于微控制器访问（32bit），一半周期内用于USB接口（16bit）访问(如同双口RAM)，每个USB模块中的地址*2才能对应到控制器中的地址   </li>
+<li>缓冲区在APB1总线一半周期内用于微控制器访问（32bit），一半周期内用于USB接口（16bit）访问(如同双口RAM)，每个USB模块中的地址*2才能对应到控制器中的地址</li>
 <li>端点初始化的第一步是把合适的值写入到ADDRn_Tx或者ADDRn_RX寄存器中，以便USB模块能找到缓冲区</li>
 <li>每一种传输方式有不同的处理方法</li>
 <li>挂起状态处理。通常情况下主机每毫秒发送一个SOF信号。如果STM32 USB模块检测到连续3个SOF信号丢失，就会进入到挂起状态，总线耗电流降到500uA</li>
@@ -116,8 +116,8 @@
 </ul>
 <h2 id="核心库解读"><a href="#核心库解读" class="headerlink" title="核心库解读"></a>核心库解读</h2><p><img src="USBLibraryArchitecture.png" alt="architecture"></p>
 <ul>
-<li><p style="color : red ">所有的通信都是在中断中完成</p>这一点很重要。void HAL_PCD_IRQHandler(PCD_HandleTypeDef *hpcd)</li>
-<li>Device initialization :HAL_PCB_Init(PCB_HandleTypeDef *hpcd) . 此函数在usbd_config.c文件中被USBD_LL_Init函数调用</li>
+<li><ss style="color : red ">所有的通信都是在中断中完成</ss>这一点很重要。void HAL_PCD_IRQHandler(PCD_HandleTypeDef *hpcd)</li>
+<li>Device initialization :HAL_PCB_Init(PCB_HandleTypeDef *hpcd) 此函数在usbd_config.c文件中被USBD_LL_Init函数调用</li>
 <li>Endpoint configuration : HAL_PCD_EP_Open 。此函数在usbd_config.c文件中被USBD_LL_OpenEP封装，并被各个USB Device Class及core调用</li>
 <li>USBD_HandleTypeDef 这个结构体包含了USB Device所有的数据结构，以及端点信息，状态信息，控制传输状态机等。</li>
 <li>HAL层数据传输函数 HAL_PCD_EP_Transimit  HAL_PCD_EP_Recieve …</li>
@@ -138,6 +138,47 @@
 <li>start usb</li>
 </ul>
 <p>若是要使用复合类，则需要分配端点和修改类描述</p>
+<h2 id="接收数据流程"><a href="#接收数据流程" class="headerlink" title="接收数据流程"></a>接收数据流程</h2><ol>
+<li>USB中断，比如USB_L0_CAN1_RX0_IRQHandler</li>
+</ol>
+<ul>
+<li>HAL_PCD_IRQHandler函数</li>
+<li>CTR中断处理函数 PCD_EP_ISR_Handler。这个函数的流程很重要<ul>
+<li>读中断状态寄存器ISTR</li>
+<li>从ISTR中获取端点号索引</li>
+<li>从索引获取端点号寄存器。通过PCD_GET_ENDPOINT宏计算出当前端点号的寄存器地址。计算方法为计算相对EP0的偏移值，从手册上可以看出，偏移值刚好是索引值得两倍</li>
+<li>单缓冲情况下，通过宏PCD_GET_EP_RX_CNT得到缓冲区描述表中存储的10bit的接收数据字节数</li>
+<li>USB_ReadPMA函数，从缓冲区中拷贝数据到用户缓冲区。需要注意，供应用程序使用的分组缓冲区地址需要乘以2才是分组缓冲区在总线上的地址。</li>
+<li>PCD_FreeUserBuffer 。这个函数名字很奇怪，实际是清相应端点的CTR位和翻转DTOG位</li>
+<li><ss style="color : red"> ep-&gt;xfer_count+ = count; ep-&gt;xfer_buff+=count;</ss>这一句是实现长数据包处理的关键。后面会详细介绍。</li>
+</ul>
+</li>
+<li>HAL_PCD_DataOutStateCallBack</li>
+<li>USBD_LL_DataOutStage</li>
+<li>对应class的DataOut函数，比如CDC类，则会调用 USBD_CDC_DataOut</li>
+<li>对应interface的recieve函数。比如cube自动生成的usbd_cdc_if.c中的CDC_Receive_FS函数。这个函数也是开放给用户修改用的。后面这两个函数的调用都是用函数指针完成的，比较隐蔽。</li>
+</ul>
+<h2 id="长数据的接收"><a href="#长数据的接收" class="headerlink" title="长数据的接收"></a>长数据的接收</h2><p>上面有提到，数据最开始是存到分组缓冲区的，然后在CTR中断中，通过USB_ReadPMA函数拷贝到用户缓冲区(xfer_buff指向的就是用户缓冲区)。cube生成的代码中，分组缓冲区默认只有64个byte，最大也只能分配512个byte。若是host一次性发送的数据量超过这数值，就需要在每次接收完成后，将用户存储区移位。这一机制就是通过上面红字实现的。中断处理函数中，会对对应端口接收到的数据量进行累加。其中xfer_buff就是缓冲区的地址。使用CDC接口调试可以发现，接收到数据，经过红字后，缓冲区地址自动增加。但是回调到下面的函数<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//len对应ep-&gt;xfer_count;</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> int8_t <span class="title">CDC_Receive_FS</span> <span class="params">(<span class="keyword">uint8_t</span>* Buf, <span class="keyword">uint32_t</span> *Len)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">  <span class="comment">/* USER CODE BEGIN 6 */</span></span><br><span class="line">	USBState = DATA_READY;</span><br><span class="line">	USBD_CDC_SetRxBuffer(&amp;hUsbDeviceFS, Buf);</span><br><span class="line">	USBD_CDC_ReceivePacket(&amp;hUsbDeviceFS);</span><br><span class="line">	<span class="keyword">return</span> (USBD_OK);</span><br><span class="line">  <span class="comment">/* USER CODE END 6 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>xfer_buff又被指向了用户缓冲区的起始位置。分析一下。</p>
+<ul>
+<li>首先，需要注意的是hUsbDeviceFS这个全局变量</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> _USBD_HandleTypeDef</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">uint8_t</span>                 id;</span><br><span class="line">  <span class="keyword">uint32_t</span>                dev_config;</span><br><span class="line">  <span class="keyword">uint32_t</span>                dev_default_config;</span><br><span class="line">  <span class="keyword">uint32_t</span>                dev_config_status;</span><br><span class="line">  USBD_SpeedTypeDef       dev_speed;</span><br><span class="line">  USBD_EndpointTypeDef    ep_in[<span class="number">15</span>];</span><br><span class="line">  USBD_EndpointTypeDef    ep_out[<span class="number">15</span>];</span><br><span class="line">  <span class="keyword">uint32_t</span>                ep0_state;</span><br><span class="line">  <span class="keyword">uint32_t</span>                ep0_data_len;</span><br><span class="line">  <span class="keyword">uint8_t</span>                 dev_state;</span><br><span class="line">  <span class="keyword">uint8_t</span>                 dev_old_state;</span><br><span class="line">  <span class="keyword">uint8_t</span>                 dev_address;</span><br><span class="line">  <span class="keyword">uint8_t</span>                 dev_connection_status;</span><br><span class="line">  <span class="keyword">uint8_t</span>                 dev_test_mode;</span><br><span class="line">  <span class="keyword">uint32_t</span>                dev_remote_wakeup;</span><br><span class="line"></span><br><span class="line">  USBD_SetupReqTypedef    request;</span><br><span class="line">  USBD_DescriptorsTypeDef *pDesc;</span><br><span class="line">  USBD_ClassTypeDef       *pClass;</span><br><span class="line">  <span class="keyword">void</span>                    *pClassData;</span><br><span class="line">  <span class="keyword">void</span>                    *pUserData;</span><br><span class="line">  <span class="keyword">void</span>                    *pData;</span><br><span class="line">&#125; USBD_HandleTypeDef;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>USBD_CDC_SetRxBuffer(&amp;hUsbDeviceFS, Buf)这个函数如下</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">uint8_t</span>  USBD_CDC_SetRxBuffer  (USBD_HandleTypeDef   *pdev,</span><br><span class="line">                                   <span class="keyword">uint8_t</span>  *pbuff)</span><br><span class="line">&#123;</span><br><span class="line">  USBD_CDC_HandleTypeDef   *hcdc = (USBD_CDC_HandleTypeDef*) pdev-&gt;pClassData;</span><br><span class="line"></span><br><span class="line">  hcdc-&gt;RxBuffer = pbuff;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> USBD_OK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>需要理解hcdc-&gt;RxBuffer = pbuff 赋值语句到底将什么赋值给了什么。</p>
+<ul>
+<li>函数将USBD_HandleTypeDef的void指针pClassData强制转换为USBD_CDC_HandleTypeDef。那么这个指针实际上指向的是哪里？<br>可以看到在USBD_CDC_Init函数中有一句：pdev-&gt;pClassData = USBD_malloc(sizeof(USBD_CDC_HandleTypeDef))；这个malloc原型为static uint32_t mem[sizeof(USBD_CDC_HandleTypeDef)/4)+1];<br>所以在CDC初始化的时候，绕了一个大弯生成了一个USBD_CDC_HandleTypeDef的静态变量，并且这个变量的首地址被保存到hUsbDeviceFS.pClassData中。这个赋值语句等价于 mem.RxBuffer = pbuff（mem.RxBuffer在初始化的时候指向了用户缓冲区首地址)。</li>
+<li>pbuff又是什么？根据函数调用关系 USBD_CDC_DataOut函数传递值给了Buf,Buf=pbuff。传递的值为hcdc-&gt;RxBuff。所以在这里被调用的USBD_CDC_SetRxBuffer(&amp;hUsbDeviceFS, Buf)函数等价于<ss style="color:red">mem.RxBuffer = mem.RxBuffer</ss></li>
+</ul>
+<ul>
+<li>再看USBD_CDC_ReceivePacket这个函数，最终调用了HAL_PCD_EP_Receive函数，并在中间有一句ep-&gt;xfer_buff = pBuf，而pBuf = mem.RxBuffer = 用户缓冲区。</li>
+<li>以上可以看出，若是不对USBD_CDC_SetRxBuffer函数的参数做任何更改，经过USBD_CDC_ReceivePacket这个函数后，USB_ReadPMA的缓冲区又被设置成了用户缓冲区的首地址。</li>
+<li>cube 在这里比较奇怪的一点就是，中断中明明有ep-&gt;xfer_buff+=count;这一句用来处理长数据包，但是在回调中又调用ep-&gt;xfer_buff = pBuf将buff归到首地址。猜测不是他们的本意。</li>
+<li>anyway，我们只需要修改<strong>USBD_CDC_SetRxBuffer(&amp;hUsbDeviceFS, Buf);为USBD_CDC_SetRxBuffer(&amp;hUsbDeviceFS, Buf+*Len)</strong>;就可以完成长数据包的接收了。因为这一句等价于mem.RxBuffer += *Len，静态变量不停的累加。当长度要溢出时，将hUsbDeviceFS.pClassData-&gt;RxBuffer = UserBuf ； hpcd_USB_FS.Out_ep[CDC_OUT_EP &amp; 0x7F] = UserBuf就完成循环双缓冲了。</li>
+</ul>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -182,7 +223,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#功能框图"><span class="toc-number">1.</span> <span class="toc-text">功能框图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#手册要点"><span class="toc-number">2.</span> <span class="toc-text">手册要点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#核心库解读"><span class="toc-number">3.</span> <span class="toc-text">核心库解读</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cube程序流程"><span class="toc-number">4.</span> <span class="toc-text">cube程序流程</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#功能框图"><span class="toc-number">1.</span> <span class="toc-text">功能框图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#手册要点"><span class="toc-number">2.</span> <span class="toc-text">手册要点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#核心库解读"><span class="toc-number">3.</span> <span class="toc-text">核心库解读</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cube程序流程"><span class="toc-number">4.</span> <span class="toc-text">cube程序流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#接收数据流程"><span class="toc-number">5.</span> <span class="toc-text">接收数据流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#长数据的接收"><span class="toc-number">6.</span> <span class="toc-text">长数据的接收</span></a></li></ol>
   </div>
 
 <div id="asidepart">
