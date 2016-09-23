@@ -1,0 +1,362 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>windows下使用vscode调试C/C++ | weyne&#39;s note</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="weyne">
+    
+    <meta name="description" content="需安装的软件
+vscode
+MinGW
+C/C++ 插件
+
+MinGWGCC/g++编译器，在windows下需要将安装目录添加到path环境变量比如： C:\Program Files (x86)\Dev-Cpp\MinGW64\bin\。安装完成后可以写一个简单的c程序测试下123456#inc">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="weyne&#39;s note" title="weyne&#39;s note"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="weyne&#39;s note">weyne&#39;s note</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					
+						<li><a href="/">主页</a></li>
+					
+						<li><a href="/archives">所有文章</a></li>
+					
+						<li><a href="/tags">标签</a></li>
+					
+						<li><a href="/categories">分类</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:weynechen.github.io">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/09/23/vscode-debug-c/" title="windows下使用vscode调试C/C++" itemprop="url">windows下使用vscode调试C/C++</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="weynechen.github.io" title="weyne">weyne</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2016-09-23T11:46:43.000Z" itemprop="datePublished">2016-09-23</time>
+    Updated:<time datetime="2016-09-23T12:10:01.878Z" itemprop="dateModified">2016-09-23</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#需安装的软件"><span class="toc-number">1.</span> <span class="toc-text">需安装的软件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MinGW"><span class="toc-number">2.</span> <span class="toc-text">MinGW</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#vscode"><span class="toc-number">3.</span> <span class="toc-text">vscode</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#多文件调试"><span class="toc-number">4.</span> <span class="toc-text">多文件调试</span></a></li></ol>
+		</div>
+		
+		<h2 id="需安装的软件"><a href="#需安装的软件" class="headerlink" title="需安装的软件"></a>需安装的软件</h2><ol>
+<li>vscode</li>
+<li>MinGW</li>
+<li>C/C++ 插件</li>
+</ol>
+<h2 id="MinGW"><a href="#MinGW" class="headerlink" title="MinGW"></a>MinGW</h2><p>GCC/g++编译器，在windows下需要将安装目录添加到path环境变量比如： C:\Program Files (x86)\Dev-Cpp\MinGW64\bin\。安装完成后可以写一个简单的c程序测试下<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="string">"stdio.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"hello world\n"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>存储文件名称为test.cpp,打开powershell，cd到源文件目录，输入<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; g++ test.cpp -o test </span><br><span class="line">&gt; .\test</span><br></pre></td></tr></table></figure></p>
+<p>如果输出正常，则说明安装良好</p>
+<h2 id="vscode"><a href="#vscode" class="headerlink" title="vscode"></a>vscode</h2><ol>
+<li>用vscode打开test.cpp所在文件夹</li>
+<li>按F5，会收到提示，选择环境，选择(C++(GDB/LLDB))。vscode会弹出一个launch.json，将其中的内容改为如下：<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    "version": "0.2.0",</span><br><span class="line">    "configurations": [</span><br><span class="line">        &#123;</span><br><span class="line">            "name": "C++ Launch (GDB)",                 // 配置名称，将会在启动配置的下拉菜单中显示</span><br><span class="line">            "type": "cppdbg",                           // 配置类型，这里只能为cppdbg</span><br><span class="line">            "request": "launch",                        // 请求配置类型，可以为launch（启动）或attach（附加）</span><br><span class="line">            "launchOptionType": "Local",                // 调试器启动类型，这里只能为Local</span><br><span class="line">            "targetArchitecture": "x86",                // 生成目标架构，一般为x86或x64，可以为x86, arm, arm64, mips, x64, amd64, x86_64</span><br><span class="line">            "program": "$&#123;file&#125;.exe",                   // 将要进行调试的程序的路径</span><br><span class="line">            "miDebuggerPath":"C:\\Program Files (x86)\\Dev-Cpp\\MinGW64\\bin\\gdb.exe", // miDebugger的路径，注意这里要与MinGw的路径对应</span><br><span class="line">            "args": ["blackkitty",  "1221", "# #"],     // 程序调试时传递给程序的命令行参数，一般设为空即可</span><br><span class="line">            "stopAtEntry": false,                       // 设为true时程序将暂停在程序入口处，一般设置为false</span><br><span class="line">            "cwd": "$&#123;workspaceRoot&#125;",                  // 调试程序时的工作目录，一般为$&#123;workspaceRoot&#125;即代码所在目录</span><br><span class="line">            "externalConsole": true,                    // 调试时是否显示控制台窗口，一般设置为true显示控制台</span><br><span class="line">            "preLaunchTask": "g++"　　                  // 调试会话开始前执行的任务，一般为编译程序，c++为g++, c为gcc</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>注意中间的<strong>miDebuggerPath</strong>要根据实际路径来设置。</p>
+<ol>
+<li><p>再次按F5会弹出一个tasks.json，将其中的内容改为如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    "version": "0.1.0",</span><br><span class="line">    "command": "g++",</span><br><span class="line">    "args": ["-g","&amp;&#123;file&#125;","-o","$&#123;fileBasename&#125;.exe"],    // 编译命令参数</span><br><span class="line">    "problemMatcher": &#123;</span><br><span class="line">        "owner": "cpp",</span><br><span class="line">        "fileLocation": ["relative", "$&#123;workspaceRoot&#125;"],</span><br><span class="line">        "pattern": &#123;</span><br><span class="line">            "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",</span><br><span class="line">            "file": 1,</span><br><span class="line">            "line": 2,</span><br><span class="line">            "column": 3,</span><br><span class="line">            "severity": 4,</span><br><span class="line">            "message": 5</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>选中test.cpp文件，再次按F5就可以运行了。</p>
+</li>
+</ol>
+<h2 id="多文件调试"><a href="#多文件调试" class="headerlink" title="多文件调试"></a>多文件调试</h2><p>多个文件的情况下，需要将tasks.json进行修改，将所有的文件添加进来，目前没有找到通用的方法，只能把文件名一个一个的添加到arg里面，后面可能考虑写makefile</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    "version": "0.1.0",</span><br><span class="line">    "command": "g++",</span><br><span class="line">    "args": ["-g","test.cpp","rec.cpp","transmit.cpp","-o","$&#123;fileBasename&#125;.exe"],    // 编译命令参数</span><br><span class="line">    "problemMatcher": &#123;</span><br><span class="line">        "owner": "cpp",</span><br><span class="line">        "fileLocation": ["relative", "$&#123;workspaceRoot&#125;"],</span><br><span class="line">        "pattern": &#123;</span><br><span class="line">            "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",</span><br><span class="line">            "file": 1,</span><br><span class="line">            "line": 2,</span><br><span class="line">            "column": 3,</span><br><span class="line">            "severity": 4,</span><br><span class="line">            "message": 5</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>进入调试界面如下：</p>
+<p><img src="debug.png" alt="debug"></p>
+<p>可以看到，基本就是一个轻量级的IDE，非常方便。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/编程工具/">编程工具</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="weynechen.github.io/2016/09/23/vscode-debug-c/" data-title="windows下使用vscode调试C/C++ | weyne&#39;s note" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2016/09/23/beatify-code-with-vscode/"  title="vscode 美化代码">
+ <strong>NEXT:</strong><br/> 
+ <span>vscode 美化代码
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#需安装的软件"><span class="toc-number">1.</span> <span class="toc-text">需安装的软件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MinGW"><span class="toc-number">2.</span> <span class="toc-text">MinGW</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#vscode"><span class="toc-number">3.</span> <span class="toc-text">vscode</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#多文件调试"><span class="toc-number">4.</span> <span class="toc-text">多文件调试</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">Categories</p>
+		<ul>
+		
+			<li><a href="/categories/QT/" title="QT">QT<sup>2</sup></a></li>
+		
+			<li><a href="/categories/STM32/" title="STM32">STM32<sup>6</sup></a></li>
+		
+			<li><a href="/categories/笔记/" title="笔记">笔记<sup>1</sup></a></li>
+		
+			<li><a href="/categories/算法/" title="算法">算法<sup>2</sup></a></li>
+		
+			<li><a href="/categories/编程工具/" title="编程工具">编程工具<sup>7</sup></a></li>
+		
+			<li><a href="/categories/通讯接口/" title="通讯接口">通讯接口<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/GraphViz/" title="GraphViz">GraphViz<sup>1</sup></a></li>
+		
+			<li><a href="/tags/cube/" title="cube">cube<sup>1</sup></a></li>
+		
+			<li><a href="/tags/usb/" title="usb">usb<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<div class="social-font clearfix">
+		
+		
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme fork Pacman © 2016 
+		
+		<a href="weynechen.github.io" target="_blank" title="weyne">weyne</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"null"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+  </body>
+</html>
