@@ -4,20 +4,19 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>在QT中延时，让串口数据分段发送 | weyne&#39;s note</title>
+    <title>vscode的一些技巧 | weyne&#39;s note</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="weyne">
     
-    <meta name="description" content="在串口通信中，我采用了空闲中断接收的方式来进行通信协议处理。比如我发送一串字符 AA AA 01 02 00 03 55 55 。协议如下：
+    <meta name="description" content="调试
+本身支持Node.js，能调试JavaScript和TypeScript
+通过调试插件扩展，可以支持其他语言，比如上文提到的C/C++
+调试需要配置文件 launch.json
+配置完成后，按F5开始调试
 
-AA AA 为协议头
-01 为协议 ID
-02 00 为 data
-03 为checksum
-55 55 为协议尾
-
-这一串数据发完后，如果没有其他数据发送">
+任务脚本
+ctrl+shift+P，打开命令窗口，输入task，可以看到有很多示例配置">
     
     
     
@@ -77,15 +76,15 @@ AA AA 为协议头
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2016/08/01/qt-sleep/" title="在QT中延时，让串口数据分段发送" itemprop="url">在QT中延时，让串口数据分段发送</a>
+      <a href="/2016/09/26/vscode-tricks/" title="vscode的一些技巧" itemprop="url">vscode的一些技巧</a>
   </h1>
   <p class="article-author">By
     
       <a href="weynechen.github.io" title="weyne">weyne</a>
     </p>
   <p class="article-time">
-    <time datetime="2016-08-01T05:55:26.000Z" itemprop="datePublished">2016-08-01</time>
-    Updated:<time datetime="2016-08-01T06:39:08.885Z" itemprop="dateModified">2016-08-01</time>
+    <time datetime="2016-09-26T02:46:33.000Z" itemprop="datePublished">2016-09-26</time>
+    Updated:<time datetime="2016-09-26T03:52:40.865Z" itemprop="dateModified">2016-09-26</time>
     
   </p>
 </header>
@@ -94,29 +93,36 @@ AA AA 为协议头
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">Contents</strong>
-		
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#调试"><span class="toc-number">1.</span> <span class="toc-text">调试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#任务脚本"><span class="toc-number">2.</span> <span class="toc-text">任务脚本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#集成终端"><span class="toc-number">3.</span> <span class="toc-text">集成终端</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#集成Git"><span class="toc-number">4.</span> <span class="toc-text">集成Git</span></a></li></ol>
 		</div>
 		
-		<p>在串口通信中，我采用了空闲中断接收的方式来进行通信协议处理。比如我发送一串字符 AA AA 01 02 00 03 55 55 。协议如下：</p>
-<ul>
-<li>AA AA 为协议头</li>
-<li>01 为协议 ID</li>
-<li>02 00 为 data</li>
-<li>03 为checksum</li>
-<li>55 55 为协议尾</li>
-</ul>
-<p>这一串数据发完后，如果没有其他数据发送，会触发STM32的空闲中断。系统检测到空闲中断就可以进行协议解析以及其他的一些处理。这样不需要采用队列或者其他的复杂数据结构，也能很好的处理通讯。但是这个协议也有两个问题。</p>
-<ol>
-<li><p>QT的串口发送是有buffer的，它会把一个事件循环之内的所有发送给串口的数据都放到一个缓冲区，然后再一起发送出去。这样只有最后一个数据包能触发STM32的空闲中断，也就只有最后一个数据包能得到解析</p>
-</li>
-<li><p>在不使用队列或者其他数据结构的情况下，所有的数据包的 ID，data,checksum共用一个内存缓冲。如下图虚线，若是在第一个数据包没有处理完成的情况下，第二个数据包过来，就有可能更改ID ,data,checksum中的内容，从而导致数据处理错误，这是这个协议的缺陷。<br><img src="flow.svg" alt="flow"></p>
+		<h2 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h2><ol>
+<li>本身支持Node.js，能调试JavaScript和TypeScript</li>
+<li>通过调试插件扩展，可以支持其他语言，比如上文提到的C/C++</li>
+<li>调试需要配置文件 launch.json</li>
+<li>配置完成后，按F5开始调试</li>
+</ol>
+<h2 id="任务脚本"><a href="#任务脚本" class="headerlink" title="任务脚本"></a>任务脚本</h2><ol>
+<li>ctrl+shift+P，打开命令窗口，输入task，可以看到有很多示例配置</li>
+<li>类似于脚本，可以调用不同的终端执行，比如说<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"version"</span>: <span class="string">"0.1.0"</span>,</span><br><span class="line">    <span class="attr">"command"</span>: <span class="string">"powershell"</span>,</span><br><span class="line">    <span class="attr">"args"</span>: [<span class="string">"dir"</span>],</span><br><span class="line">    <span class="attr">"isShellCommand"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">"showOutput"</span>: <span class="string">"always"</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
 </ol>
-<p>要避免这两个问题，就需要上位机控制发送数据包的间隔时间。百度半天，终于找到解决方法。</p>
-<p>方法一：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">QTime t;</span><br><span class="line">t.start();</span><br><span class="line"><span class="keyword">while</span>(t.elapsed()&lt;<span class="number">1000</span>)</span><br><span class="line">    QCoreApplication::processEvents();</span><br></pre></td></tr></table></figure></p>
-<p>方法二：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">QEventLoop eventloop;</span><br><span class="line">QTimer::singleShot(<span class="number">100</span>, &amp;eventloop, SLOT(quit()));</span><br><span class="line">eventloop.exec();</span><br></pre></td></tr></table></figure>
-<p>QT中也可以使用sleep函数，但是平台依赖性比较强。另外也可以采用单独开一个线程的方法，将串口发送放到一个单独的线程中，没测试，但估计效果差不多。</p>
+<p>将会打开powershell，运行dir命令</p>
+<ol>
+<li>配置task.json后，按ctrl+shift+B执行当前任务</li>
+<li>可以同时配置多个任务</li>
+<li>可以配置problem matcher，将编译警告和错误捕获到vs的输入，详情参考<a href="https://code.visualstudio.com/docs/editor/tasks" target="_blank" rel="external">Defining a Problem Matcher</a></li>
+</ol>
+<h2 id="集成终端"><a href="#集成终端" class="headerlink" title="集成终端"></a>集成终端</h2><ol>
+<li>ctrl+`可以打开集成终端，不用再在终端和vscode之间切换来切换去了，而且会自动CD到当前目录</li>
+<li>可以在设置中配置默认终端<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">"terminal.integrated.shell.windows": "C:\\Windows\\system32\\cmd.exe",</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="集成Git"><a href="#集成Git" class="headerlink" title="集成Git"></a>集成Git</h2><ol>
+<li>无缝集成啊，不需要切换出vscode，直接打开命令面板就可以输入git命令</li>
+<li>修改信息用不同的颜色显示(红色，蓝色，绿色)</li>
+<li>内建diff功能 </li>
+</ol>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -124,14 +130,14 @@ AA AA 为协议头
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/QT/">QT</a>
+  <a class="article-category-link" href="/categories/编程工具/">编程工具</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="weynechen.github.io/2016/08/01/qt-sleep/" data-title="在QT中延时，让串口数据分段发送 | weyne&#39;s note" data-tsina="null" class="share clearfix">
+  <div data-url="weynechen.github.io/2016/09/26/vscode-tricks/" data-title="vscode的一些技巧 | weyne&#39;s note" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -140,19 +146,11 @@ AA AA 为协议头
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2016/08/08/STM32-ADC-DMA/" title="STM32F4使用DMA采集ADC数据">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  STM32F4使用DMA采集ADC数据</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2016/07/22/how-to-specify-flash-address-in-keil/"  title="keil(ARM)中指定常量在flash中地址的方法">
+<a href="/2016/09/23/vscode-debug-c/"  title="windows下使用vscode调试C/C++">
  <strong>NEXT:</strong><br/> 
- <span>keil(ARM)中指定常量在flash中地址的方法
+ <span>windows下使用vscode调试C/C++
 </span>
 </a>
 </div>
@@ -169,7 +167,7 @@ AA AA 为协议头
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">Contents</strong>
-  
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#调试"><span class="toc-number">1.</span> <span class="toc-text">调试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#任务脚本"><span class="toc-number">2.</span> <span class="toc-text">任务脚本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#集成终端"><span class="toc-number">3.</span> <span class="toc-text">集成终端</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#集成Git"><span class="toc-number">4.</span> <span class="toc-text">集成Git</span></a></li></ol>
   </div>
 
 <div id="asidepart">
