@@ -4,19 +4,14 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>vscode的一些技巧 | weyne&#39;s note</title>
+    <title>C数组下标越界 | weyne&#39;s note</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="weyne">
     
-    <meta name="description" content="调试
-本身支持Node.js，能调试JavaScript和TypeScript
-通过调试插件扩展，可以支持其他语言，比如上文提到的C/C++
-调试需要配置文件 launch.json
-配置完成后，按F5开始调试
-
-任务脚本
-ctrl+shift+P，打开命令窗口，输入task，可以看到有很多示例配置">
+    <meta name="description" content="之前总听说C语言的各种毛病，今天算是遇到一个：##数组下标越界##
+事情经过两段完成不相干的代码，一段是测温度的，一段是测转速的。两段代码单独运行都没有问题，但是若运行测转速的代码，测温度的数据就会发生错误。
+调试过程一步查看，发现运行测转速之后，测温度的代码中的一个变量和一个数据的值就会发生诡异的">
     
     
     
@@ -76,15 +71,15 @@ ctrl+shift+P，打开命令窗口，输入task，可以看到有很多示例配�
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2016/09/26/vscode-tricks/" title="vscode的一些技巧" itemprop="url">vscode的一些技巧</a>
+      <a href="/2016/10/10/c-array-cross/" title="C数组下标越界" itemprop="url">C数组下标越界</a>
   </h1>
   <p class="article-author">By
     
       <a href="weynechen.github.io" title="weyne">weyne</a>
     </p>
   <p class="article-time">
-    <time datetime="2016-09-26T02:46:33.000Z" itemprop="datePublished">2016-09-26</time>
-    更新日期:<time datetime="2016-09-26T03:52:40.865Z" itemprop="dateModified">2016-09-26</time>
+    <time datetime="2016-10-10T10:02:42.000Z" itemprop="datePublished">2016-10-10</time>
+    更新日期:<time datetime="2016-10-12T03:50:08.733Z" itemprop="dateModified">2016-10-12</time>
     
   </p>
 </header>
@@ -93,51 +88,31 @@ ctrl+shift+P，打开命令窗口，输入task，可以看到有很多示例配�
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#调试"><span class="toc-number">1.</span> <span class="toc-text">调试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#任务脚本"><span class="toc-number">2.</span> <span class="toc-text">任务脚本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#集成终端"><span class="toc-number">3.</span> <span class="toc-text">集成终端</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#集成Git"><span class="toc-number">4.</span> <span class="toc-text">集成Git</span></a></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#事情经过"><span class="toc-number">1.</span> <span class="toc-text">事情经过</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#调试过程"><span class="toc-number">2.</span> <span class="toc-text">调试过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#问题原因"><span class="toc-number">3.</span> <span class="toc-text">问题原因</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#经验教训"><span class="toc-number">4.</span> <span class="toc-text">经验教训</span></a></li></ol>
 		</div>
 		
-		<h2 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h2><ol>
-<li>本身支持Node.js，能调试JavaScript和TypeScript</li>
-<li>通过调试插件扩展，可以支持其他语言，比如上文提到的C/C++</li>
-<li>调试需要配置文件 launch.json</li>
-<li>配置完成后，按F5开始调试</li>
-</ol>
-<h2 id="任务脚本"><a href="#任务脚本" class="headerlink" title="任务脚本"></a>任务脚本</h2><ol>
-<li>ctrl+shift+P，打开命令窗口，输入task，可以看到有很多示例配置</li>
-<li>类似于脚本，可以调用不同的终端执行，比如说<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"version"</span>: <span class="string">"0.1.0"</span>,</span><br><span class="line">    <span class="attr">"command"</span>: <span class="string">"powershell"</span>,</span><br><span class="line">    <span class="attr">"args"</span>: [<span class="string">"dir"</span>],</span><br><span class="line">    <span class="attr">"isShellCommand"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">"showOutput"</span>: <span class="string">"always"</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>将会打开powershell，运行dir命令</p>
-<ol>
-<li>配置task.json后，按ctrl+shift+B执行当前任务</li>
-<li>可以同时配置多个任务</li>
-<li>可以配置problem matcher，将编译警告和错误捕获到vs的输入，详情参考<a href="https://code.visualstudio.com/docs/editor/tasks" target="_blank" rel="external">Defining a Problem Matcher</a></li>
-</ol>
-<h2 id="集成终端"><a href="#集成终端" class="headerlink" title="集成终端"></a>集成终端</h2><ol>
-<li>ctrl+`可以打开集成终端，不用再在终端和vscode之间切换来切换去了，而且会自动CD到当前目录</li>
-<li>可以在设置中配置默认终端<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">"terminal.integrated.shell.windows": "C:\\Windows\\system32\\cmd.exe",</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h2 id="集成Git"><a href="#集成Git" class="headerlink" title="集成Git"></a>集成Git</h2><ol>
-<li>无缝集成啊，不需要切换出vscode，直接打开命令面板就可以输入git命令</li>
-<li>修改信息用不同的颜色显示(红色，蓝色，绿色)</li>
-<li>内建diff功能 </li>
-</ol>
-  
+		<p>之前总听说C语言的各种毛病，今天算是遇到一个：##数组下标越界##</p>
+<h2 id="事情经过"><a href="#事情经过" class="headerlink" title="事情经过"></a>事情经过</h2><p>两段完成不相干的代码，一段是测温度的，一段是测转速的。两段代码单独运行都没有问题，但是若运行测转速的代码，测温度的数据就会发生错误。</p>
+<h2 id="调试过程"><a href="#调试过程" class="headerlink" title="调试过程"></a>调试过程</h2><p>一步查看，发现运行测转速之后，测温度的代码中的一个变量和一个数据的值就会发生诡异的错误</p>
+<h2 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h2><p></p><p style="color:red">数组下标越界</p><br>这个越界非常不明显,代码如下：<p></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GratingPulseWidth[GratingIndex] = PuseWidth;</span><br></pre></td></tr></table></figure>
+<p>其中GratingIndex在其他的代码中有条件归零。万万没想到的是，这个归零条件不是总会触发，所以就发生越界了。<br>事实上这份程序运行很久都没出过问题，可能因为越界不一定会造成影响吧，正是因为这样才可怕！！！</p>
+<h2 id="经验教训"><a href="#经验教训" class="headerlink" title="经验教训"></a>经验教训</h2><p>对数组进行操作，一定要进行越界判断！！！</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(GratingIndex &lt; GRATING_AMOUNT)</span><br><span class="line">    GratingPulseWidth[GratingIndex] = PuseWidth;</span><br></pre></td></tr></table></figure>  
 	</div>
 		<footer class="article-footer clearfix">
 
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/编程工具/">编程工具</a>
+  <a class="article-category-link" href="/categories/笔记/">笔记</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="weynechen.github.io/2016/09/26/vscode-tricks/" data-title="vscode的一些技巧 | weyne&#39;s note" data-tsina="null" class="share clearfix">
+  <div data-url="weynechen.github.io/2016/10/10/c-array-cross/" data-title="C数组下标越界 | weyne&#39;s note" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -147,18 +122,18 @@ ctrl+shift+P，打开命令窗口，输入task，可以看到有很多示例配�
 <nav class="article-nav clearfix">
  
  <div class="prev" >
- <a href="/2016/10/10/c-array-cross/" title="C数组下标越界">
+ <a href="/2016/10/12/lenspara/" title="镜头各参数解释">
   <strong>PREVIOUS:</strong><br/>
   <span>
-  C数组下标越界</span>
+  镜头各参数解释</span>
 </a>
 </div>
 
 
 <div class="next">
-<a href="/2016/09/23/vscode-debug-c/"  title="windows下使用vscode调试C/C++">
+<a href="/2016/09/26/vscode-tricks/"  title="vscode的一些技巧">
  <strong>NEXT:</strong><br/> 
- <span>windows下使用vscode调试C/C++
+ <span>vscode的一些技巧
 </span>
 </a>
 </div>
@@ -175,7 +150,7 @@ ctrl+shift+P，打开命令窗口，输入task，可以看到有很多示例配�
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#调试"><span class="toc-number">1.</span> <span class="toc-text">调试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#任务脚本"><span class="toc-number">2.</span> <span class="toc-text">任务脚本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#集成终端"><span class="toc-number">3.</span> <span class="toc-text">集成终端</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#集成Git"><span class="toc-number">4.</span> <span class="toc-text">集成Git</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#事情经过"><span class="toc-number">1.</span> <span class="toc-text">事情经过</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#调试过程"><span class="toc-number">2.</span> <span class="toc-text">调试过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#问题原因"><span class="toc-number">3.</span> <span class="toc-text">问题原因</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#经验教训"><span class="toc-number">4.</span> <span class="toc-text">经验教训</span></a></li></ol>
   </div>
 
 <div id="asidepart">

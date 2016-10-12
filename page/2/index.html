@@ -66,6 +66,42 @@
 
   <section class="post" itemscope itemprop="blogPost">
   
+    <a href="/2016/08/01/qt-sleep/" title="在QT中延时，让串口数据分段发送" itemprop="url">
+  
+    <h1 itemprop="name">在QT中延时，让串口数据分段发送</h1>
+    
+     
+           <p itemprop="description" >在串口通信中，我采用了空闲中断接收的方式来进行通信协议处理。比如我发送一串字符 AA AA 01 02 00 03 55 55 。协议如下：
+
+AA AA 为协议头
+01 为协议 ID
+02 00 为 data
+03 为checksum
+55 55 为协议尾
+
+这一串数据发完后，</p>
+        
+    
+    <time datetime="2016-08-01T05:55:26.000Z" itemprop="datePublished">2016-08-01</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2016/07/22/how-to-specify-flash-address-in-keil/" title="keil(ARM)中指定常量在flash中地址的方法" itemprop="url">
+  
+    <h1 itemprop="name">keil(ARM)中指定常量在flash中地址的方法</h1>
+    
+     
+           <p itemprop="description" >有时候我们需要把常量数组放到特定的flash位置。比如一个很大的数组，我并不希望每次都去烧录，那么我可以指定这个数组到flash的其他扇区(不和APP在同一个扇区)，烧录一次以后就不用再烧录了。比如加密的字符串，最开始设定一个起始字符串，boot程序使用该字符串与硬件ID进行特殊</p>
+        
+    
+    <time datetime="2016-07-22T08:52:00.000Z" itemprop="datePublished">2016-07-22</time>
+  </a>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  
     <a href="/2016/07/05/powershell-uncrustify/" title="使用powershell和uncrustify批量美化代码" itemprop="url">
   
     <h1 itemprop="name">使用powershell和uncrustify批量美化代码</h1>
@@ -90,22 +126,6 @@
         
     
     <time datetime="2016-06-22T07:30:56.000Z" itemprop="datePublished">2016-06-22</time>
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2016/06/21/c-array-cross/" title="C数组下标越界" itemprop="url">
-  
-    <h1 itemprop="name">C数组下标越界</h1>
-    
-     
-           <p itemprop="description" >之前总听说C语言的各种毛病，今天算是遇到一个：##数组下标越界##
-事情经过两段完成不相干的代码，一段是测温度的，一段是测转速的。两段代码单独运行都没有问题，但是若运行测转速的代码，测温度的数据就会发生错误。
-调试过程一步查看，发现运行测转速之后，测温度的代码中的一个变量和一个数</p>
-        
-    
-    <time datetime="2016-06-21T10:02:42.000Z" itemprop="datePublished">2016-06-21</time>
   </a>
 </section>
 
@@ -212,20 +232,6 @@ usb2.0支持高速(HS，480Mbps)，全速(FS,12Mbps)，低速(LS,1.5Mbps)
   </a>
 </section>
 
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2016/06/14/GraphVizNote/" title="GraphViz Note" itemprop="url">
-  
-    <h1 itemprop="name">GraphViz Note</h1>
-    
-     
-      <p itemprop="description" >GraphViz 及dot语言简单笔记</p>
-      
-    
-    <time datetime="2016-06-14T05:38:33.000Z" itemprop="datePublished">2016-06-14</time>
-  </a>
-</section>
-
 
   <nav id="page-nav" class="clearfix">
     <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
@@ -247,13 +253,15 @@ usb2.0支持高速(HS，480Mbps)，全速(FS,12Mbps)，低速(LS,1.5Mbps)
 		
 			<li><a href="/categories/STM32/" title="STM32">STM32<sup>6</sup></a></li>
 		
-			<li><a href="/categories/笔记/" title="笔记">笔记<sup>1</sup></a></li>
+			<li><a href="/categories/其他/" title="其他">其他<sup>0</sup></a></li>
+		
+			<li><a href="/categories/笔记/" title="笔记">笔记<sup>3</sup></a></li>
 		
 			<li><a href="/categories/算法/" title="算法">算法<sup>2</sup></a></li>
 		
 			<li><a href="/categories/编程工具/" title="编程工具">编程工具<sup>8</sup></a></li>
 		
-			<li><a href="/categories/编程心得/" title="编程心得">编程心得<sup>1</sup></a></li>
+			<li><a href="/categories/编程心得/" title="编程心得">编程心得<sup>0</sup></a></li>
 		
 			<li><a href="/categories/通讯接口/" title="通讯接口">通讯接口<sup>1</sup></a></li>
 		

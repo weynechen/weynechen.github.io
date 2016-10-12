@@ -4,14 +4,14 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>C数组下标越界 | weyne&#39;s note</title>
+    <title>镜头各参数解释 | weyne&#39;s note</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="weyne">
     
-    <meta name="description" content="之前总听说C语言的各种毛病，今天算是遇到一个：##数组下标越界##
-事情经过两段完成不相干的代码，一段是测温度的，一段是测转速的。两段代码单独运行都没有问题，但是若运行测转速的代码，测温度的数据就会发生错误。
-调试过程一步查看，发现运行测转速之后，测温度的代码中的一个变量和一个数据的值就会发生诡异的">
+    <meta name="description" content="焦距(f)透镜光心到光聚焦点之间的距离。焦距大视角大，焦距小视角小。
+接口螺纹镜头有 C口\CS口，M12口，都有自己的特性，主要和机械加工和安装有关。M12镜头: 镜头后口螺纹为12mm X 0.5mm
+光圈(F)镜头焦距和通光孔径比值，表征了光通量大小。F值越小，通光孔径越大，光通量也越大，通光">
     
     
     
@@ -71,15 +71,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2016/06/21/c-array-cross/" title="C数组下标越界" itemprop="url">C数组下标越界</a>
+      <a href="/2016/10/12/lenspara/" title="镜头各参数解释" itemprop="url">镜头各参数解释</a>
   </h1>
   <p class="article-author">By
     
       <a href="weynechen.github.io" title="weyne">weyne</a>
     </p>
   <p class="article-time">
-    <time datetime="2016-06-21T10:02:42.000Z" itemprop="datePublished">2016-06-21</time>
-    更新日期:<time datetime="2016-10-10T12:43:26.408Z" itemprop="dateModified">2016-10-10</time>
+    <time datetime="2016-10-12T02:14:07.000Z" itemprop="datePublished">2016-10-12</time>
+    更新日期:<time datetime="2016-10-12T03:49:19.656Z" itemprop="dateModified">2016-10-12</time>
     
   </p>
 </header>
@@ -88,31 +88,30 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#事情经过"><span class="toc-number">1.</span> <span class="toc-text">事情经过</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#调试过程"><span class="toc-number">2.</span> <span class="toc-text">调试过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#问题原因"><span class="toc-number">3.</span> <span class="toc-text">问题原因</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#经验教训"><span class="toc-number">4.</span> <span class="toc-text">经验教训</span></a></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#焦距-f"><span class="toc-number">1.</span> <span class="toc-text">焦距(f)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#接口"><span class="toc-number">2.</span> <span class="toc-text">接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#光圈-F"><span class="toc-number">3.</span> <span class="toc-text">光圈(F)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#像面尺寸"><span class="toc-number">4.</span> <span class="toc-text">像面尺寸</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#景深"><span class="toc-number">5.</span> <span class="toc-text">景深</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#视场角"><span class="toc-number">6.</span> <span class="toc-text">视场角</span></a></li></ol>
 		</div>
 		
-		<p>之前总听说C语言的各种毛病，今天算是遇到一个：##数组下标越界##</p>
-<h2 id="事情经过"><a href="#事情经过" class="headerlink" title="事情经过"></a>事情经过</h2><p>两段完成不相干的代码，一段是测温度的，一段是测转速的。两段代码单独运行都没有问题，但是若运行测转速的代码，测温度的数据就会发生错误。</p>
-<h2 id="调试过程"><a href="#调试过程" class="headerlink" title="调试过程"></a>调试过程</h2><p>一步查看，发现运行测转速之后，测温度的代码中的一个变量和一个数据的值就会发生诡异的错误</p>
-<h2 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h2><p></p><p style="color:red">数组下标越界</p><br>这个越界非常不明显,代码如下：<p></p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GratingPulseWidth[GratingIndex] = PuseWidth;</span><br></pre></td></tr></table></figure>
-<p>其中GratingIndex在其他的代码中有条件归零。万万没想到的是，这个归零条件不是总会触发，所以就发生越界了。<br>事实上这份程序运行很久都没出过问题，可能因为越界不一定会造成影响吧，正是因为这样才可怕！！！</p>
-<h2 id="经验教训"><a href="#经验教训" class="headerlink" title="经验教训"></a>经验教训</h2><p>对数组进行操作，一定要进行越界判断！！！</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(GratingIndex &lt; GRATING_AMOUNT)</span><br><span class="line">    GratingPulseWidth[GratingIndex] = PuseWidth;</span><br></pre></td></tr></table></figure>  
+		<h2 id="焦距-f"><a href="#焦距-f" class="headerlink" title="焦距(f)"></a>焦距(f)</h2><p>透镜光心到光聚焦点之间的距离。焦距大视角大，焦距小视角小。</p>
+<h2 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h2><p>螺纹镜头有 C口\CS口，M12口，都有自己的特性，主要和机械加工和安装有关。<br>M12镜头: 镜头后口螺纹为12mm X 0.5mm</p>
+<h2 id="光圈-F"><a href="#光圈-F" class="headerlink" title="光圈(F)"></a>光圈(F)</h2><p>镜头焦距和通光孔径比值，表征了光通量大小。F值越小，通光孔径越大，光通量也越大，通光量与F的平方成反比。</p>
+<h2 id="像面尺寸"><a href="#像面尺寸" class="headerlink" title="像面尺寸"></a>像面尺寸</h2><p>镜头成像直径(对角线长度)可覆盖的最大CCD芯片尺寸。1英寸= 16mm(不是25.4)，所以1/2’’ = 8mm。若按4:3的长宽比计算，长宽为6.4mm X 4.8mm.镜面尺寸最好大于等于CCD尺寸，否则成像不全。</p>
+<h2 id="景深"><a href="#景深" class="headerlink" title="景深"></a>景深</h2><p>被摄物体成像清楚后，在物体前后一定范围内移动，其影像依然清晰。景深和光圈，焦距，被摄物体距离都有关系。</p>
+<h2 id="视场角"><a href="#视场角" class="headerlink" title="视场角"></a>视场角</h2><p><img src="FOC.jpg" alt="FOC"><br>定义如上图。视场角反应了光学仪器的视野范围。同时得注意镜头的水平视场角和垂直视场角可能是不一样的。</p>
+  
 	</div>
 		<footer class="article-footer clearfix">
 
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/编程心得/">编程心得</a>
+  <a class="article-category-link" href="/categories/笔记/">笔记</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="weynechen.github.io/2016/06/21/c-array-cross/" data-title="C数组下标越界 | weyne&#39;s note" data-tsina="null" class="share clearfix">
+  <div data-url="weynechen.github.io/2016/10/12/lenspara/" data-title="镜头各参数解释 | weyne&#39;s note" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -121,19 +120,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2016/06/22/IAP-notes/" title="IAP notes">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  IAP notes</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2016/06/21/crc-notes/"  title="CRC学习笔记">
+<a href="/2016/10/10/c-array-cross/"  title="C数组下标越界">
  <strong>NEXT:</strong><br/> 
- <span>CRC学习笔记
+ <span>C数组下标越界
 </span>
 </a>
 </div>
@@ -150,7 +141,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#事情经过"><span class="toc-number">1.</span> <span class="toc-text">事情经过</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#调试过程"><span class="toc-number">2.</span> <span class="toc-text">调试过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#问题原因"><span class="toc-number">3.</span> <span class="toc-text">问题原因</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#经验教训"><span class="toc-number">4.</span> <span class="toc-text">经验教训</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#焦距-f"><span class="toc-number">1.</span> <span class="toc-text">焦距(f)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#接口"><span class="toc-number">2.</span> <span class="toc-text">接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#光圈-F"><span class="toc-number">3.</span> <span class="toc-text">光圈(F)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#像面尺寸"><span class="toc-number">4.</span> <span class="toc-text">像面尺寸</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#景深"><span class="toc-number">5.</span> <span class="toc-text">景深</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#视场角"><span class="toc-number">6.</span> <span class="toc-text">视场角</span></a></li></ol>
   </div>
 
 <div id="asidepart">
@@ -166,13 +157,15 @@
 		
 			<li><a href="/categories/STM32/" title="STM32">STM32<sup>6</sup></a></li>
 		
-			<li><a href="/categories/笔记/" title="笔记">笔记<sup>1</sup></a></li>
+			<li><a href="/categories/其他/" title="其他">其他<sup>0</sup></a></li>
+		
+			<li><a href="/categories/笔记/" title="笔记">笔记<sup>3</sup></a></li>
 		
 			<li><a href="/categories/算法/" title="算法">算法<sup>2</sup></a></li>
 		
 			<li><a href="/categories/编程工具/" title="编程工具">编程工具<sup>8</sup></a></li>
 		
-			<li><a href="/categories/编程心得/" title="编程心得">编程心得<sup>1</sup></a></li>
+			<li><a href="/categories/编程心得/" title="编程心得">编程心得<sup>0</sup></a></li>
 		
 			<li><a href="/categories/通讯接口/" title="通讯接口">通讯接口<sup>1</sup></a></li>
 		
