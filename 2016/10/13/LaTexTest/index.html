@@ -4,15 +4,13 @@
 <head>
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
   
-    <title>USB开发大全读书笔记 | weyne&#39;s note</title>
+    <title>让hexo 支持 LaTex | weyne&#39;s note</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="weyne">
     
-    <meta name="description" content="总线速率
-usb3.0支持超高速(5Gbps)
-usb2.0支持高速(HS，480Mbps)，全速(FS,12Mbps)，低速(LS,1.5Mbps)
-速率指的是总线速率(bus speed)，并不是用户数据传输的速率。因为一个传输协议里面，除了用户自己的数据，还可能有控制数据，错误校验数据等。而且">
+    <meta name="description" content="安装12npm install hexo-math --savehexo math install
+测试源码12345678$$\begin&amp;#123;eqnarray&amp;#125;\nabla\cdot\vec&amp;#123;E&amp;#125; &amp;amp;=&amp;amp; \frac&amp;#123;\rho&amp;#12">
     
     
     
@@ -72,15 +70,15 @@ usb2.0支持高速(HS，480Mbps)，全速(FS,12Mbps)，低速(LS,1.5Mbps)
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2016/06/20/usb-notes/" title="USB开发大全读书笔记" itemprop="url">USB开发大全读书笔记</a>
+      <a href="/2016/10/13/LaTexTest/" title="让hexo 支持 LaTex" itemprop="url">让hexo 支持 LaTex</a>
   </h1>
   <p class="article-author">By
     
       <a href="weynechen.github.io" title="weyne">weyne</a>
     </p>
   <p class="article-time">
-    <time datetime="2016-06-20T03:39:14.000Z" itemprop="datePublished">2016-06-20</time>
-    Updated:<time datetime="2016-06-22T06:53:15.985Z" itemprop="dateModified">2016-06-22</time>
+    <time datetime="2016-10-13T12:40:48.000Z" itemprop="datePublished">2016-10-13</time>
+    Updated:<time datetime="2016-10-13T12:50:57.010Z" itemprop="dateModified">2016-10-13</time>
     
   </p>
 </header>
@@ -89,118 +87,22 @@ usb2.0支持高速(HS，480Mbps)，全速(FS,12Mbps)，低速(LS,1.5Mbps)
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">Contents</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#总线速率"><span class="toc-number">1.</span> <span class="toc-text">总线速率</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#有效数据速率"><span class="toc-number">2.</span> <span class="toc-text">有效数据速率</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#几个术语"><span class="toc-number">3.</span> <span class="toc-text">几个术语</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#传输类型"><span class="toc-number">4.</span> <span class="toc-text">传输类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#枚举-enumeration-过程"><span class="toc-number">5.</span> <span class="toc-text">枚举(enumeration)过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#枚举-enumeration-注意事项"><span class="toc-number">6.</span> <span class="toc-text">枚举(enumeration)注意事项</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#USB调试工具"><span class="toc-number">7.</span> <span class="toc-text">USB调试工具</span></a></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#安装"><span class="toc-number">1.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#测试"><span class="toc-number">2.</span> <span class="toc-text">测试</span></a></li></ol>
 		</div>
 		
-		<h2 id="总线速率"><a href="#总线速率" class="headerlink" title="总线速率"></a>总线速率</h2><ul>
-<li>usb3.0支持超高速(5Gbps)</li>
-<li>usb2.0支持高速(HS，480Mbps)，全速(FS,12Mbps)，低速(LS,1.5Mbps)</li>
-<li>速率指的是总线速率(bus speed)，并不是用户数据传输的速率。因为一个传输协议里面，除了用户自己的数据，还可能有控制数据，错误校验数据等。而且可能存在多个设备共用一条总线的情况。</li>
-</ul>
-<h2 id="有效数据速率"><a href="#有效数据速率" class="headerlink" title="有效数据速率"></a>有效数据速率</h2><p>单一设备，超高速约400Mbps，高速约53Mbps，全速约1.2Mbps，低速约800bps</p>
-<h2 id="几个术语"><a href="#几个术语" class="headerlink" title="几个术语"></a>几个术语</h2><ol>
-<li><p>设备 – 主机</p>
-<p> 和 I2C 通讯的主从(master/slave)一样，USB叫host/device。在通讯里面，都是由主的一方先发起。</p>
-</li>
-<li><p>端口(port)</p>
-<p> 目前还不太理解，相对于设备的endpoint，应该是主机端给设备分配的一个缓冲区。</p>
-</li>
-<li><p>端点(endpoint)</p>
-<ul>
-<li>设备的缓冲区，用来缓存接收到的数据和待发送的数据。STM32支持的端点数需要查询手册。</li>
-<li>端点分为IN端点和OUT端点（从主机方向看）。</li>
-<li>每个设备都必须有端点0，主机才能使用控制传输完成枚举功能。</li>
-</ul>
-</li>
-<li><p>事务(transaction)</p>
-<p> 理解为一次传输所传递的信息。这些信息表明这次传输用来干什么，发了什么数据等等。<br> 事务可能有三个步骤：</p>
-<ul>
-<li>token packet（令牌包）</li>
-<li>data packet （数据包）</li>
-<li>handshake packet （联络包)</li>
-</ul>
-</li>
-<li><p>管道(pipe)</p>
-<p> 管道是主机软件和设备端点之间的联系，是主机枚举完设备后建立的。这个应该是抽象层次比较高的通信了。一个USB设备可能和主机之间有多个管道。</p>
-</li>
-<li><p>令牌(token)</p>
-<p> 暂时不管。</p>
-</li>
-</ol>
-<h2 id="传输类型"><a href="#传输类型" class="headerlink" title="传输类型"></a>传输类型</h2><ol>
-<li><p>控制传输</p>
-<p> 必定支持的传输类型，枚举时用来读取设备的信息。</p>
-</li>
-<li><p>批量传输</p>
-<p> 数据量大，但是对实时性不太重要的场合使用，比如U盘。只管发送，中间有点速率变化无所谓。</p>
-</li>
-<li><p>中断传输</p>
-<p> 中断的要求是及时响应，比如鼠标，键盘。</p>
-</li>
-<li><p>同步(等时)传输</p>
-<p> 对发送的时间间隔要求比较严格，比如音频，视频。如果出现总线忙，声音就会不连续了。</p>
-</li>
-</ol>
-<h2 id="枚举-enumeration-过程"><a href="#枚举-enumeration-过程" class="headerlink" title="枚举(enumeration)过程"></a>枚举(enumeration)过程</h2><p>主机获取设备信息，并为设备分配驱动程序的过程称为枚举。</p>
-<ol>
-<li><p>power state</p>
-<p> 集线器检测到有设备接入，提供100mA的容许电流</p>
-</li>
-<li><p>集线器检测到设备连接</p>
-<p> 集线器检测D+ 或者D-是否被拉高来检测是否有设备接入。</p>
-</li>
-<li><p>集线器报告端口信息</p>
-<p> 报告是hub发出一个中断，主机发送一个Get port status请求，hub响应请求</p>
-</li>
-<li><p>集线器检测设备是低速还是高速，并报告给主机  </p>
-<ul>
-<li>上拉电阻在D+，是高速设备</li>
-<li>上拉电阻在D-，是低速设备</li>
-</ul>
-</li>
-<li><p>集线器复位设备</p>
-<p> 将D+,D-拉低10ms以上即完成复位。</p>
-</li>
-<li><p>了解设备是否支持高速。</p>
-<p> 这一过程是通过两个特殊信号完成。暂时不管</p>
-</li>
-<li><p>主机得知设备复位完成，准备开始用端点0控制传输。</p>
-</li>
-<li><p>主机发送Get Descriptor，获取设备maximum packet size</p>
-</li>
-<li><p>主机为设备指定一个地址。</p>
-</li>
-<li><p>主机发送Get Descriptor,获取设备描述字。</p>
-</li>
-<li><p>主机加载驱动程序</p>
-</li>
-</ol>
-<h2 id="枚举-enumeration-注意事项"><a href="#枚举-enumeration-注意事项" class="headerlink" title="枚举(enumeration)注意事项"></a>枚举(enumeration)注意事项</h2><p>设备收到主机的setup 事务时，必须放弃当前传输而开始新的传输。<strong>如果在枚举成功前，设备一直在发送数据，就有可能无法及时响应主机的setup事务，从而导致枚举失败，这是用户程序编写不当导致的枚举失败</strong></p>
-<h2 id="USB调试工具"><a href="#USB调试工具" class="headerlink" title="USB调试工具"></a>USB调试工具</h2><ul>
-<li><a href="https://sourceforge.net/projects/usbsnoop/" target="_blank" rel="external">SoonpyPro</a>免费，感觉不好用。</li>
-<li>SourceUSB ，百度下载，没下成功</li>
-<li>USBlyzer。这个不错。</li>
-</ul>
+		<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-math --save</span><br><span class="line">hexo math install</span><br></pre></td></tr></table></figure>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>源码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$$</span><br><span class="line">\begin&#123;eqnarray&#125;</span><br><span class="line">\nabla\cdot\vec&#123;E&#125; &amp;=&amp; \frac&#123;\rho&#125;&#123;\epsilon_0&#125; \\</span><br><span class="line">\nabla\cdot\vec&#123;B&#125; &amp;=&amp; 0 \\</span><br><span class="line">\nabla\times\vec&#123;E&#125; &amp;=&amp; -\frac&#123;\partial B&#125;&#123;\partial t&#125; \\</span><br><span class="line">\nabla\times\vec&#123;B&#125; &amp;=&amp; \mu_0\left(\vec&#123;J&#125;+\epsilon_0\frac&#123;\partial E&#125;&#123;\partial t&#125; \right)</span><br><span class="line">\end&#123;eqnarray&#125;</span><br><span class="line">$$</span><br></pre></td></tr></table></figure></p>
+<p>显示效果：<br>$$<br>\begin{eqnarray}<br>\nabla\cdot\vec{E} &amp;=&amp; \frac{\rho}{\epsilon_0} \<br>\nabla\cdot\vec{B} &amp;=&amp; 0 \<br>\nabla\times\vec{E} &amp;=&amp; -\frac{\partial B}{\partial t} \<br>\nabla\times\vec{B} &amp;=&amp; \mu_0\left(\vec{J}+\epsilon_0\frac{\partial E}{\partial t} \right)<br>\end{eqnarray}<br>$$</p>
   
 	</div>
 		<footer class="article-footer clearfix">
 
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/usb/">usb</a>
-  </div>
-
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/通讯接口/">通讯接口</a>
-</div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="weynechen.github.io/2016/06/20/usb-notes/" data-title="USB开发大全读书笔记 | weyne&#39;s note" data-tsina="null" class="share clearfix">
+  <div data-url="weynechen.github.io/2016/10/13/LaTexTest/" data-title="让hexo 支持 LaTex | weyne&#39;s note" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -209,19 +111,11 @@ usb2.0支持高速(HS，480Mbps)，全速(FS,12Mbps)，低速(LS,1.5Mbps)
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2016/06/21/crc-notes/" title="CRC学习笔记">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  CRC学习笔记</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2016/06/17/cube/"  title="学习使用STM32 cube及其HAL库">
+<a href="/2016/10/12/lenspara/"  title="镜头各参数解释">
  <strong>NEXT:</strong><br/> 
- <span>学习使用STM32 cube及其HAL库
+ <span>镜头各参数解释
 </span>
 </a>
 </div>
@@ -238,7 +132,7 @@ usb2.0支持高速(HS，480Mbps)，全速(FS,12Mbps)，低速(LS,1.5Mbps)
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">Contents</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#总线速率"><span class="toc-number">1.</span> <span class="toc-text">总线速率</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#有效数据速率"><span class="toc-number">2.</span> <span class="toc-text">有效数据速率</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#几个术语"><span class="toc-number">3.</span> <span class="toc-text">几个术语</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#传输类型"><span class="toc-number">4.</span> <span class="toc-text">传输类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#枚举-enumeration-过程"><span class="toc-number">5.</span> <span class="toc-text">枚举(enumeration)过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#枚举-enumeration-注意事项"><span class="toc-number">6.</span> <span class="toc-text">枚举(enumeration)注意事项</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#USB调试工具"><span class="toc-number">7.</span> <span class="toc-text">USB调试工具</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#安装"><span class="toc-number">1.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#测试"><span class="toc-number">2.</span> <span class="toc-text">测试</span></a></li></ol>
   </div>
 
 <div id="asidepart">
