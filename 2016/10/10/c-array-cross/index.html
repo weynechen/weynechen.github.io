@@ -95,10 +95,10 @@
 <h2 id="事情经过"><a href="#事情经过" class="headerlink" title="事情经过"></a>事情经过</h2><p>两段完成不相干的代码，一段是测温度的，一段是测转速的。两段代码单独运行都没有问题，但是若运行测转速的代码，测温度的数据就会发生错误。</p>
 <h2 id="调试过程"><a href="#调试过程" class="headerlink" title="调试过程"></a>调试过程</h2><p>一步查看，发现运行测转速之后，测温度的代码中的一个变量和一个数据的值就会发生诡异的错误</p>
 <h2 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h2><p></p><p style="color:red">数组下标越界</p><br>这个越界非常不明显,代码如下：<p></p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GratingPulseWidth[GratingIndex] = PuseWidth;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">GratingPulseWidth[GratingIndex] = PuseWidth;</div></pre></td></tr></table></figure>
 <p>其中GratingIndex在其他的代码中有条件归零。万万没想到的是，这个归零条件不是总会触发，所以就发生越界了。<br>事实上这份程序运行很久都没出过问题，可能因为越界不一定会造成影响吧，正是因为这样才可怕！！！</p>
 <h2 id="经验教训"><a href="#经验教训" class="headerlink" title="经验教训"></a>经验教训</h2><p>对数组进行操作，一定要进行越界判断！！！</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(GratingIndex &lt; GRATING_AMOUNT)</span><br><span class="line">    GratingPulseWidth[GratingIndex] = PuseWidth;</span><br></pre></td></tr></table></figure>  
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span>(GratingIndex &lt; GRATING_AMOUNT)</div><div class="line">    GratingPulseWidth[GratingIndex] = PuseWidth;</div></pre></td></tr></table></figure>  
 	</div>
 		<footer class="article-footer clearfix">
 
@@ -170,7 +170,7 @@
 		
 			<li><a href="/categories/算法/" title="算法">算法<sup>2</sup></a></li>
 		
-			<li><a href="/categories/编程工具/" title="编程工具">编程工具<sup>8</sup></a></li>
+			<li><a href="/categories/编程工具/" title="编程工具">编程工具<sup>9</sup></a></li>
 		
 			<li><a href="/categories/通讯接口/" title="通讯接口">通讯接口<sup>1</sup></a></li>
 		

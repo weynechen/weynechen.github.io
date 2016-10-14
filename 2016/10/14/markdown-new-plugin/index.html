@@ -4,19 +4,22 @@
 <head>
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
   
-    <title>vscode的一些技巧 | weyne&#39;s note</title>
+    <title>markdown新插件 | weyne&#39;s note</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="weyne">
     
-    <meta name="description" content="调试
-本身支持Node.js，能调试JavaScript和TypeScript
-通过调试插件扩展，可以支持其他语言，比如上文提到的C/C++
-调试需要配置文件 launch.json
-配置完成后，按F5开始调试
+    <meta name="description" content="环境Atom
+名称markdown-preveiw-enhanced
+为什么使用它
+markdown勿用质疑
+mathjax
 
-任务脚本
-ctrl+shift+P，打开命令窗口，输入task，可以看到有很多示例配置">
+$$ a = {2\over 3}$$
+$$ \alpha = {1 \over tan(\theta)}$$
+
+导出pdf,html
+内嵌运行代码块，类似于jubiter">
     
     
     
@@ -76,15 +79,15 @@ ctrl+shift+P，打开命令窗口，输入task，可以看到有很多示例配�
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2016/09/26/vscode-tricks/" title="vscode的一些技巧" itemprop="url">vscode的一些技巧</a>
+      <a href="/2016/10/14/markdown-new-plugin/" title="markdown新插件" itemprop="url">markdown新插件</a>
   </h1>
   <p class="article-author">By
     
       <a href="weynechen.github.io" title="weyne">weyne</a>
     </p>
   <p class="article-time">
-    <time datetime="2016-09-26T02:46:33.000Z" itemprop="datePublished">2016-09-26</time>
-    Updated:<time datetime="2016-09-26T03:52:40.865Z" itemprop="dateModified">2016-09-26</time>
+    <time datetime="2016-10-14T05:57:40.000Z" itemprop="datePublished">2016-10-14</time>
+    Updated:<time datetime="2016-10-14T06:11:49.627Z" itemprop="dateModified">2016-10-14</time>
     
   </p>
 </header>
@@ -93,36 +96,25 @@ ctrl+shift+P，打开命令窗口，输入task，可以看到有很多示例配�
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">Contents</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#调试"><span class="toc-number">1.</span> <span class="toc-text">调试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#任务脚本"><span class="toc-number">2.</span> <span class="toc-text">任务脚本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#集成终端"><span class="toc-number">3.</span> <span class="toc-text">集成终端</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#集成Git"><span class="toc-number">4.</span> <span class="toc-text">集成Git</span></a></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#环境"><span class="toc-number">1.</span> <span class="toc-text">环境</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#名称"><span class="toc-number">2.</span> <span class="toc-text">名称</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#为什么使用它"><span class="toc-number">3.</span> <span class="toc-text">为什么使用它</span></a></li></ol>
 		</div>
 		
-		<h2 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h2><ol>
-<li>本身支持Node.js，能调试JavaScript和TypeScript</li>
-<li>通过调试插件扩展，可以支持其他语言，比如上文提到的C/C++</li>
-<li>调试需要配置文件 launch.json</li>
-<li>配置完成后，按F5开始调试</li>
+		<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><p>Atom</p>
+<h2 id="名称"><a href="#名称" class="headerlink" title="名称"></a>名称</h2><p><a href="https://github.com/shd101wyy/markdown-preview-enhanced/blob/master/docs/README_CN.md" target="_blank" rel="external">markdown-preveiw-enhanced</a></p>
+<h2 id="为什么使用它"><a href="#为什么使用它" class="headerlink" title="为什么使用它"></a>为什么使用它</h2><ol>
+<li>markdown勿用质疑</li>
+<li>mathjax</li>
 </ol>
-<h2 id="任务脚本"><a href="#任务脚本" class="headerlink" title="任务脚本"></a>任务脚本</h2><ol>
-<li>ctrl+shift+P，打开命令窗口，输入task，可以看到有很多示例配置</li>
-<li>类似于脚本，可以调用不同的终端执行，比如说<figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"version"</span>: <span class="string">"0.1.0"</span>,</div><div class="line">    <span class="attr">"command"</span>: <span class="string">"powershell"</span>,</div><div class="line">    <span class="attr">"args"</span>: [<span class="string">"dir"</span>],</div><div class="line">    <span class="attr">"isShellCommand"</span>: <span class="literal">true</span>,</div><div class="line">    <span class="attr">"showOutput"</span>: <span class="string">"always"</span>,</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>将会打开powershell，运行dir命令</p>
+<p>$$ a = {2\over 3}$$</p>
+<p>$$ \alpha = {1 \over tan(\theta)}$$</p>
 <ol>
-<li>配置task.json后，按ctrl+shift+B执行当前任务</li>
-<li>可以同时配置多个任务</li>
-<li>可以配置problem matcher，将编译警告和错误捕获到vs的输入，详情参考<a href="https://code.visualstudio.com/docs/editor/tasks" target="_blank" rel="external">Defining a Problem Matcher</a></li>
+<li>导出pdf,html</li>
+<li>内嵌运行代码块，类似于jubiter notebook</li>
 </ol>
-<h2 id="集成终端"><a href="#集成终端" class="headerlink" title="集成终端"></a>集成终端</h2><ol>
-<li>ctrl+`可以打开集成终端，不用再在终端和vscode之间切换来切换去了，而且会自动CD到当前目录</li>
-<li>可以在设置中配置默认终端<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">"terminal.integrated.shell.windows": "C:\\Windows\\system32\\cmd.exe",</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<h2 id="集成Git"><a href="#集成Git" class="headerlink" title="集成Git"></a>集成Git</h2><ol>
-<li>无缝集成啊，不需要切换出vscode，直接打开命令面板就可以输入git命令</li>
-<li>修改信息用不同的颜色显示(红色，蓝色，绿色)</li>
-<li>内建diff功能 </li>
-</ol>
+<p>示例：GraphViz<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">digraph</div><div class="line">&#123;</div><div class="line">    start-&gt;end;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>示例:python</p>
+<figure class="highlight plain"><figcaption><span>args:["-v"], id:"iu9djxsd"&#125;</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">print (&quot;test&quot;)</div></pre></td></tr></table></figure>
+<p>特别是GraphViz，可以在里面直接生成流程图，非常使用。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -137,7 +129,7 @@ ctrl+shift+P，打开命令窗口，输入task，可以看到有很多示例配�
 
 <div class="article-share" id="share">
 
-  <div data-url="weynechen.github.io/2016/09/26/vscode-tricks/" data-title="vscode的一些技巧 | weyne&#39;s note" data-tsina="null" class="share clearfix">
+  <div data-url="weynechen.github.io/2016/10/14/markdown-new-plugin/" data-title="markdown新插件 | weyne&#39;s note" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -146,19 +138,11 @@ ctrl+shift+P，打开命令窗口，输入task，可以看到有很多示例配�
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2016/10/10/c-array-cross/" title="C数组下标越界">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  C数组下标越界</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2016/09/23/vscode-debug-c/"  title="windows下使用vscode调试C/C++">
+<a href="/2016/10/13/LaTexTest/"  title="让hexo 支持 LaTex">
  <strong>NEXT:</strong><br/> 
- <span>windows下使用vscode调试C/C++
+ <span>让hexo 支持 LaTex
 </span>
 </a>
 </div>
@@ -175,7 +159,7 @@ ctrl+shift+P，打开命令窗口，输入task，可以看到有很多示例配�
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">Contents</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#调试"><span class="toc-number">1.</span> <span class="toc-text">调试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#任务脚本"><span class="toc-number">2.</span> <span class="toc-text">任务脚本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#集成终端"><span class="toc-number">3.</span> <span class="toc-text">集成终端</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#集成Git"><span class="toc-number">4.</span> <span class="toc-text">集成Git</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#环境"><span class="toc-number">1.</span> <span class="toc-text">环境</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#名称"><span class="toc-number">2.</span> <span class="toc-text">名称</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#为什么使用它"><span class="toc-number">3.</span> <span class="toc-text">为什么使用它</span></a></li></ol>
   </div>
 
 <div id="asidepart">

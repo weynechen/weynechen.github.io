@@ -113,9 +113,9 @@ AA AA 为协议头
 </li>
 </ol>
 <p>要避免这两个问题，就需要上位机控制发送数据包的间隔时间。百度半天，终于找到解决方法。</p>
-<p>方法一：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">QTime t;</span><br><span class="line">t.start();</span><br><span class="line"><span class="keyword">while</span>(t.elapsed()&lt;<span class="number">1000</span>)</span><br><span class="line">    QCoreApplication::processEvents();</span><br></pre></td></tr></table></figure></p>
+<p>方法一：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">QTime t;</div><div class="line">t.start();</div><div class="line"><span class="keyword">while</span>(t.elapsed()&lt;<span class="number">1000</span>)</div><div class="line">    QCoreApplication::processEvents();</div></pre></td></tr></table></figure></p>
 <p>方法二：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">QEventLoop eventloop;</span><br><span class="line">QTimer::singleShot(<span class="number">100</span>, &amp;eventloop, SLOT(quit()));</span><br><span class="line">eventloop.exec();</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">QEventLoop eventloop;</div><div class="line">QTimer::singleShot(<span class="number">100</span>, &amp;eventloop, SLOT(quit()));</div><div class="line">eventloop.exec();</div></pre></td></tr></table></figure>
 <p>QT中也可以使用sleep函数，但是平台依赖性比较强。另外也可以采用单独开一个线程的方法，将串口发送放到一个单独的线程中，没测试，但估计效果差不多。</p>
   
 	</div>
@@ -189,7 +189,7 @@ AA AA 为协议头
 		
 			<li><a href="/categories/算法/" title="算法">算法<sup>2</sup></a></li>
 		
-			<li><a href="/categories/编程工具/" title="编程工具">编程工具<sup>8</sup></a></li>
+			<li><a href="/categories/编程工具/" title="编程工具">编程工具<sup>9</sup></a></li>
 		
 			<li><a href="/categories/通讯接口/" title="通讯接口">通讯接口<sup>1</sup></a></li>
 		

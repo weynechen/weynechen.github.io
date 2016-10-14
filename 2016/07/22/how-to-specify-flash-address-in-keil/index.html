@@ -89,7 +89,7 @@
 		
 		</div>
 		
-		<p>有时候我们需要把常量数组放到特定的flash位置。比如一个很大的数组，我并不希望每次都去烧录，那么我可以指定这个数组到flash的其他扇区(不和APP在同一个扇区)，烧录一次以后就不用再烧录了。比如加密的字符串，最开始设定一个起始字符串，boot程序使用该字符串与硬件ID进行特殊的算法，来确保程序不被破解或者被篡改。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> u32 __attribute__((at(<span class="number">0x08008000</span>))) KeyStore = <span class="number">0x5d2F5D81</span>;</span><br></pre></td></tr></table></figure></p>
+		<p>有时候我们需要把常量数组放到特定的flash位置。比如一个很大的数组，我并不希望每次都去烧录，那么我可以指定这个数组到flash的其他扇区(不和APP在同一个扇区)，烧录一次以后就不用再烧录了。比如加密的字符串，最开始设定一个起始字符串，boot程序使用该字符串与硬件ID进行特殊的算法，来确保程序不被破解或者被篡改。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> u32 __attribute__((at(<span class="number">0x08008000</span>))) KeyStore = <span class="number">0x5d2F5D81</span>;</div></pre></td></tr></table></figure></p>
 <p>上面就是指定keyStore存储到flash地址为0x08008000的方法。</p>
   
 	</div>
@@ -163,7 +163,7 @@
 		
 			<li><a href="/categories/算法/" title="算法">算法<sup>2</sup></a></li>
 		
-			<li><a href="/categories/编程工具/" title="编程工具">编程工具<sup>8</sup></a></li>
+			<li><a href="/categories/编程工具/" title="编程工具">编程工具<sup>9</sup></a></li>
 		
 			<li><a href="/categories/通讯接口/" title="通讯接口">通讯接口<sup>1</sup></a></li>
 		
