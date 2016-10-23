@@ -4,12 +4,15 @@
 <head>
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
   
-    <title>STM32 MCU name rules | weyne&#39;s note</title>
+    <title>在Ubuntu下编译 Qt程序 | weyne&#39;s note</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="weyne">
     
-    <meta name="description" itemprop="description" content="STM32 系列MCU的命名规则">
+    <meta name="description" content="起因Qt是跨平台的，但是我一直工作在Windows平台下面，没真正体会到跨平台的好处。现在很庆幸当时选的跨平台工具，否则整个工程在不同的平台都得重写一次。真是应了一句话：选择比努力重要！
+安装在Linux下面安装Qt和Windows下没有太多区别。也是几个步骤：
+
+下载。download.qt.io">
     
     
     
@@ -69,15 +72,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2016/06/15/stm32-name-rules/" title="STM32 MCU name rules" itemprop="url">STM32 MCU name rules</a>
+      <a href="/2016/10/23/qt-in-Linux/" title="在Ubuntu下编译 Qt程序" itemprop="url">在Ubuntu下编译 Qt程序</a>
   </h1>
   <p class="article-author">By
     
       <a href="weynechen.github.io" title="weyne">weyne</a>
     </p>
   <p class="article-time">
-    <time datetime="2016-06-14T16:00:00.000Z" itemprop="datePublished">2016-06-15</time>
-    更新日期:<time datetime="2016-06-16T07:36:15.168Z" itemprop="dateModified">2016-06-16</time>
+    <time datetime="2016-10-23T09:35:58.000Z" itemprop="datePublished">2016-10-23</time>
+    更新日期:<time datetime="2016-10-23T10:02:11.273Z" itemprop="dateModified">2016-10-23</time>
     
   </p>
 </header>
@@ -86,51 +89,30 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目錄</strong>
-		
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#起因"><span class="toc-number">1.</span> <span class="toc-text">起因</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装"><span class="toc-number">2.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#编译"><span class="toc-number">3.</span> <span class="toc-text">编译</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#运行"><span class="toc-number">4.</span> <span class="toc-text">运行</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#发布"><span class="toc-number">5.</span> <span class="toc-text">发布</span></a></li></ol>
 		</div>
 		
-		<p><strong>Pin counts</strong></p>
-<ul>
-<li>F = 20 pins</li>
-<li>G = 28 pins</li>
-<li>K = 32 pins</li>
-<li>T = 36 pins</li>
-<li>S = 44 pins</li>
-<li>C = 48 pins</li>
-<li>R = 64 pins (or 66 pins)</li>
-<li>M = 80 pins</li>
-<li>O = 90 pins</li>
-<li>V = 100 pins</li>
-<li>Q= 132 pins (e. g. STM32L162QDH6)</li>
-<li>Z=144</li>
-<li>I=176 (+25)</li>
-<li>B = 208 pins (e. g.: STM32F429BIT6)</li>
-<li>N = 216 pins</li>
-</ul>
-<p><strong>Flash memory sizes</strong></p>
-<ul>
-<li>4 = 16 Kbytes of Flash memory</li>
-<li>6 = 32 Kbytes of Flash memory</li>
-<li>8 = 64 Kbytes of Flash memory</li>
-<li>B = 128 Kbytes of Flash memory</li>
-<li>C = 256 Kbytes of Flash memory</li>
-<li>D = 384 Kbytes of Flash memory</li>
-<li>E = 512 Kbytes of Flash memory</li>
-<li>F = 768 Kbytes of Flash memory</li>
-<li>G = 1024 Kbytes of Flash memory</li>
-<li>I = 2048 Kbytes of Flash memory</li>
-</ul>
-<p><strong>Packages</strong></p>
-<ul>
-<li>B = SDIP</li>
-<li>H = BGA</li>
-<li>M = SO</li>
-<li>P = TSSOP</li>
-<li>T = LQFP</li>
-<li>U = VFQFPN</li>
-<li>Y = WLCSP</li>
-</ul>
-<p><img src="stm32_name_rule.png" alt="stm32_name_rule"></p>
+		<h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>Qt是跨平台的，但是我一直工作在Windows平台下面，没真正体会到跨平台的好处。现在很庆幸当时选的跨平台工具，否则整个工程在不同的平台都得重写一次。真是应了一句话：选择比努力重要！</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>在Linux下面安装Qt和Windows下没有太多区别。也是几个步骤：</p>
+<ol>
+<li>下载。<a href="download.qt.io">download.qt.io</a>，选相应版本即可。</li>
+<li>安装。cd 到下载目录，然后./qt-opensource-linux-x64-5.7.0.run。</li>
+<li>配置。使用QtCreator编译，基本不用配置，打开源码点运行就可以。如果想使用其他编辑器，则需要配置qmake的路径。个人觉得没有必要，毕竟QtCreator已经做得足够好了。</li>
+</ol>
+<h2 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h2><p>因为我在Windows下面已经编写好了，所以原封不动的挪过来，然后直接点编译就过了。</p>
+<h2 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h2><p>涉及到USB转串口，如果使用QtCreator直接Ctrl+R，因为权限不够，生成的程序在打开串口时会提示open error。。所以采取在终端中使用sudo运行的方法。</p>
+<h2 id="发布"><a href="#发布" class="headerlink" title="发布"></a>发布</h2><p>发布的过程稍微有点繁琐，因为需要打包相应的依赖环境。步骤如下：</p>
+<ol>
+<li><p>cd到生成程序的目录 ，运行下面的脚本(注意修改程序名和目标路径)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/sh</span></div><div class="line">exe=<span class="string">"2DLidarDemo"</span></div><div class="line">des=<span class="string">"/mnt/source/build-2DLidarDemo-Desktop_Qt_5_7_0_GCC_64bit-Release/release"</span></div><div class="line">deplist=$(ldd <span class="variable">$exe</span> | awk  <span class="string">'&#123;if (match($3,"/"))&#123; printf("%s "),$3 &#125; &#125;'</span>)</div><div class="line">cp <span class="variable">$deplist</span> <span class="variable">$des</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>在打包的文件目录下面，建立一个和目标程序名字一样的脚本文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/sh</span></div><div class="line">appname=`basename <span class="variable">$0</span> | sed s,\.sh$,,`</div><div class="line"></div><div class="line">dirname=`dirname <span class="variable">$0</span>`</div><div class="line">tmp=<span class="string">"<span class="variable">$&#123;dirname#?&#125;</span>"</span></div><div class="line"></div><div class="line"><span class="keyword">if</span> [ <span class="string">"<span class="variable">$&#123;dirname%$tmp&#125;</span>"</span> != <span class="string">"/"</span> ]; <span class="keyword">then</span></div><div class="line">dirname=<span class="variable">$PWD</span>/<span class="variable">$dirname</span></div><div class="line"><span class="keyword">fi</span></div><div class="line">LD_LIBRARY_PATH=<span class="variable">$dirname</span></div><div class="line"><span class="built_in">export</span> LD_LIBRARY_PATH</div><div class="line"><span class="variable">$dirname</span>/<span class="variable">$appname</span> <span class="string">"<span class="variable">$@</span>"</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>特别需要注意的一点，如果上述两个脚本是从windows平台下面拷贝过去，直接运行会提示^M的错误。这是因为文本编码的问题，需要转换一下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-get install dos2unix</div></pre></td></tr></table></figure>
+</li>
+</ol>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -138,14 +120,14 @@
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/STM32/">STM32</a>
+  <a class="article-category-link" href="/categories/编程工具/">编程工具</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="weynechen.github.io/2016/06/15/stm32-name-rules/" data-title="STM32 MCU name rules | weyne&#39;s note" data-tsina="null" class="share clearfix">
+  <div data-url="weynechen.github.io/2016/10/23/qt-in-Linux/" data-title="在Ubuntu下编译 Qt程序 | weyne&#39;s note" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -154,19 +136,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2016/06/16/VirtualBox/" title="Virtual Box 的一些问题">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  Virtual Box 的一些问题</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2016/06/14/powershellKeil/"  title="使用powershell提高keil效率">
+<a href="/2016/10/14/markdown-new-plugin/"  title="markdown新插件">
  <strong>NEXT:</strong><br/> 
- <span>使用powershell提高keil效率
+ <span>markdown新插件
 </span>
 </a>
 </div>
@@ -183,7 +157,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目錄</strong>
-  
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#起因"><span class="toc-number">1.</span> <span class="toc-text">起因</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装"><span class="toc-number">2.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#编译"><span class="toc-number">3.</span> <span class="toc-text">编译</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#运行"><span class="toc-number">4.</span> <span class="toc-text">运行</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#发布"><span class="toc-number">5.</span> <span class="toc-text">发布</span></a></li></ol>
   </div>
 
 <div id="asidepart">
