@@ -34,7 +34,7 @@
 				<h1 class="site-name"><a href="/" title="weyne&#39;s note">weyne&#39;s note</a></h1>
 				<h2 class="blog-motto"></h2>
 			</div>
-			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜單">
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
 			</a></div>
 			<nav class="animated">
 				<ul>
@@ -51,7 +51,7 @@
 					
 					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
 						<label>Search</label>
-						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
 						<input type="hidden" name="q" value="site:weynechen.github.io">
 					</form>
 					
@@ -63,6 +63,28 @@
     </header>
     <div id="container">
       <div id="main">
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2016/10/24/STM32-USB-composite-deveice/" title="STM32 USB composite deveice" itemprop="url">
+  
+    <h1 itemprop="name">STM32 USB composite deveice</h1>
+    
+     
+           <p itemprop="description" >目的
+完成一个CDC +　MSC的复合USB设备
+可以方便在CDC,MSC,复合设备三者间切换
+可移植性强
+
+预备知识cube中USB只有两个入口。
+
+main函数中的MX_USB_DEVICE_Init函数。
+123456789/* init function */void M</p>
+        
+    
+    <time datetime="2016-10-24T02:55:14.000Z" itemprop="datePublished">2016-10-24</time>
+  </a>
+</section>
 
   <section class="post" itemscope itemprop="blogPost">
   
@@ -223,44 +245,26 @@ MinGWGCC/g++编译器，在windows下需要将安装目录添加到path环境变
   </a>
 </section>
 
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2016/09/08/stm32-usb/" title="stm32 usb FS device notes" itemprop="url">
-  
-    <h1 itemprop="name">stm32 usb FS device notes</h1>
-    
-     
-           <p itemprop="description" >功能框图
-手册要点
-可配置双向端点数量最大为8个，每个端点最大可使用512字节缓冲区
-和CAN总线共用一块分组缓冲区(0x40006000 - 0x400063FF)，所以两者不能同时使用
-主机数据传输过来，先到达内部16bit寄存器，然后交换到内存缓冲区。数据传输结束，触发中断</p>
-        
-    
-    <time datetime="2016-09-08T06:51:18.000Z" itemprop="datePublished">2016-09-08</time>
-  </a>
-</section>
-
 
   <nav id="page-nav" class="clearfix">
     <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
   </nav>
 
 </div>
-      <div class="openaside"><a class="navbutton" href="#" title="顯示側邊欄"></a></div>
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
 
 <div id="asidepart">
-<div class="closeaside"><a class="closebutton" href="#" title="隱藏側邊欄"></a></div>
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
 <aside class="clearfix">
 
   
 <div class="categorieslist">
-	<p class="asidetitle">分類</p>
+	<p class="asidetitle">Categories</p>
 		<ul>
 		
 			<li><a href="/categories/QT/" title="QT">QT<sup>2</sup></a></li>
 		
-			<li><a href="/categories/STM32/" title="STM32">STM32<sup>6</sup></a></li>
+			<li><a href="/categories/STM32/" title="STM32">STM32<sup>7</sup></a></li>
 		
 			<li><a href="/categories/笔记/" title="笔记">笔记<sup>3</sup></a></li>
 		
@@ -276,7 +280,7 @@ MinGWGCC/g++编译器，在windows下需要将安装目录添加到path环境变
 
   
 <div class="tagslist">
-	<p class="asidetitle">標簽</p>
+	<p class="asidetitle">Tags</p>
 		<ul class="clearfix">
 		
 			<li><a href="/tags/GraphViz/" title="GraphViz">GraphViz<sup>1</sup></a></li>
