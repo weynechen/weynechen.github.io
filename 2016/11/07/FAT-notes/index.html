@@ -1,0 +1,382 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+  
+    <title>FAT notes | weyne&#39;s note</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="weyne">
+    
+    <meta name="description" content="项目中总是在用FAT文件系统，移植fatfs也相当简单，所以没有真正的去研究过FAT的实现过程。以前也看过相关文档，但是当时很难明白其中的意思，现在再看，居然一下就通了，也需是因为用的多了的缘故吧。
+什么是FATFAT 全名 File Allocation Table ，文件定位表。顾名思义，就是一">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+  <body>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="weyne&#39;s note" title="weyne&#39;s note"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="weyne&#39;s note">weyne&#39;s note</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					
+						<li><a href="/">主页</a></li>
+					
+						<li><a href="/archives">所有文章</a></li>
+					
+						<li><a href="/tags">标签</a></li>
+					
+						<li><a href="/categories">分类</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:weynechen.github.io">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/11/07/FAT-notes/" title="FAT notes" itemprop="url">FAT notes</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="weynechen.github.io" title="weyne">weyne</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2016-11-07T08:17:51.000Z" itemprop="datePublished">2016-11-07</time>
+    更新日期:<time datetime="2016-11-09T09:31:16.313Z" itemprop="dateModified">2016-11-09</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#什么是FAT"><span class="toc-number">1.</span> <span class="toc-text">什么是FAT</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#存储介质"><span class="toc-number">2.</span> <span class="toc-text">存储介质</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#第0扇区"><span class="toc-number">3.</span> <span class="toc-text">第0扇区</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FAT扇区"><span class="toc-number">4.</span> <span class="toc-text">FAT扇区</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#根目录"><span class="toc-number">5.</span> <span class="toc-text">根目录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#读取文件流程"><span class="toc-number">6.</span> <span class="toc-text">读取文件流程</span></a></li></ol>
+		</div>
+		
+		<p>项目中总是在用FAT文件系统，移植fatfs也相当简单，所以没有真正的去研究过FAT的实现过程。以前也看过相关文档，但是当时很难明白其中的意思，现在再看，居然一下就通了，也需是因为用的多了的缘故吧。</p>
+<h2 id="什么是FAT"><a href="#什么是FAT" class="headerlink" title="什么是FAT"></a>什么是FAT</h2><p>FAT 全名 File Allocation Table ，文件定位表。顾名思义，就是一个表。我们读写文件的过程，也就是一个查表的过程。</p>
+<h2 id="存储介质"><a href="#存储介质" class="headerlink" title="存储介质"></a>存储介质</h2><p>先有存储介质，后有文件系统的(不限于FAT)。存储介质，比如硬盘，flash。是可以直接读写的。我们可以直接往flash写数据，也可以读出来。比如我往地址0x200000的地方写入1000个0xAA，那么我也可以在0x200000读出来1000个0xAA。如果一个存储介质只写这一段数据，那不要任何文件系统都是可以的。但是一个几十G的Flash肯定不可能只写这1000个数据的。问题就来了，当我写了很多数据之后，我怎么记住我的数据放在哪？有多长？另外flash中哪些地方是写了数据的，哪些地方是没写数据的？我要找到之前放的数据，怎么找？所以，文件系统就很必要了。有了它就可以清晰的管理存储介质的使用，方便的管理数据的存储。</p>
+<h2 id="第0扇区"><a href="#第0扇区" class="headerlink" title="第0扇区"></a>第0扇区</h2><p>之前说文件系统是一个表，那么这个表存储在哪里？是的，在<code>扇区0</code>，这个扇区叫MBR(Master Boot Recoder)，这个表叫BPB(BIOS parameterBlocks)。我们看看Fatfs对这一部分的定义：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* FatFs refers the members in the FAT structures as byte array instead of</span></div><div class="line">/ structure member because the structure is not binary compatible between</div><div class="line">/ different platforms */</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BS_jmpBoot			0		<span class="comment">/* x86 jump instruction (3) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BS_OEMName			3		<span class="comment">/* OEM name (8) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BPB_BytsPerSec		11		<span class="comment">/* Sector size [byte] (2) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BPB_SecPerClus		13		<span class="comment">/* Cluster size [sector] (1) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BPB_RsvdSecCnt		14		<span class="comment">/* Size of reserved area [sector] (2) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BPB_NumFATs			16		<span class="comment">/* Number of FAT copies (1) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BPB_RootEntCnt		17		<span class="comment">/* Number of root directory entries for FAT12/16 (2) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BPB_TotSec16		19		<span class="comment">/* Volume size [sector] (2) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BPB_Media			21		<span class="comment">/* Media descriptor (1) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BPB_FATSz16			22		<span class="comment">/* FAT size [sector] (2) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BPB_SecPerTrk		24		<span class="comment">/* Track size [sector] (2) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BPB_NumHeads		26		<span class="comment">/* Number of heads (2) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BPB_HiddSec			28		<span class="comment">/* Number of special hidden sectors (4) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BPB_TotSec32		32		<span class="comment">/* Volume size [sector] (4) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BS_DrvNum			36		<span class="comment">/* Physical drive number (2) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BS_BootSig			38		<span class="comment">/* Extended boot signature (1) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BS_VolID			39		<span class="comment">/* Volume serial number (4) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BS_VolLab			43		<span class="comment">/* Volume label (8) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BS_FilSysType		54		<span class="comment">/* File system type (1) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BPB_FATSz32			36		<span class="comment">/* FAT size [sector] (4) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BPB_ExtFlags		40		<span class="comment">/* Extended flags (2) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BPB_FSVer			42		<span class="comment">/* File system version (2) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BPB_RootClus		44		<span class="comment">/* Root directory first cluster (4) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BPB_FSInfo			48		<span class="comment">/* Offset of FSINFO sector (2) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BPB_BkBootSec		50		<span class="comment">/* Offset of backup boot sector (2) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BS_DrvNum32			64		<span class="comment">/* Physical drive number (2) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BS_BootSig32		66		<span class="comment">/* Extended boot signature (1) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BS_VolID32			67		<span class="comment">/* Volume serial number (4) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BS_VolLab32			71		<span class="comment">/* Volume label (8) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BS_FilSysType32		82		<span class="comment">/* File system type (1) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span>	FSI_LeadSig			0		<span class="comment">/* FSI: Leading signature (4) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span>	FSI_StrucSig		484		<span class="comment">/* FSI: Structure signature (4) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span>	FSI_Free_Count		488		<span class="comment">/* FSI: Number of free clusters (4) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span>	FSI_Nxt_Free		492		<span class="comment">/* FSI: Last allocated cluster (4) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> MBR_Table			446		<span class="comment">/* MBR: Partition table offset (2) */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span>	SZ_PTE				16		<span class="comment">/* MBR: Size of a partition table entry */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BS_55AA				510		<span class="comment">/* Signature word (2) */</span></span></div></pre></td></tr></table></figure></p>
+<p>这里fatfs用的宏，而不是结构体，为的是平台兼容性。这个表记录了存储介质和FAT的很多信息，有了这些信息，就可以查询到这个存储介质到底存储了什么，还有哪些地方可以放数据等等。<br>winhex打开一个U盘，它的扇区0数据如下：<br><img src="BPB.png" alt="BPB"><br>通过查表，我们就知道这个U盘的扇区大小为0x200 = 512。保留区域的大小 = 0x08F4。我们的表的大小只有512字节，剩下的保留区域存储了一些引导信息，以及这个表的备份信息。</p>
+<h2 id="FAT扇区"><a href="#FAT扇区" class="headerlink" title="FAT扇区"></a>FAT扇区</h2><p>过了保留区域，就是FAT扇区了。FAT扇区就是描述文件在存储介质中位置的一个表。FAT扇区一般有两个，FAT1和FAT2，FAT2是FAT1的备份，这个表的规则如下：</p>
+<ol>
+<li>FAT32用32bit表示簇的地址，即4个字节是最小的寻址单位。</li>
+<li>0号地址和1号地址为系统标志，从2号地址开始对应数据区簇。</li>
+<li>2号地址为根目录的簇。</li>
+<li>如果簇里面放了文件，那么对应的FAT地址会放该文件占用的下一个簇的FAT地址，形成一个链表结构。</li>
+<li>如果文件没有继续占用下一个簇，那么FAT对应地址表项填充结束标志 FF FF FF 0F。</li>
+<li>如果该簇没有被占用，对应的FAT地址填充0.所以格式化一个U盘后，FAT扇区除了0号和1号其他扇区都会被置0。</li>
+</ol>
+<p>按照上面的规则，我们就能查表得到一个完整的数据链。</p>
+<h2 id="根目录"><a href="#根目录" class="headerlink" title="根目录"></a>根目录</h2><p>过了FAT扇区，就是数据区了，数据区第一个是根目录，根目录记录了文件的各个信息。要点如下：</p>
+<ol>
+<li>数据区以簇为单位</li>
+<li>根目录在第二簇</li>
+<li>根目录记录了根文件夹和文件的信息，以32个字节表示</li>
+<li>目录项记录了文件的各个信息，比如文件名，大小，创建日期等</li>
+<li>当使用长文件名时，FAT会建立一个长文件名目录项</li>
+<li>目录项会记录当前目录占用的簇号和父目录项占用的簇号</li>
+</ol>
+<h2 id="读取文件流程"><a href="#读取文件流程" class="headerlink" title="读取文件流程"></a>读取文件流程</h2><p>假设文件名称为test.txt，放在 File文件夹下面</p>
+<ol>
+<li>通过扇区0(引导扇区)定位FAT，和根目录位置</li>
+<li>在根目录下面查找名称为File的目录项</li>
+<li>在File目录项中获取其簇号，假设为n</li>
+<li>到n号簇查找名称为test.txt的目录项，获取其簇号为m</li>
+<li>取出m簇中的内容</li>
+<li>定位到FAT中的m号地址，判断簇链是否已经结束，若是没有结束，继续到下一个簇提取数据。知道FAT中遇到结束标志位置</li>
+</ol>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/笔记/">笔记</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="weynechen.github.io/2016/11/07/FAT-notes/" data-title="FAT notes | weyne&#39;s note" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2016/11/01/work-with-cmake/"  title="work with cmake">
+ <strong>NEXT:</strong><br/> 
+ <span>work with cmake
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#什么是FAT"><span class="toc-number">1.</span> <span class="toc-text">什么是FAT</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#存储介质"><span class="toc-number">2.</span> <span class="toc-text">存储介质</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#第0扇区"><span class="toc-number">3.</span> <span class="toc-text">第0扇区</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FAT扇区"><span class="toc-number">4.</span> <span class="toc-text">FAT扇区</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#根目录"><span class="toc-number">5.</span> <span class="toc-text">根目录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#读取文件流程"><span class="toc-number">6.</span> <span class="toc-text">读取文件流程</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+			<li><a href="/categories/QT/" title="QT">QT<sup>2</sup></a></li>
+		
+			<li><a href="/categories/STM32/" title="STM32">STM32<sup>7</sup></a></li>
+		
+			<li><a href="/categories/笔记/" title="笔记">笔记<sup>4</sup></a></li>
+		
+			<li><a href="/categories/算法/" title="算法">算法<sup>2</sup></a></li>
+		
+			<li><a href="/categories/编程工具/" title="编程工具">编程工具<sup>11</sup></a></li>
+		
+			<li><a href="/categories/通讯接口/" title="通讯接口">通讯接口<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/GraphViz/" title="GraphViz">GraphViz<sup>1</sup></a></li>
+		
+			<li><a href="/tags/cube/" title="cube">cube<sup>1</sup></a></li>
+		
+			<li><a href="/tags/usb/" title="usb">usb<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<div class="social-font clearfix">
+		
+		
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme fork Pacman © 2016 
+		
+		<a href="weynechen.github.io" target="_blank" title="weyne">weyne</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"null"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end --> 
+
+
+
+
+
+  </body>
+</html>
