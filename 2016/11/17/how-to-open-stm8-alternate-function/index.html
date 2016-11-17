@@ -4,19 +4,14 @@
 <head>
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
   
-    <title>vscode的一些技巧 | weyne&#39;s note</title>
+    <title>how to open stm8 alternate function | weyne&#39;s note</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="weyne">
     
-    <meta name="description" content="调试
-本身支持Node.js，能调试JavaScript和TypeScript
-通过调试插件扩展，可以支持其他语言，比如上文提到的C/C++
-调试需要配置文件 launch.json
-配置完成后，按F5开始调试
-
-任务脚本
-ctrl+shift+P，打开命令窗口，输入task，可以看到有很多示例配置">
+    <meta name="description" content="什么是STM8复用功能上图Pinout，用中括号括起来的功能，在默认情况下是关闭的，必须要经过设置才能打开。这个功能是复用功能。
+复用功能怎么控制通过option bytes 中的AFR寄存器来控制
+修改方法1.使用STVP烧录软件修改切换到option bytes可以看到设置，很方便。缺点是，只能">
     
     
     
@@ -76,15 +71,15 @@ ctrl+shift+P，打开命令窗口，输入task，可以看到有很多示例配�
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2016/09/26/vscode-tricks/" title="vscode的一些技巧" itemprop="url">vscode的一些技巧</a>
+      <a href="/2016/11/17/how-to-open-stm8-alternate-function/" title="how to open stm8 alternate function" itemprop="url">how to open stm8 alternate function</a>
   </h1>
   <p class="article-author">By
     
       <a href="weynechen.github.io" title="weyne">weyne</a>
     </p>
   <p class="article-time">
-    <time datetime="2016-09-26T02:46:33.000Z" itemprop="datePublished">2016-09-26</time>
-    Updated:<time datetime="2016-09-26T03:52:40.865Z" itemprop="dateModified">2016-09-26</time>
+    <time datetime="2016-11-17T06:44:30.000Z" itemprop="datePublished">2016-11-17</time>
+    Updated:<time datetime="2016-11-17T06:54:33.003Z" itemprop="dateModified">2016-11-17</time>
     
   </p>
 </header>
@@ -93,36 +88,14 @@ ctrl+shift+P，打开命令窗口，输入task，可以看到有很多示例配�
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">Contents</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#调试"><span class="toc-number">1.</span> <span class="toc-text">调试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#任务脚本"><span class="toc-number">2.</span> <span class="toc-text">任务脚本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#集成终端"><span class="toc-number">3.</span> <span class="toc-text">集成终端</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#集成Git"><span class="toc-number">4.</span> <span class="toc-text">集成Git</span></a></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#什么是STM8复用功能"><span class="toc-number">1.</span> <span class="toc-text">什么是STM8复用功能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#复用功能怎么控制"><span class="toc-number">2.</span> <span class="toc-text">复用功能怎么控制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#修改方法"><span class="toc-number">3.</span> <span class="toc-text">修改方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-使用STVP烧录软件修改"><span class="toc-number">3.1.</span> <span class="toc-text">1.使用STVP烧录软件修改</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-代码修改"><span class="toc-number">3.2.</span> <span class="toc-text">2.代码修改</span></a></li></ol></li></ol>
 		</div>
 		
-		<h2 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h2><ol>
-<li>本身支持Node.js，能调试JavaScript和TypeScript</li>
-<li>通过调试插件扩展，可以支持其他语言，比如上文提到的C/C++</li>
-<li>调试需要配置文件 launch.json</li>
-<li>配置完成后，按F5开始调试</li>
-</ol>
-<h2 id="任务脚本"><a href="#任务脚本" class="headerlink" title="任务脚本"></a>任务脚本</h2><ol>
-<li>ctrl+shift+P，打开命令窗口，输入task，可以看到有很多示例配置</li>
-<li>类似于脚本，可以调用不同的终端执行，比如说<figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"version"</span>: <span class="string">"0.1.0"</span>,</div><div class="line">    <span class="attr">"command"</span>: <span class="string">"powershell"</span>,</div><div class="line">    <span class="attr">"args"</span>: [<span class="string">"dir"</span>],</div><div class="line">    <span class="attr">"isShellCommand"</span>: <span class="literal">true</span>,</div><div class="line">    <span class="attr">"showOutput"</span>: <span class="string">"always"</span>,</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>将会打开powershell，运行dir命令</p>
-<ol>
-<li>配置task.json后，按ctrl+shift+B执行当前任务</li>
-<li>可以同时配置多个任务</li>
-<li>可以配置problem matcher，将编译警告和错误捕获到vs的输入，详情参考<a href="https://code.visualstudio.com/docs/editor/tasks" target="_blank" rel="external">Defining a Problem Matcher</a></li>
-</ol>
-<h2 id="集成终端"><a href="#集成终端" class="headerlink" title="集成终端"></a>集成终端</h2><ol>
-<li>ctrl+`可以打开集成终端，不用再在终端和vscode之间切换来切换去了，而且会自动CD到当前目录</li>
-<li>可以在设置中配置默认终端<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">"terminal.integrated.shell.windows": "C:\\Windows\\system32\\cmd.exe",</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<h2 id="集成Git"><a href="#集成Git" class="headerlink" title="集成Git"></a>集成Git</h2><ol>
-<li>无缝集成啊，不需要切换出vscode，直接打开命令面板就可以输入git命令</li>
-<li>修改信息用不同的颜色显示(红色，蓝色，绿色)</li>
-<li>内建diff功能 </li>
-</ol>
+		<h2 id="什么是STM8复用功能"><a href="#什么是STM8复用功能" class="headerlink" title="什么是STM8复用功能"></a>什么是STM8复用功能</h2><p><img src="alternate.png" alt="alternate"><br>上图Pinout，用中括号括起来的功能，在默认情况下是关闭的，必须要经过设置才能打开。这个功能是复用功能。</p>
+<h2 id="复用功能怎么控制"><a href="#复用功能怎么控制" class="headerlink" title="复用功能怎么控制"></a>复用功能怎么控制</h2><p>通过option bytes 中的AFR寄存器来控制</p>
+<h2 id="修改方法"><a href="#修改方法" class="headerlink" title="修改方法"></a>修改方法</h2><h3 id="1-使用STVP烧录软件修改"><a href="#1-使用STVP烧录软件修改" class="headerlink" title="1.使用STVP烧录软件修改"></a>1.使用STVP烧录软件修改</h3><p><img src="stvp.png" alt="stvp"><br>切换到option bytes可以看到设置，很方便。缺点是，只能用这个软件改</p>
+<h3 id="2-代码修改"><a href="#2-代码修改" class="headerlink" title="2.代码修改"></a>2.代码修改</h3><p>搭配库函数，在初始化时钟后，增加下面的代码<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//配置复用功能 PC7 -- TIM1_CH2</span></div><div class="line">FLASH_SetProgrammingTime(FLASH_PROGRAMTIME_STANDARD);</div><div class="line"><span class="comment">/* Unlock EEPROM Data memory */</span></div><div class="line">FLASH_Unlock(FLASH_MEMTYPE_PROG);</div><div class="line">FLASH_Unlock(FLASH_MEMTYPE_DATA);</div><div class="line">AFRxx=FLASH_ReadOptionByte(<span class="number">0x4803</span>);</div><div class="line"></div><div class="line"><span class="keyword">if</span>(AFRxx == <span class="number">0</span>)</div><div class="line">&#123;</div><div class="line">  FLASH_ProgramOptionByte(<span class="number">0x4803</span>,<span class="number">0x01</span>);</div><div class="line">  WWDG_SWReset();</div><div class="line">&#125;</div><div class="line">AFRxx=FLASH_ReadOptionByte(<span class="number">0x4803</span>);</div><div class="line"></div><div class="line">FLASH_Lock(FLASH_MEMTYPE_PROG);</div><div class="line">FLASH_Lock(FLASH_MEMTYPE_DATA);</div></pre></td></tr></table></figure></p>
+<p>上面的代码是修改AFR0，对应的复用功能寄存器应该查datasheet</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -130,14 +103,14 @@ ctrl+shift+P，打开命令窗口，输入task，可以看到有很多示例配�
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/编程工具/">编程工具</a>
+  <a class="article-category-link" href="/categories/STM8/">STM8</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="weynechen.github.io/2016/09/26/vscode-tricks/" data-title="vscode的一些技巧 | weyne&#39;s note" data-tsina="null" class="share clearfix">
+  <div data-url="weynechen.github.io/2016/11/17/how-to-open-stm8-alternate-function/" data-title="how to open stm8 alternate function | weyne&#39;s note" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -146,19 +119,11 @@ ctrl+shift+P，打开命令窗口，输入task，可以看到有很多示例配�
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2016/10/10/c-array-cross/" title="C数组下标越界">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  C数组下标越界</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2016/09/23/vscode-debug-c/"  title="windows下使用vscode调试C/C++">
+<a href="/2016/11/07/FAT-notes/"  title="FAT notes">
  <strong>NEXT:</strong><br/> 
- <span>windows下使用vscode调试C/C++
+ <span>FAT notes
 </span>
 </a>
 </div>
@@ -175,7 +140,7 @@ ctrl+shift+P，打开命令窗口，输入task，可以看到有很多示例配�
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">Contents</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#调试"><span class="toc-number">1.</span> <span class="toc-text">调试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#任务脚本"><span class="toc-number">2.</span> <span class="toc-text">任务脚本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#集成终端"><span class="toc-number">3.</span> <span class="toc-text">集成终端</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#集成Git"><span class="toc-number">4.</span> <span class="toc-text">集成Git</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#什么是STM8复用功能"><span class="toc-number">1.</span> <span class="toc-text">什么是STM8复用功能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#复用功能怎么控制"><span class="toc-number">2.</span> <span class="toc-text">复用功能怎么控制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#修改方法"><span class="toc-number">3.</span> <span class="toc-text">修改方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-使用STVP烧录软件修改"><span class="toc-number">3.1.</span> <span class="toc-text">1.使用STVP烧录软件修改</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-代码修改"><span class="toc-number">3.2.</span> <span class="toc-text">2.代码修改</span></a></li></ol></li></ol>
   </div>
 
 <div id="asidepart">
