@@ -9,9 +9,9 @@
     
     <meta name="author" content="weyne">
     
-    <meta name="description" content="目的使用STM8捕获PWM波的周期，脉宽，计算出占空比。有两种方案实现，第一种使用输入捕获，在中断中切换触发沿。第二种直接使用PWM捕获。这里使用第二种。
+    <meta name="description" content="目的使用STM8捕获PWM波的周期，脉宽，计算出占空比。有两种方案实现，第一种使用输入捕获，在中断中切换触发沿。第二种直接使用PWM捕获。这里使用第二种。下文对STM32同样适用。
 硬件这里使用STM8S003，PWM信号从TIM1_CH2输入。
-代码使用库函数12345678910111213141516171819202">
+代码使用库函数1234567891011121314">
     
     
     
@@ -79,7 +79,7 @@
     </p>
   <p class="article-time">
     <time datetime="2016-11-18T06:22:09.000Z" itemprop="datePublished">2016-11-18</time>
-    Updated:<time datetime="2016-11-18T06:56:03.420Z" itemprop="dateModified">2016-11-18</time>
+    Updated:<time datetime="2016-11-18T10:03:09.419Z" itemprop="dateModified">2016-11-18</time>
     
   </p>
 </header>
@@ -91,7 +91,7 @@
 		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#目的"><span class="toc-number">1.</span> <span class="toc-text">目的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#硬件"><span class="toc-number">2.</span> <span class="toc-text">硬件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码"><span class="toc-number">3.</span> <span class="toc-text">代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#解释"><span class="toc-number">4.</span> <span class="toc-text">解释</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#注意点"><span class="toc-number">5.</span> <span class="toc-text">注意点</span></a></li></ol>
 		</div>
 		
-		<h2 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h2><p>使用STM8捕获PWM波的周期，脉宽，计算出占空比。有两种方案实现，第一种使用输入捕获，在中断中切换触发沿。第二种直接使用PWM捕获。这里使用第二种。</p>
+		<h2 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h2><p>使用STM8捕获PWM波的周期，脉宽，计算出占空比。有两种方案实现，第一种使用输入捕获，在中断中切换触发沿。第二种直接使用PWM捕获。这里使用第二种。<br>下文对STM32同样适用。</p>
 <h2 id="硬件"><a href="#硬件" class="headerlink" title="硬件"></a>硬件</h2><p>这里使用STM8S003，PWM信号从TIM1_CH2输入。</p>
 <h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>使用库函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line">void CapturePWMInit(void)</div><div class="line">&#123;</div><div class="line">    /*配置PC7 TIM1_CC2为输入捕获，捕获RX*/</div><div class="line">    GPIO_Init(GPIOC, (GPIO_Pin_TypeDef)GPIO_PIN_7, GPIO_MODE_IN_FL_NO_IT);</div><div class="line">    TIM1_DeInit();</div><div class="line">    TIM1_TimeBaseInit(1- 1, TIM1_COUNTERMODE_UP, 60000, 0);</div><div class="line">    TIM1_SelectInputTrigger(TIM1_TS_TI2FP2);</div><div class="line">    TIM1_SelectSlaveMode(TIM1_SLAVEMODE_RESET);</div><div class="line">    TIM1_PWMIConfig(TIM1_CHANNEL_2, TIM1_ICPOLARITY_RISING, TIM1_ICSELECTION_DIRECTTI, TIM1_ICPSC_DIV8, 0x10);</div><div class="line">    /*等待捕获开始*/</div><div class="line">    TIM1_Cmd(ENABLE);</div><div class="line">    TIM1_ClearFlag(TIM1_FLAG_CC2);</div><div class="line">    while((TIM1-&gt;SR1 &amp; TIM1_FLAG_CC2) != TIM1_FLAG_CC2);</div><div class="line">    TIM1_Cmd(DISABLE);</div><div class="line">&#125;</div><div class="line"></div><div class="line">u16 CaptureDutyCycle(void)</div><div class="line">&#123;</div><div class="line">  u16 duty_cycle;</div><div class="line">  u16 pulse_width;</div><div class="line">  u16 period;</div><div class="line">  u8 i;</div><div class="line">  TIM1_Cmd(ENABLE);</div><div class="line">  TIM1-&gt;CCER1 |= 0x11; //打开捕获通道</div><div class="line">  /* 重复几次*/</div><div class="line">  for(i=0;i&lt;5;i++)</div><div class="line">  &#123;</div><div class="line">  TIM1_ClearFlag(TIM1_FLAG_CC2);</div><div class="line">  while((TIM1-&gt;SR1 &amp; TIM1_FLAG_CC2) != TIM1_FLAG_CC2);</div><div class="line">  &#125;</div><div class="line">  TIM1-&gt;CCER1 &amp;= 0xEE; //关闭捕获通道</div><div class="line"></div><div class="line">  /* real pulse width and period must divide master frequency*/</div><div class="line">  pulse_width = TIM1_GetCapture1();</div><div class="line">  period = TIM1_GetCapture2();</div><div class="line">  duty_cycle = (u16)(((float)pulse_width/(float)period) *100);</div><div class="line">  TIM1_Cmd(DISABLE);</div><div class="line"></div><div class="line">  if(period/16!=COM_PERIOD)</div><div class="line">    return 0;</div><div class="line"></div><div class="line">  if(duty_cycle&gt;100)</div><div class="line">    return 0;</div><div class="line"></div><div class="line">  return duty_cycle;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <h2 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h2><p>首先需要理解一个框图：<br><img src="diagram.png" alt="diagram"><br>从上面可以看到，从TIM_CH2输入PWM后，经过滤波器和检测器，会有链条路径到输入捕获寄存器。一个是TI2FP2，一个是TI2FP1。PWM捕获，关键是控制这两个信号。</p>
@@ -108,6 +108,7 @@
 <li>若是用寄存器方法，记得读捕获寄存器时(CCRx)，要先读高位，再读低位。使用库函数的话，ST已经写好了。</li>
 <li>至少要捕获两次，清空前面无效值</li>
 <li>读取寄存器值之前，需要先关闭捕获功能。因为读CCRx低位，会导致捕获标记清空，若是外部信号一直在输出，可能读出的值就是下一次的捕获值。而这个值不一定准确。</li>
+<li>只有CH1和CH2支持。虽然从框图上看，CH3和CH4也是一对，但是在从模式触发选择寄存器(SMCR)中只能选TI1FP1和TI2FP2，库函数也只支持TI1FP1和TI2FP2。所以最好只从CH1或者CH2输入PWM。</li>
 </ol>
   
 	</div>
