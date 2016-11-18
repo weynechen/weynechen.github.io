@@ -4,15 +4,14 @@
 <head>
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
   
-    <title>在Ubuntu下编译 Qt程序 | weyne&#39;s note</title>
+    <title>using stm8s pwm capture | weyne&#39;s note</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="weyne">
     
-    <meta name="description" content="起因Qt是跨平台的，但是我一直工作在Windows平台下面，没真正体会到跨平台的好处。现在很庆幸当时选的跨平台工具，否则整个工程在不同的平台都得重写一次。真是应了一句话：选择比努力重要！
-安装在Linux下面安装Qt和Windows下没有太多区别。也是几个步骤：
-
-下载。download.qt.io">
+    <meta name="description" content="目的使用STM8捕获PWM波的周期，脉宽，计算出占空比。有两种方案实现，第一种使用输入捕获，在中断中切换触发沿。第二种直接使用PWM捕获。这里使用第二种。
+硬件这里使用STM8S003，PWM信号从TIM1_CH2输入。
+代码使用库函数12345678910111213141516171819202">
     
     
     
@@ -72,15 +71,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2016/10/23/qt-in-Linux/" title="在Ubuntu下编译 Qt程序" itemprop="url">在Ubuntu下编译 Qt程序</a>
+      <a href="/2016/11/18/using-stm8s-pwm-capture/" title="using stm8s pwm capture" itemprop="url">using stm8s pwm capture</a>
   </h1>
   <p class="article-author">By
     
       <a href="weynechen.github.io" title="weyne">weyne</a>
     </p>
   <p class="article-time">
-    <time datetime="2016-10-23T09:35:58.000Z" itemprop="datePublished">2016-10-23</time>
-    Updated:<time datetime="2016-10-23T10:02:11.273Z" itemprop="dateModified">2016-10-23</time>
+    <time datetime="2016-11-18T06:22:09.000Z" itemprop="datePublished">2016-11-18</time>
+    Updated:<time datetime="2016-11-18T06:56:03.420Z" itemprop="dateModified">2016-11-18</time>
     
   </p>
 </header>
@@ -89,29 +88,26 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">Contents</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#起因"><span class="toc-number">1.</span> <span class="toc-text">起因</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装"><span class="toc-number">2.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#编译"><span class="toc-number">3.</span> <span class="toc-text">编译</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#运行"><span class="toc-number">4.</span> <span class="toc-text">运行</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#发布"><span class="toc-number">5.</span> <span class="toc-text">发布</span></a></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#目的"><span class="toc-number">1.</span> <span class="toc-text">目的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#硬件"><span class="toc-number">2.</span> <span class="toc-text">硬件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码"><span class="toc-number">3.</span> <span class="toc-text">代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#解释"><span class="toc-number">4.</span> <span class="toc-text">解释</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#注意点"><span class="toc-number">5.</span> <span class="toc-text">注意点</span></a></li></ol>
 		</div>
 		
-		<h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>Qt是跨平台的，但是我一直工作在Windows平台下面，没真正体会到跨平台的好处。现在很庆幸当时选的跨平台工具，否则整个工程在不同的平台都得重写一次。真是应了一句话：选择比努力重要！</p>
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>在Linux下面安装Qt和Windows下没有太多区别。也是几个步骤：</p>
+		<h2 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h2><p>使用STM8捕获PWM波的周期，脉宽，计算出占空比。有两种方案实现，第一种使用输入捕获，在中断中切换触发沿。第二种直接使用PWM捕获。这里使用第二种。</p>
+<h2 id="硬件"><a href="#硬件" class="headerlink" title="硬件"></a>硬件</h2><p>这里使用STM8S003，PWM信号从TIM1_CH2输入。</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>使用库函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line">void CapturePWMInit(void)</div><div class="line">&#123;</div><div class="line">    /*配置PC7 TIM1_CC2为输入捕获，捕获RX*/</div><div class="line">    GPIO_Init(GPIOC, (GPIO_Pin_TypeDef)GPIO_PIN_7, GPIO_MODE_IN_FL_NO_IT);</div><div class="line">    TIM1_DeInit();</div><div class="line">    TIM1_TimeBaseInit(1- 1, TIM1_COUNTERMODE_UP, 60000, 0);</div><div class="line">    TIM1_SelectInputTrigger(TIM1_TS_TI2FP2);</div><div class="line">    TIM1_SelectSlaveMode(TIM1_SLAVEMODE_RESET);</div><div class="line">    TIM1_PWMIConfig(TIM1_CHANNEL_2, TIM1_ICPOLARITY_RISING, TIM1_ICSELECTION_DIRECTTI, TIM1_ICPSC_DIV8, 0x10);</div><div class="line">    /*等待捕获开始*/</div><div class="line">    TIM1_Cmd(ENABLE);</div><div class="line">    TIM1_ClearFlag(TIM1_FLAG_CC2);</div><div class="line">    while((TIM1-&gt;SR1 &amp; TIM1_FLAG_CC2) != TIM1_FLAG_CC2);</div><div class="line">    TIM1_Cmd(DISABLE);</div><div class="line">&#125;</div><div class="line"></div><div class="line">u16 CaptureDutyCycle(void)</div><div class="line">&#123;</div><div class="line">  u16 duty_cycle;</div><div class="line">  u16 pulse_width;</div><div class="line">  u16 period;</div><div class="line">  u8 i;</div><div class="line">  TIM1_Cmd(ENABLE);</div><div class="line">  TIM1-&gt;CCER1 |= 0x11; //打开捕获通道</div><div class="line">  /* 重复几次*/</div><div class="line">  for(i=0;i&lt;5;i++)</div><div class="line">  &#123;</div><div class="line">  TIM1_ClearFlag(TIM1_FLAG_CC2);</div><div class="line">  while((TIM1-&gt;SR1 &amp; TIM1_FLAG_CC2) != TIM1_FLAG_CC2);</div><div class="line">  &#125;</div><div class="line">  TIM1-&gt;CCER1 &amp;= 0xEE; //关闭捕获通道</div><div class="line"></div><div class="line">  /* real pulse width and period must divide master frequency*/</div><div class="line">  pulse_width = TIM1_GetCapture1();</div><div class="line">  period = TIM1_GetCapture2();</div><div class="line">  duty_cycle = (u16)(((float)pulse_width/(float)period) *100);</div><div class="line">  TIM1_Cmd(DISABLE);</div><div class="line"></div><div class="line">  if(period/16!=COM_PERIOD)</div><div class="line">    return 0;</div><div class="line"></div><div class="line">  if(duty_cycle&gt;100)</div><div class="line">    return 0;</div><div class="line"></div><div class="line">  return duty_cycle;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h2><p>首先需要理解一个框图：<br><img src="diagram.png" alt="diagram"><br>从上面可以看到，从TIM_CH2输入PWM后，经过滤波器和检测器，会有链条路径到输入捕获寄存器。一个是TI2FP2，一个是TI2FP1。PWM捕获，关键是控制这两个信号。</p>
 <ol>
-<li>下载。<a href="download.qt.io">download.qt.io</a>，选相应版本即可。</li>
-<li>安装。cd 到下载目录，然后./qt-opensource-linux-x64-5.7.0.run。</li>
-<li>配置。使用QtCreator编译，基本不用配置，打开源码点运行就可以。如果想使用其他编辑器，则需要配置qmake的路径。个人觉得没有必要，毕竟QtCreator已经做得足够好了。</li>
+<li><p>两个信号设置为不同的触发沿，比如TI2FP1设置上升沿，则TI2FP2就设置下降沿。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">TIM1_PWMIConfig(TIM1_CHANNEL_2, TIM1_ICPOLARITY_RISING, TIM1_ICSELECTION_DIRECTTI, TIM1_ICPSC_DIV8, 0x10);</div></pre></td></tr></table></figure>
+</li>
+<li><p>配置其中一个为触发信号，触发模式配置成复位触发模式。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">TIM1_SelectInputTrigger(TIM1_TS_TI2FP2);</div><div class="line">TIM1_SelectSlaveMode(TIM1_SLAVEMODE_RESET);</div></pre></td></tr></table></figure>
+</li>
 </ol>
-<h2 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h2><p>因为我在Windows下面已经编写好了，所以原封不动的挪过来，然后直接点编译就过了。</p>
-<h2 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h2><p>涉及到USB转串口，如果使用QtCreator直接Ctrl+R，因为权限不够，生成的程序在打开串口时会提示open error。。所以采取在终端中使用sudo运行的方法。</p>
-<h2 id="发布"><a href="#发布" class="headerlink" title="发布"></a>发布</h2><p>发布的过程稍微有点繁琐，因为需要打包相应的依赖环境。步骤如下：</p>
-<ol>
-<li><p>cd到生成程序的目录 ，运行下面的脚本(注意修改程序名和目标路径)</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/sh</span></div><div class="line">exe=<span class="string">"2DLidarDemo"</span></div><div class="line">des=<span class="string">"/mnt/source/build-2DLidarDemo-Desktop_Qt_5_7_0_GCC_64bit-Release/release"</span></div><div class="line">deplist=$(ldd <span class="variable">$exe</span> | awk  <span class="string">'&#123;if (match($3,"/"))&#123; printf("%s "),$3 &#125; &#125;'</span>)</div><div class="line">cp <span class="variable">$deplist</span> <span class="variable">$des</span></div></pre></td></tr></table></figure>
-</li>
-<li><p>在打包的文件目录下面，建立一个和目标程序名字一样的脚本文件</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/sh</span></div><div class="line">appname=`basename <span class="variable">$0</span> | sed s,\.sh$,,`</div><div class="line"></div><div class="line">dirname=`dirname <span class="variable">$0</span>`</div><div class="line">tmp=<span class="string">"<span class="variable">$&#123;dirname#?&#125;</span>"</span></div><div class="line"></div><div class="line"><span class="keyword">if</span> [ <span class="string">"<span class="variable">$&#123;dirname%$tmp&#125;</span>"</span> != <span class="string">"/"</span> ]; <span class="keyword">then</span></div><div class="line">dirname=<span class="variable">$PWD</span>/<span class="variable">$dirname</span></div><div class="line"><span class="keyword">fi</span></div><div class="line">LD_LIBRARY_PATH=<span class="variable">$dirname</span></div><div class="line"><span class="built_in">export</span> LD_LIBRARY_PATH</div><div class="line"><span class="variable">$dirname</span>/<span class="variable">$appname</span> <span class="string">"<span class="variable">$@</span>"</span></div></pre></td></tr></table></figure>
-</li>
-<li><p>特别需要注意的一点，如果上述两个脚本是从windows平台下面拷贝过去，直接运行会提示^M的错误。这是因为文本编码的问题，需要转换一下</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-get install dos2unix</div></pre></td></tr></table></figure>
-</li>
+<p><img src="pwmcapture.png" alt="pwmcapture"><br>上面图是官方参考手册上的例子，其设置的触发信号是TI1FP1上升沿。可以看到上升沿到来的时候，计数器被清零(即复位触发模式)。到下降沿，计数器的值被装在到IC2的捕获计数器。再到下一个上升沿到来时，又被触发。我们需要在此时读IC1和IC2的捕获寄存器的值。IC1的值即周期，IC2的值即正脉宽。</p>
+<h2 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h2><ol>
+<li>若是用寄存器方法，记得读捕获寄存器时(CCRx)，要先读高位，再读低位。使用库函数的话，ST已经写好了。</li>
+<li>至少要捕获两次，清空前面无效值</li>
+<li>读取寄存器值之前，需要先关闭捕获功能。因为读CCRx低位，会导致捕获标记清空，若是外部信号一直在输出，可能读出的值就是下一次的捕获值。而这个值不一定准确。</li>
 </ol>
   
 	</div>
@@ -120,14 +116,14 @@
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/编程工具/">编程工具</a>
+  <a class="article-category-link" href="/categories/stm8/">stm8</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="weynechen.github.io/2016/10/23/qt-in-Linux/" data-title="在Ubuntu下编译 Qt程序 | weyne&#39;s note" data-tsina="null" class="share clearfix">
+  <div data-url="weynechen.github.io/2016/11/18/using-stm8s-pwm-capture/" data-title="using stm8s pwm capture | weyne&#39;s note" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -136,19 +132,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2016/10/24/STM32-USB-composite-deveice/" title="STM32 USB composite deveice">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  STM32 USB composite deveice</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2016/10/14/markdown-new-plugin/"  title="markdown新插件">
+<a href="/2016/11/17/how-to-open-stm8-alternate-function/"  title="how to open stm8 alternate function">
  <strong>NEXT:</strong><br/> 
- <span>markdown新插件
+ <span>how to open stm8 alternate function
 </span>
 </a>
 </div>
@@ -165,7 +153,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">Contents</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#起因"><span class="toc-number">1.</span> <span class="toc-text">起因</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装"><span class="toc-number">2.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#编译"><span class="toc-number">3.</span> <span class="toc-text">编译</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#运行"><span class="toc-number">4.</span> <span class="toc-text">运行</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#发布"><span class="toc-number">5.</span> <span class="toc-text">发布</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#目的"><span class="toc-number">1.</span> <span class="toc-text">目的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#硬件"><span class="toc-number">2.</span> <span class="toc-text">硬件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码"><span class="toc-number">3.</span> <span class="toc-text">代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#解释"><span class="toc-number">4.</span> <span class="toc-text">解释</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#注意点"><span class="toc-number">5.</span> <span class="toc-text">注意点</span></a></li></ol>
   </div>
 
 <div id="asidepart">
