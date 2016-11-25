@@ -4,12 +4,14 @@
 <head>
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
   
-    <title>滑动均值滤波 | weyne&#39;s note</title>
+    <title>what is linting | weyne&#39;s note</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="weyne">
     
-    <meta name="description" content="一般算法每次都对整个的数据缓存区数据求平均，好理解。1234567891011121314151617181920212223242526//循环数组static u16 TempRecoder[TEMP_FILTER_LEN];static u16 CirclePointer = 0;/*** @">
+    <meta name="description" content="在VSCode或者其他地方总看到linting这个词，用词典查，发现是线头的意思。。。查阅stackoverflow，发现也有人有同样的疑问。
+
+PHPLint, JSLint, and I recently came across “you can lint your JS code on the">
     
     
     
@@ -69,15 +71,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2016/09/07/filter/" title="滑动均值滤波" itemprop="url">滑动均值滤波</a>
+      <a href="/2016/11/01/what-is-linting/" title="what is linting" itemprop="url">what is linting</a>
   </h1>
   <p class="article-author">By
     
       <a href="weynechen.github.io" title="weyne">weyne</a>
     </p>
   <p class="article-time">
-    <time datetime="2016-09-07T01:21:12.000Z" itemprop="datePublished">2016-09-07</time>
-    更新日期:<time datetime="2016-10-24T02:56:02.598Z" itemprop="dateModified">2016-10-24</time>
+    <time datetime="2016-11-01T08:16:42.000Z" itemprop="datePublished">2016-11-01</time>
+    更新日期:<time datetime="2016-11-25T03:26:23.330Z" itemprop="dateModified">2016-11-25</time>
     
   </p>
 </header>
@@ -86,15 +88,18 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目錄</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一般算法"><span class="toc-number">1.</span> <span class="toc-text">一般算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#加速算法"><span class="toc-number">2.</span> <span class="toc-text">加速算法</span></a></li></ol>
+		
 		</div>
 		
-		<h2 id="一般算法"><a href="#一般算法" class="headerlink" title="一般算法"></a>一般算法</h2><p>每次都对整个的数据缓存区数据求平均，好理解。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//循环数组</span></div><div class="line"><span class="keyword">static</span> u16 TempRecoder[TEMP_FILTER_LEN];</div><div class="line"><span class="keyword">static</span> u16 CirclePointer = <span class="number">0</span>;</div><div class="line"><span class="comment">/**</span></div><div class="line">* @brief  滑动均值滤波</div><div class="line">* @param  None</div><div class="line">* @retval 滤波后的温度值</div><div class="line">*/</div><div class="line"><span class="function">u16 <span class="title">TemperatureFilter</span><span class="params">(<span class="keyword">void</span>)</span></span></div><div class="line">&#123;</div><div class="line">  u32 temp_amount = <span class="number">0</span>;</div><div class="line">  u16 temp_avg;</div><div class="line">  u16 i;</div><div class="line"></div><div class="line">  <span class="comment">//循环存入温度</span></div><div class="line">  <span class="keyword">if</span>(CirclePointer == TEMP_FILTER_LEN)</div><div class="line">      CirclePointer = <span class="number">0</span>;</div><div class="line">  TempRecoder[CirclePointer] = Temperature;</div><div class="line"></div><div class="line">  <span class="keyword">for</span>(i = <span class="number">0</span> ; i&lt;TEMP_FILTER_LEN ; i++)</div><div class="line">    temp_amount += TempRecoder[i];</div><div class="line"></div><div class="line">  CirclePointer++;</div><div class="line">  temp_avg = TempAmount / TEMP_FILTER_LEN;</div><div class="line">  <span class="keyword">return</span> temp_avg;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="加速算法"><a href="#加速算法" class="headerlink" title="加速算法"></a>加速算法</h2><p>不使用循环。将这些数据放到一个FIFO中，每次数据的总和的变化量，其实就是入FIFO数与出FIFO数的差值。所以滑动均值就是</p>
+		<p>在VSCode或者其他地方总看到linting这个词，用词典查，发现是线头的意思。。。<br>查阅stackoverflow，发现也有人有同样的疑问。</p>
 <blockquote>
-<p>avg = (sum + δ) / amount</p>
+<p>PHPLint, JSLint, and I recently came across “you can lint your JS code on the fly” while reading something about some IDE. So what is this Linting that everyone knows but me :-) ?</p>
 </blockquote>
- <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"> <span class="comment">//循环数组</span></div><div class="line"><span class="keyword">static</span> u16 TempRecoder[TEMP_FILTER_LEN];</div><div class="line"><span class="keyword">static</span> u16 CirclePointer = <span class="number">0</span>;</div><div class="line"><span class="keyword">static</span> u32 TempAmount = TEMP_INITIAL_VALUE * TEMP_FILTER_LEN;</div><div class="line">  <span class="comment">/**</span></div><div class="line">  * @brief  滑动均值滤波</div><div class="line">  * @param  None</div><div class="line">  * @retval 滤波后的温度值</div><div class="line">  */</div><div class="line"><span class="function">u16 <span class="title">TemperatureFilter</span><span class="params">(<span class="keyword">void</span>)</span></span></div><div class="line">&#123;</div><div class="line">	u16 out_temp = <span class="number">0</span>;</div><div class="line">	u16 temp_avg;</div><div class="line"></div><div class="line">	<span class="comment">//循环存入温度</span></div><div class="line">	<span class="keyword">if</span>(CirclePointer == TEMP_FILTER_LEN)</div><div class="line">		CirclePointer = <span class="number">0</span>;</div><div class="line">	out_temp = TempRecoder[CirclePointer];</div><div class="line">	TempRecoder[CirclePointer] = Temperature;</div><div class="line">	TempAmount = TempAmount +  TempRecoder[CirclePointer]  - out_temp ;</div><div class="line"></div><div class="line">	CirclePointer++;</div><div class="line">	temp_avg = TempAmount / TEMP_FILTER_LEN;</div><div class="line">	<span class="keyword">return</span> temp_avg;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>有人回答</p>
+<blockquote>
+<p>Linting is the process of running a program that will analyse code for potential errors.<br>维基百科定义<br>lint was the name originally given to a particular program that flagged some suspicious and non-portable constructs (likely to be bugs) in C language source code. The term is now applied generically to tools that flag suspicious usage in software written in any computer language.</p>
+</blockquote>
+<p>理解就是，linting 是发现代码错误潜在错误的一个工具。只是不知道为啥取名叫linting。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -102,14 +107,14 @@
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/算法/">算法</a>
+  <a class="article-category-link" href="/categories/笔记/">笔记</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="weynechen.github.io/2016/09/07/filter/" data-title="滑动均值滤波 | weyne&#39;s note" data-tsina="null" class="share clearfix">
+  <div data-url="weynechen.github.io/2016/11/01/what-is-linting/" data-title="what is linting | weyne&#39;s note" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -119,18 +124,18 @@
 <nav class="article-nav clearfix">
  
  <div class="prev" >
- <a href="/2016/09/08/stm32-usb/" title="stm32 usb FS device notes">
+ <a href="/2016/11/07/FAT-notes/" title="FAT notes">
   <strong>PREVIOUS:</strong><br/>
   <span>
-  stm32 usb FS device notes</span>
+  FAT notes</span>
 </a>
 </div>
 
 
 <div class="next">
-<a href="/2016/08/26/QVariant/"  title="How to support your own type in QVariant">
+<a href="/2016/11/01/work-with-cmake/"  title="work with cmake">
  <strong>NEXT:</strong><br/> 
- <span>How to support your own type in QVariant
+ <span>work with cmake
 </span>
 </a>
 </div>
@@ -147,7 +152,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目錄</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一般算法"><span class="toc-number">1.</span> <span class="toc-text">一般算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#加速算法"><span class="toc-number">2.</span> <span class="toc-text">加速算法</span></a></li></ol>
+  
   </div>
 
 <div id="asidepart">

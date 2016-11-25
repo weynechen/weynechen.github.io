@@ -4,12 +4,19 @@
 <head>
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
   
-    <title>滑动均值滤波 | weyne&#39;s note</title>
+    <title>TOF principle in ranging | weyne&#39;s note</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="weyne">
     
-    <meta name="description" content="一般算法每次都对整个的数据缓存区数据求平均，好理解。1234567891011121314151617181920212223242526//循环数组static u16 TempRecoder[TEMP_FILTER_LEN];static u16 CirclePointer = 0;/*** @">
+    <meta name="description" content="什么是TOFTOF ,Time of flight,光的飞行时间来测量。
+基本原理$ 2D = c \Delta t \tag{Eq. 1} $
+
+D为待测距离
+c为光速 约等于$3*10^8 {m/s}$
+$\Delta t$为发出激光到接收到激光的时间差
+
+由于光速太快，若是想做到很高的精度，比">
     
     
     
@@ -69,15 +76,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2016/09/07/filter/" title="滑动均值滤波" itemprop="url">滑动均值滤波</a>
+      <a href="/2016/11/25/TOF-principle/" title="TOF principle in ranging" itemprop="url">TOF principle in ranging</a>
   </h1>
   <p class="article-author">By
     
       <a href="weynechen.github.io" title="weyne">weyne</a>
     </p>
   <p class="article-time">
-    <time datetime="2016-09-07T01:21:12.000Z" itemprop="datePublished">2016-09-07</time>
-    更新日期:<time datetime="2016-10-24T02:56:02.598Z" itemprop="dateModified">2016-10-24</time>
+    <time datetime="2016-11-25T02:31:54.000Z" itemprop="datePublished">2016-11-25</time>
+    更新日期:<time datetime="2016-11-25T07:26:11.000Z" itemprop="dateModified">2016-11-25</time>
     
   </p>
 </header>
@@ -86,15 +93,35 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目錄</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一般算法"><span class="toc-number">1.</span> <span class="toc-text">一般算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#加速算法"><span class="toc-number">2.</span> <span class="toc-text">加速算法</span></a></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#什么是TOF"><span class="toc-number">1.</span> <span class="toc-text">什么是TOF</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#基本原理"><span class="toc-number">2.</span> <span class="toc-text">基本原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#工程实现原理"><span class="toc-number">3.</span> <span class="toc-text">工程实现原理</span></a></li></ol>
 		</div>
 		
-		<h2 id="一般算法"><a href="#一般算法" class="headerlink" title="一般算法"></a>一般算法</h2><p>每次都对整个的数据缓存区数据求平均，好理解。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//循环数组</span></div><div class="line"><span class="keyword">static</span> u16 TempRecoder[TEMP_FILTER_LEN];</div><div class="line"><span class="keyword">static</span> u16 CirclePointer = <span class="number">0</span>;</div><div class="line"><span class="comment">/**</span></div><div class="line">* @brief  滑动均值滤波</div><div class="line">* @param  None</div><div class="line">* @retval 滤波后的温度值</div><div class="line">*/</div><div class="line"><span class="function">u16 <span class="title">TemperatureFilter</span><span class="params">(<span class="keyword">void</span>)</span></span></div><div class="line">&#123;</div><div class="line">  u32 temp_amount = <span class="number">0</span>;</div><div class="line">  u16 temp_avg;</div><div class="line">  u16 i;</div><div class="line"></div><div class="line">  <span class="comment">//循环存入温度</span></div><div class="line">  <span class="keyword">if</span>(CirclePointer == TEMP_FILTER_LEN)</div><div class="line">      CirclePointer = <span class="number">0</span>;</div><div class="line">  TempRecoder[CirclePointer] = Temperature;</div><div class="line"></div><div class="line">  <span class="keyword">for</span>(i = <span class="number">0</span> ; i&lt;TEMP_FILTER_LEN ; i++)</div><div class="line">    temp_amount += TempRecoder[i];</div><div class="line"></div><div class="line">  CirclePointer++;</div><div class="line">  temp_avg = TempAmount / TEMP_FILTER_LEN;</div><div class="line">  <span class="keyword">return</span> temp_avg;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="加速算法"><a href="#加速算法" class="headerlink" title="加速算法"></a>加速算法</h2><p>不使用循环。将这些数据放到一个FIFO中，每次数据的总和的变化量，其实就是入FIFO数与出FIFO数的差值。所以滑动均值就是</p>
+		<h2 id="什么是TOF"><a href="#什么是TOF" class="headerlink" title="什么是TOF"></a>什么是TOF</h2><p>TOF ,Time of flight,光的飞行时间来测量。</p>
+<h2 id="基本原理"><a href="#基本原理" class="headerlink" title="基本原理"></a>基本原理</h2><p>$ 2D = c \Delta t \tag{Eq. 1} $</p>
+<ul>
+<li>D为待测距离</li>
+<li>c为光速 约等于$3*10^8 {m/s}$</li>
+<li>$\Delta t$为发出激光到接收到激光的时间差</li>
+</ul>
+<p>由于光速太快，若是想做到很高的精度，比如1mm，那么$ \Delta t = 6.6 * 10^{12}$s。这个时间精度(皮秒级别)，想要测量出来基本是不可能的。</p>
 <blockquote>
-<p>avg = (sum + δ) / amount</p>
+<p>This level of accuracy is nearly impossible to achieve in silicon at room temperature</p>
 </blockquote>
- <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"> <span class="comment">//循环数组</span></div><div class="line"><span class="keyword">static</span> u16 TempRecoder[TEMP_FILTER_LEN];</div><div class="line"><span class="keyword">static</span> u16 CirclePointer = <span class="number">0</span>;</div><div class="line"><span class="keyword">static</span> u32 TempAmount = TEMP_INITIAL_VALUE * TEMP_FILTER_LEN;</div><div class="line">  <span class="comment">/**</span></div><div class="line">  * @brief  滑动均值滤波</div><div class="line">  * @param  None</div><div class="line">  * @retval 滤波后的温度值</div><div class="line">  */</div><div class="line"><span class="function">u16 <span class="title">TemperatureFilter</span><span class="params">(<span class="keyword">void</span>)</span></span></div><div class="line">&#123;</div><div class="line">	u16 out_temp = <span class="number">0</span>;</div><div class="line">	u16 temp_avg;</div><div class="line"></div><div class="line">	<span class="comment">//循环存入温度</span></div><div class="line">	<span class="keyword">if</span>(CirclePointer == TEMP_FILTER_LEN)</div><div class="line">		CirclePointer = <span class="number">0</span>;</div><div class="line">	out_temp = TempRecoder[CirclePointer];</div><div class="line">	TempRecoder[CirclePointer] = Temperature;</div><div class="line">	TempAmount = TempAmount +  TempRecoder[CirclePointer]  - out_temp ;</div><div class="line"></div><div class="line">	CirclePointer++;</div><div class="line">	temp_avg = TempAmount / TEMP_FILTER_LEN;</div><div class="line">	<span class="keyword">return</span> temp_avg;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="工程实现原理"><a href="#工程实现原理" class="headerlink" title="工程实现原理"></a>工程实现原理</h2><p>$ d = {c \over 4 \pi f}\phi \tag{Eq. 2} $<br>$ \phi = arctan({Q3-Q4 \over Q1 - Q2}) \tag {Eq.3}$</p>
+<ul>
+<li>d为测量距离</li>
+<li>c为光速</li>
+<li>f为激光频率</li>
+<li>$\phi$为相位(phase)偏移</li>
+<li>Q为电荷量，表现形式为一个相关性函数</li>
+</ul>
+<p>可以看到Eq.2与Eq.1是等价的，因为根据相位的定义，相位偏移1弧度，等价于时间差为<br>$ {1\over{2 \pi f}} $，可知 $ \Delta t = {\phi \over 2 \pi f}$</p>
+<p>Eq.3比较难理解，放一张图：<br><img src="correlation-function.png" alt="correlation-function and phase"></p>
+<p> 这里Q1~Q4就是相关函数(<a href="https://en.wikipedia.org/wiki/Correlation_function" target="_blank" rel="external">Correlation function</a>)。在几个不同相位点采样得到的相关函数后，可以得到相位偏移值。物理含义上，Q1~Q4是电荷量的多少。在不同的采样点，打开不同的采样开关，采集到电荷量的多少，表示为Q。如下图：</p>
+<p><img src="phasetiming.png" alt="phasetiming"></p>
+<p>可以看到，每隔90度，打开一个采样开关，采集一定的电荷量，然后通过时序控制，使用ADC读出。电荷量的采集量表现即为上面的相关函数。</p>
+<p><img src="tofdiagram.png" alt="diagram"></p>
+<p>更详细的过程参考<br><a href="http://www.ti.com.cn/analog/cn/docs/litabsmultiplefilelist.tsp?literatureNumber=sbau219d&amp;docCategoryId=5&amp;familyId=3185&amp;keyMatch=SBAU219D&amp;tisearch=Search-CN-Everything" target="_blank" rel="external">http://www.ti.com.cn/analog/cn/docs/litabsmultiplefilelist.tsp?literatureNumber=sbau219d&amp;docCategoryId=5&amp;familyId=3185&amp;keyMatch=SBAU219D&amp;tisearch=Search-CN-Everything</a></p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -102,14 +129,14 @@
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/算法/">算法</a>
+  <a class="article-category-link" href="/categories/笔记/">笔记</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="weynechen.github.io/2016/09/07/filter/" data-title="滑动均值滤波 | weyne&#39;s note" data-tsina="null" class="share clearfix">
+  <div data-url="weynechen.github.io/2016/11/25/TOF-principle/" data-title="TOF principle in ranging | weyne&#39;s note" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -118,19 +145,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2016/09/08/stm32-usb/" title="stm32 usb FS device notes">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  stm32 usb FS device notes</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2016/08/26/QVariant/"  title="How to support your own type in QVariant">
+<a href="/2016/11/18/using-stm8s-pwm-capture/"  title="using stm8s pwm capture">
  <strong>NEXT:</strong><br/> 
- <span>How to support your own type in QVariant
+ <span>using stm8s pwm capture
 </span>
 </a>
 </div>
@@ -147,7 +166,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目錄</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一般算法"><span class="toc-number">1.</span> <span class="toc-text">一般算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#加速算法"><span class="toc-number">2.</span> <span class="toc-text">加速算法</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#什么是TOF"><span class="toc-number">1.</span> <span class="toc-text">什么是TOF</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#基本原理"><span class="toc-number">2.</span> <span class="toc-text">基本原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#工程实现原理"><span class="toc-number">3.</span> <span class="toc-text">工程实现原理</span></a></li></ol>
   </div>
 
 <div id="asidepart">
