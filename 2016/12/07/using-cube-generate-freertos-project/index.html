@@ -1,0 +1,385 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+  
+    <title>using cube generate freertos project | weyne&#39;s note</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="weyne">
+    
+    <meta name="description" content="MotivationLearn and practise FreeRTOS
+Project content
+Create tasks
+
+
+default task : parse uart Cmd , choose which task to run
+led task : toggle led wi">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+  <body>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="weyne&#39;s note" title="weyne&#39;s note"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="weyne&#39;s note">weyne&#39;s note</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					
+						<li><a href="/">主页</a></li>
+					
+						<li><a href="/archives">所有文章</a></li>
+					
+						<li><a href="/tags">标签</a></li>
+					
+						<li><a href="/categories">分类</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:weynechen.github.io">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/12/07/using-cube-generate-freertos-project/" title="using cube generate freertos project" itemprop="url">using cube generate freertos project</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="weynechen.github.io" title="weyne">weyne</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2016-12-07T03:24:30.000Z" itemprop="datePublished">2016-12-07</time>
+    Updated:<time datetime="2016-12-07T06:32:48.631Z" itemprop="dateModified">2016-12-07</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Motivation"><span class="toc-number">1.</span> <span class="toc-text">Motivation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Project-content"><span class="toc-number">2.</span> <span class="toc-text">Project content</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Cube"><span class="toc-number">3.</span> <span class="toc-text">Cube</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Key-source-code"><span class="toc-number">4.</span> <span class="toc-text">Key source code</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Analysis"><span class="toc-number">5.</span> <span class="toc-text">Analysis</span></a></li></ol>
+		</div>
+		
+		<h2 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h2><p>Learn and practise FreeRTOS</p>
+<h2 id="Project-content"><a href="#Project-content" class="headerlink" title="Project content"></a>Project content</h2><ul>
+<li>Create tasks</li>
+</ul>
+<ol>
+<li>default task : parse uart Cmd , choose which task to run</li>
+<li>led task : toggle led with 500ms interval</li>
+<li>uart task 1 : send “1”</li>
+<li>uart task 2 : send “2”</li>
+</ol>
+<ul>
+<li>Suspend tasks</li>
+<li>resume tasks</li>
+</ul>
+<h2 id="Cube"><a href="#Cube" class="headerlink" title="Cube"></a>Cube</h2><p>It’s easy!</p>
+<h2 id="Key-source-code"><a href="#Key-source-code" class="headerlink" title="Key source code"></a>Key source code</h2><p>配置好cube后，会生成下面的代码<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">osThreadDef(defaultTask, StartDefaultTask, osPriorityIdle, <span class="number">0</span>, <span class="number">128</span>);</div><div class="line">defaultTaskHandle = osThreadCreate(osThread(defaultTask), <span class="literal">NULL</span>);</div><div class="line"></div><div class="line"><span class="comment">/* definition and creation of HeartLedTask */</span></div><div class="line">osThreadDef(HeartLedTask, StartTaskHeartLed, osPriorityIdle, <span class="number">0</span>, <span class="number">128</span>);</div><div class="line">HeartLedTaskHandle = osThreadCreate(osThread(HeartLedTask), <span class="literal">NULL</span>);</div><div class="line"></div><div class="line"><span class="comment">/* definition and creation of UartTask1 */</span></div><div class="line">osThreadDef(UartTask1, StartUartTask1, osPriorityNormal, <span class="number">0</span>, <span class="number">128</span>);</div><div class="line">UartTask1Handle = osThreadCreate(osThread(UartTask1), <span class="literal">NULL</span>);</div><div class="line"></div><div class="line"><span class="comment">/* definition and creation of UartTask2 */</span></div><div class="line">osThreadDef(UartTask2, StartUartTask2, osPriorityNormal, <span class="number">0</span>, <span class="number">128</span>);</div><div class="line">UartTask2Handle = osThreadCreate(osThread(UartTask2), <span class="literal">NULL</span>);</div></pre></td></tr></table></figure></p>
+<h2 id="Analysis"><a href="#Analysis" class="headerlink" title="Analysis"></a>Analysis</h2><p><strong> 函数1 </strong><br><code>osThreadDef(defaultTask, StartDefaultTask, osPriorityIdle, 0, 128);</code> :<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">#define osThreadDef(name, thread, priority, instances, stacksz)  \</div><div class="line">const osThreadDef_t os_thread_def_##name = \</div><div class="line">&#123; #name, (thread), (priority), (instances), (stacksz)  &#125;</div></pre></td></tr></table></figure></p>
+<p>这不是FreeRTOS的函数，而是CMSIS的。是ARM公司制定的标准。目的是为了让使用cotex M3/4内核的各个厂商提供的代码更加的规范，减少开发者的学习量。CMSIS同时也封装了实时操作系统。<br>cube已经为我们移植好了。具体的实现在cmsis_os.c文件里面。<br>回到这个函数，出现了一个复杂的宏定义。这个宏的作用无疑是创建任务的定义。解释两个难懂的点。</p>
+<ul>
+<li>字符串化 <code>#</code><br>这个符号是字符串化。比如上面的#name，如果传进来的参数是defaultTask，就会变成字符串”defautTask”。在某些场合比较有用，比如需要将变量的值和名称同时打印出来。<br>一般的做法，是<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> a = <span class="number">1</span>;</div><div class="line"><span class="keyword">int</span> b = <span class="number">2</span>;</div><div class="line"><span class="built_in">printf</span>(<span class="string">"a = %d \n"</span>,a);</div><div class="line"><span class="built_in">printf</span>(<span class="string">"b = %d \n"</span>,b);</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>当变量多了之后，比如需要打印100个变量，这样的操作就很繁琐，所以需要一个宏，同时搞定名称和值。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stdio.h"</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> PRINTF_INT(_NAME) printf(#_NAME);printf(<span class="meta-string">" = "</span>);printf(<span class="meta-string">"%d\n"</span>,_NAME)</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">int</span> a = <span class="number">1</span>;</div><div class="line">	<span class="keyword">int</span> b = <span class="number">2</span>;</div><div class="line"></div><div class="line">	PRINTF_INT(a);</div><div class="line">	PRINTF_INT(b);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p> 输出<br> <code>a = 1</code><br><code>b = 2</code></p>
+<ul>
+<li>拼接字符 “##”<br>这个是用来拼接字符串。比如上面的os_thread<em>def</em>##name，如果传进来的参数是defaultTask，那么就会变成os_thread_def_defaultTask。</li>
+</ul>
+<p>所以<code>osThreadDef</code>的作用，也就是定义并初始化一个<code>osThreadDef_t</code>类型的全局结构体体变量，该变量只读。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> os_thread_def  &#123;</div><div class="line">  <span class="keyword">char</span>                   *name;        <span class="comment">///&lt; Thread name</span></div><div class="line">  os_pthread             pthread;      <span class="comment">///&lt; start address of thread function</span></div><div class="line">  osPriority             tpriority;    <span class="comment">///&lt; initial thread priority</span></div><div class="line">  <span class="keyword">uint32_t</span>               instances;    <span class="comment">///&lt; maximum number of instances of that thread function</span></div><div class="line">  <span class="keyword">uint32_t</span>               stacksize;    <span class="comment">///&lt; stack size requirements in bytes; 0 is default stack size</span></div><div class="line">&#125; osThreadDef_t;</div></pre></td></tr></table></figure></p>
+<p><strong> 函数2 </strong><br><code>defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);</code><br>有了之前的分析，这里就好理解了，就是将之前的全局变量作为参数传给创建任务的函数。创建完成后，会返回一个句柄，后面的suspend和resume都是使用这个句柄做参数。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/STM32/">STM32</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="weynechen.github.io/2016/12/07/using-cube-generate-freertos-project/" data-title="using cube generate freertos project | weyne&#39;s note" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2016/11/25/TOF-principle/"  title="TOF principle in ranging">
+ <strong>NEXT:</strong><br/> 
+ <span>TOF principle in ranging
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Motivation"><span class="toc-number">1.</span> <span class="toc-text">Motivation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Project-content"><span class="toc-number">2.</span> <span class="toc-text">Project content</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Cube"><span class="toc-number">3.</span> <span class="toc-text">Cube</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Key-source-code"><span class="toc-number">4.</span> <span class="toc-text">Key source code</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Analysis"><span class="toc-number">5.</span> <span class="toc-text">Analysis</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">Categories</p>
+		<ul>
+		
+			<li><a href="/categories/QT/" title="QT">QT<sup>2</sup></a></li>
+		
+			<li><a href="/categories/STM32/" title="STM32">STM32<sup>9</sup></a></li>
+		
+			<li><a href="/categories/STM8/" title="STM8">STM8<sup>2</sup></a></li>
+		
+			<li><a href="/categories/笔记/" title="笔记">笔记<sup>6</sup></a></li>
+		
+			<li><a href="/categories/算法/" title="算法">算法<sup>2</sup></a></li>
+		
+			<li><a href="/categories/编程工具/" title="编程工具">编程工具<sup>11</sup></a></li>
+		
+			<li><a href="/categories/通讯接口/" title="通讯接口">通讯接口<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/GraphViz/" title="GraphViz">GraphViz<sup>1</sup></a></li>
+		
+			<li><a href="/tags/cube/" title="cube">cube<sup>1</sup></a></li>
+		
+			<li><a href="/tags/usb/" title="usb">usb<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<div class="social-font clearfix">
+		
+		
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme fork Pacman © 2016 
+		
+		<a href="weynechen.github.io" target="_blank" title="weyne">weyne</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"null"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end --> 
+
+
+
+
+
+  </body>
+</html>

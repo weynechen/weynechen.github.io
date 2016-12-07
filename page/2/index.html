@@ -34,7 +34,7 @@
 				<h1 class="site-name"><a href="/" title="weyne&#39;s note">weyne&#39;s note</a></h1>
 				<h2 class="blog-motto"></h2>
 			</div>
-			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜單">
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
 			</a></div>
 			<nav class="animated">
 				<ul>
@@ -51,7 +51,7 @@
 					
 					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
 						<label>Search</label>
-						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
 						<input type="hidden" name="q" value="site:weynechen.github.io">
 					</form>
 					
@@ -63,6 +63,21 @@
     </header>
     <div id="container">
       <div id="main">
+
+  <section class="post" itemscope itemprop="blogPost">
+  
+    <a href="/2016/10/13/LaTexTest/" title="让hexo 支持 LaTex" itemprop="url">
+  
+    <h1 itemprop="name">让hexo 支持 LaTex</h1>
+    
+     
+           <p itemprop="description" >安装12npm install hexo-math --savehexo math install
+测试源码12345678$$\begin&amp;#123;eqnarray&amp;#125;\nabla\cdot\vec&amp;#123;E&amp;#125; &amp;amp;=&amp;amp; \frac&amp;#12</p>
+        
+    
+    <time datetime="2016-10-13T12:40:48.000Z" itemprop="datePublished">2016-10-13</time>
+  </a>
+</section>
 
   <section class="post" itemscope itemprop="blogPost">
   
@@ -213,40 +228,26 @@ MinGWGCC/g++编译器，在windows下需要将安装目录添加到path环境变
   </a>
 </section>
 
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2016/08/08/STM32-ADC-DMA/" title="STM32F4使用DMA采集ADC数据" itemprop="url">
-  
-    <h1 itemprop="name">STM32F4使用DMA采集ADC数据</h1>
-    
-     
-           <p itemprop="description" >之所以要记录下来，是因为这个里面有一个坑。和其他外设(USART,DCMI)DMA不同的是，需要多设置一步ADC_DMARequestAfterLastTransferCmd(ADC2,ENABLE);，这一个不开启的话，ADC只会转换一次的值，不会连续采集。对应的是ADC CR</p>
-        
-    
-    <time datetime="2016-08-08T06:51:28.000Z" itemprop="datePublished">2016-08-08</time>
-  </a>
-</section>
-
 
   <nav id="page-nav" class="clearfix">
     <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
   </nav>
 
 </div>
-      <div class="openaside"><a class="navbutton" href="#" title="顯示側邊欄"></a></div>
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
 
 <div id="asidepart">
-<div class="closeaside"><a class="closebutton" href="#" title="隱藏側邊欄"></a></div>
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
 <aside class="clearfix">
 
   
 <div class="categorieslist">
-	<p class="asidetitle">分類</p>
+	<p class="asidetitle">Categories</p>
 		<ul>
 		
 			<li><a href="/categories/QT/" title="QT">QT<sup>2</sup></a></li>
 		
-			<li><a href="/categories/STM32/" title="STM32">STM32<sup>8</sup></a></li>
+			<li><a href="/categories/STM32/" title="STM32">STM32<sup>9</sup></a></li>
 		
 			<li><a href="/categories/STM8/" title="STM8">STM8<sup>2</sup></a></li>
 		
@@ -264,7 +265,7 @@ MinGWGCC/g++编译器，在windows下需要将安装目录添加到path环境变
 
   
 <div class="tagslist">
-	<p class="asidetitle">標簽</p>
+	<p class="asidetitle">Tags</p>
 		<ul class="clearfix">
 		
 			<li><a href="/tags/GraphViz/" title="GraphViz">GraphViz<sup>1</sup></a></li>
